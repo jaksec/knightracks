@@ -43,7 +43,16 @@ app.post('/api/register', async (req, res) =>
         const hashedPassword = await bcrypt.hash(password,saltRounds);
 
         // Prepare new user details and insert into MongoDB
-        const newUser = { Login: login, Password: hashedPassword, FirstName: firstName, LastName: lastName, Email: email }; 
+        const newUser = 
+        { 
+            Login: login, 
+            Password: hashedPassword, 
+            FirstName: firstName, 
+            LastName: lastName, 
+            Email: email, 
+            createdAt: new Date(),       // Set createdAt to the current date
+            updatedAt: new Date()       // Set updatedAt to the current date initially 
+        };    
         
         const result = await db.collection('Users').insertOne(newUser); // Insert new user into database 
   
