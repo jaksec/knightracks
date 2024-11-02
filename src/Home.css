@@ -1,0 +1,129 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 10em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+  left: 0%;
+  top: 0%;
+  position: absolute;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #e1ff00);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.more {
+  top: 5%;
+  left: 85%;
+  position: absolute;
+  font-size: 20px;
+  display: flex;
+  gap: 1em;
+}
+
+.ls-pair {
+  justify-content: center;
+  display: flex;
+  gap: 1em;
+}
+
+.PopUpButton {
+  text-align: center;
+  display: flex;
+  gap: 1em;
+}
+
+.overlay {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.popup {
+  background-color: black;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  height: 60%;
+  width: 25%;
+  transform: translateY(100%);
+  animation: slideUpFadeIn 0.5s forwards;
+}
+
+.circular-input {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid gray;
+  border-radius: 20px; /* Adjust as needed to achieve circular appearance */
+  background: black;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.x {
+  position: absolute;
+  cursor: pointer;
+  padding: 0; /* Ensures no additional padding affects size */
+  background: black;
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  font-weight: 20;
+  box-sizing: border-box; /* Ensures padding is included in width/height */
+  width: 0.5em; /* Adjust as needed */
+  height: 0.5em; /* Adjust as needed */
+  font-size: 30px;
+  top: 0%;
+  right: 5%;
+  user-select: none;
+}
+
+.x:hover {
+  color: #e1ff00; /* Replace with desired hover color */
+}
+
+@keyframes slideUpFadeIn {
+  from {
+      transform: translateY(100%);
+  }
+  to {
+      transform: translateY(0);
+  }
+}
