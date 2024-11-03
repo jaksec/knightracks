@@ -136,7 +136,7 @@ app.get('/confirmation/:token', async (req, res) =>
     } 
     catch (e) 
     {
-        console.error(error); // Log error for debugging
+        console.error(e); // Log error for debugging
         res.status(400).json({ success: false, message: 'Invalid or expired token' });
     }
 
