@@ -35,6 +35,11 @@
 
 .card {
   padding: 2em;
+  color: white;
+}
+
+.title {
+  color: white;
 }
 
 .read-the-docs {
@@ -95,6 +100,7 @@
   background: black;
   outline: none;
   box-sizing: border-box;
+  color: #ffff;
 }
 
 .x {
