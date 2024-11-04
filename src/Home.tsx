@@ -8,10 +8,14 @@ function Home() {
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [pType, setPopupType] = useState('');
   
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [regEmail, setRegEmail] = useState<string>('');
+  const [regPassword, setregPassword] = useState<string>('');
   const [firstname, setFirstname] = useState<string>('');
   const [lastname, setLastname] = useState<string>('');
+  const [logEmail, setlogEmail] = useState<string>('');
+  const [logPassword, setlogPassword] = useState<string>('');
+
+
 
   
   const showPopup = (type: React.SetStateAction<string>) => {
@@ -26,11 +30,15 @@ function Home() {
 
 
   {/*This function will try to log user in without checking the inputs*/}
-  /*const login = () => {
+  const login = async () => {
+  {/*this will package the data in the format specified by api*/ }
+    const data = { 
+      email: logEmail,
+      password: logPassword, 
+    };
     
-    const data = { email, password }
     try {
-      const response = await fetch('https://example.com/api/login', {
+      const response = await fetch('http://146.190.71.194/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,31 +46,83 @@ function Home() {
         body: JSON.stringify(data), 
       });
 
-      if(!response.ok) {
-        throw new Error("Did not recieve correct network response");
+      if(response.ok) { {/*If the user sucessfully logs in we need to send the user to the landing page */}
+        console.log('login successful');
+        const info = await response.json();
+
+        console.log(info)
+        {/*loadLogin(info); This line will pass the info gathered on login to homepage */}
+      }
+      else {
+        const errorData = await response.json();
+        console.error('failed login', errorData.message);
       }
 
-      const decoded = await response.json();
       
-    } catch (error) {} 
+    } catch (error) {
+      console.error('Error during Login:', error);
+    } 
     
-  }*/
+  }
+
+  const register = async () => {
+
+    const regData = {
+      login: ???
+      password: regPassword,
+      firstName: firstname,
+      lastName: lastname,
+      email: regEmail,
+    };
+
+    try {
+      const response1 = await fetch('http://146.190.71.194/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(regData), 
+      });
+      
+      if(response1.ok) {
+
+        console.log('sucessful registration');
+        const info = await response1.json();
+
+        console.log(info);
+
+        {/*loadLogin(info); this line will hopefully pass information to homepage */}
+      }
+
+
+
+
+    }
+
+
+  }
     
 
   
   
   {/*Helper Functions for loading user inputs*/}
-  const handleEmailChange=(e : React.ChangeEvent<HTMLInputElement>) => (
-    setEmail(e.target.value)
+  const handleregEmailChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setRegEmail(e.target.value)
   )
-  const handlePasswordChange=(e : React.ChangeEvent<HTMLInputElement>) => (
-    setPassword(e.target.value)
+  const handleregPasswordChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setregPassword(e.target.value)
+  )
+  const handlelogPasswordChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setlogPassword(e.target.value)
   )
   const handleFirstnameChange=(e : React.ChangeEvent<HTMLInputElement>) => (
     setFirstname(e.target.value)
   )
   const handleLastnameChange=(e : React.ChangeEvent<HTMLInputElement>) => (
     setLastname(e.target.value)
+  )
+  const handlelogEmailChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setlogEmail(e.target.value)
   )
 
 
@@ -106,13 +166,13 @@ function Home() {
                   <>
                     <h2 style={{ color: "#ffff" }}>Login</h2>
                     <p style={{ color: "#ffff" }}>This is the login!</p>
-                    <input type="text" value={email} onChange={handleEmailChange} placeholder="Email" className="circular-input" />
-                    <input type="password" value={password} onChange={handlePasswordChange} placeholder="Password" className="circular-input" />
+                    <input type="text" value={logEmail} onChange={handlelogEmailChange} placeholder="Email" className="circular-input" />
+                    <input type="password" value={logPassword} onChange={handlelogPasswordChange} placeholder="Password" className="circular-input" />
                     <div style={{ display: 'block', textAlign: 'center' }}>
                       <a href="https://www.linkedin.com/in/jaksec" target='_blank' style={{ display: 'inline-block', marginTop: '10px' }}>
                         <p style={{ margin: 0 }}>Forgot Password?</p>
                       </a>
-                      <button style={{ display: 'block', margin: '0 auto', marginTop: '30px' }}
+                      <button onClick={login} style={{ display: 'block', margin: '0 auto', marginTop: '30px' }}
                       
                       >Log in</button>
                     </div>
@@ -124,8 +184,8 @@ function Home() {
                     <p style={{ color: "#ffff" }}>This is the sign-up!</p>
                     <input type="text" value={firstname} onChange={handleFirstnameChange} placeholder="First Name" className="circular-input" />
                     <input type="text" value={lastname} onChange={handleLastnameChange} placeholder="Last Name" className="circular-input" />
-                    <input type="text" value={email} onChange={handleEmailChange} placeholder="Email" className="circular-input" />
-                    <input type="password" value={password} onChange={handlePasswordChange} placeholder="Password" className="circular-input" />
+                    <input type="text" value={regEmail} onChange={handleregEmailChange} placeholder="Email" className="circular-input" />
+                    <input type="password" value={regPassword} onChange={handleregPasswordChange} placeholder="Password" className="circular-input" />
                     <input type="password" placeholder="Re-enter Password" className="circular-input" />
                     <button style={{ display: 'block', margin: '0 auto', marginTop: '30px' }}>Sign Up</button>
                   </>
