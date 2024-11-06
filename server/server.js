@@ -301,14 +301,5 @@ app.post('/api/searchcards', async (req, res, next) =>
 });
 
 
-
-// Set CORS headers to allow requests from any origin
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
-    next();
-});
-
 // Start the node + express server on port 5000
 app.listen(5000);
