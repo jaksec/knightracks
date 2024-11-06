@@ -1,24 +1,32 @@
+require('dotenv').config();
+
+
 const express = require('express');
+const axios = require('axios');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcrypt'); // For password hashing
-const saltRounds =10; //length of encrypted password 
 const jwt = require('jsonwebtoken'); // Import jwt
 const nodemailer = require('nodemailer');
+const MongoClient = require('mongodb').MongoClient;
+
+
+const saltRounds = 10; //length of encrypted password 
+const MongoClient = require('mongodb').MongoClient;
+const url = process.env.MONGODB_URL; //databse url form .env
 const jwtSecret = process.env.JWT_SECRET || "defaultSecretKey"; // Ensure JWT_SECRET is available and if not set, sets to default 
 
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-require('dotenv').config();
 
-//Connecting to Database
-const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb+srv://RickL:COP4331@cluster0.3dvux.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'; //databse 
+
+// Connect to Database
 const client = new MongoClient(url);
-client.connect();
-
+client.connect()
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection failed:', err));
 
 
 //Nodemail Transporter connection 
@@ -30,7 +38,6 @@ const transporter = nodemailer.createTransport({
        pass: process.env.GMAIL_PASS,  //passcode for sender email 
     },
 });
-
 
 
 // Register new Users  
@@ -294,7 +301,7 @@ app.post('/api/searchcards', async (req, res, next) =>
 // Set CORS headers to allow requests from any origin
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
     next();
 });
