@@ -18,21 +18,8 @@ const jwtSecret = process.env.JWT_SECRET || "defaultSecretKey"; // Ensure JWT_SE
 
 
 const app = express();
-/*app.use(cors());*/
-app.use(cors({
-    origin: '*', // Specify the frontend origin
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Authorization']
-  }));
-app.use(bodyParser.json());
 
-app.options('*', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Specify allowed origin
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS'); // Allow specific methods
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Authorization'); // Allow specific headers
-    res.sendStatus(200); // Respond with 200 OK
-  });
-
+app.use(cors);
 
 // Connect to Database
 const client = new MongoClient(url);
