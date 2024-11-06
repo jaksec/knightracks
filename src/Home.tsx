@@ -8,6 +8,16 @@ function Home() {
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [pType, setPopupType] = useState('');
   
+  const [regEmail, setRegEmail] = useState<string>('');
+  const [regPassword, setregPassword] = useState<string>('');
+  const [firstname, setFirstname] = useState<string>('');
+  const [lastname, setLastname] = useState<string>('');
+  const [logEmail, setlogEmail] = useState<string>('');
+  const [logPassword, setlogPassword] = useState<string>('');
+
+
+
+  
   const showPopup = (type: React.SetStateAction<string>) => {
     setPopupType(type);
     setPopupVisible(true);
@@ -17,6 +27,105 @@ function Home() {
     setPopupVisible(false);
     setPopupType('');
   };
+
+
+  {/*This function will try to log user in without checking the inputs*/}
+  const login = async () => {
+  {/*this will package the data in the format specified by api*/ }
+    const data = { 
+      email: logEmail,
+      password: logPassword, 
+    };
+    
+    try {
+      const response = await fetch('http://146.190.71.194/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data), 
+      });
+
+      if(response.ok) { {/*If the user sucessfully logs in we need to send the user to the landing page */}
+        console.log('login successful');
+        const info = await response.json();
+
+        console.log(info)
+        {/*loadLogin(info); This line will pass the info gathered on login to homepage */}
+      }
+      else {
+        const errorData = await response.json();
+        console.error('failed login', errorData.message);
+      }
+
+      
+    } catch (error) {
+      console.error('Error during Login:', error);
+    } 
+    
+  }
+
+  const register = async () => {
+
+    const regData = {
+      login: ???
+      password: regPassword,
+      firstName: firstname,
+      lastName: lastname,
+      email: regEmail,
+    };
+
+    try {
+      const response1 = await fetch('http://146.190.71.194/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(regData), 
+      });
+      
+      if(response1.ok) {
+
+        console.log('sucessful registration');
+        const info = await response1.json();
+
+        console.log(info);
+
+        {/*loadLogin(info); this line will hopefully pass information to homepage */}
+      }
+
+
+
+
+    }
+
+
+  }
+    
+
+  
+  
+  {/*Helper Functions for loading user inputs*/}
+  const handleregEmailChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setRegEmail(e.target.value)
+  )
+  const handleregPasswordChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setregPassword(e.target.value)
+  )
+  const handlelogPasswordChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setlogPassword(e.target.value)
+  )
+  const handleFirstnameChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setFirstname(e.target.value)
+  )
+  const handleLastnameChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setLastname(e.target.value)
+  )
+  const handlelogEmailChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setlogEmail(e.target.value)
+  )
+
+
 
   return (
     <>
@@ -33,7 +142,7 @@ function Home() {
       </div>
 
       {/* header and slogan */}
-      <h1 style={{userSelect: 'none', fontSize: 70}}>KnightTrack</h1>
+      <h1 className='title' style={{userSelect: 'none', fontSize: 70}}>KnightTrack</h1>
       <div className="card">
 
         <p style={{userSelect: 'none', fontSize: 20}}>
@@ -45,35 +154,38 @@ function Home() {
       {/* login and sign-up buttons div */}
       <div className="ls-pair">
         <div className="PopUpButton">
-          <button onClick={() => showPopup('login')}>Log In</button>
-          <button onClick={() => showPopup('sign-up')}>Sign Up</button>
+          <button onClick={() => showPopup('login')}>Log In</button> {/* Creates log in button */}
+          <button onClick={() => showPopup('sign-up')}>Sign Up</button> {/*Creates sign up button*/}
 
           {isPopupVisible && (
             <div className="overlay">
               <div className="popup" onClick={e => e.stopPropagation()}>
-                <div className="x" onClick={closePopup}>&times;</div>
-                {pType === 'login' && (
+                <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
+                {/* Creates login popup*/}
+                {pType === 'login' && ( 
                   <>
-                    <h2>Login</h2>
-                    <p>This is the login!</p>
-                    <input type="text" placeholder="Email" className="circular-input" />
-                    <input type="password" placeholder="Password" className="circular-input" />
+                    <h2 style={{ color: "#ffff" }}>Login</h2>
+                    <p style={{ color: "#ffff" }}>This is the login!</p>
+                    <input type="text" value={logEmail} onChange={handlelogEmailChange} placeholder="Email" className="circular-input" />
+                    <input type="password" value={logPassword} onChange={handlelogPasswordChange} placeholder="Password" className="circular-input" />
                     <div style={{ display: 'block', textAlign: 'center' }}>
                       <a href="https://www.linkedin.com/in/jaksec" target='_blank' style={{ display: 'inline-block', marginTop: '10px' }}>
                         <p style={{ margin: 0 }}>Forgot Password?</p>
                       </a>
-                      <button style={{ display: 'block', margin: '0 auto', marginTop: '30px' }}>Log in</button>
+                      <button onClick={login} style={{ display: 'block', margin: '0 auto', marginTop: '30px' }}
+                      
+                      >Log in</button>
                     </div>
                   </>
                 )}
                 {pType === 'sign-up' && (
                   <>
-                    <h2>Sign Up</h2>
-                    <p>This is the sign-up!</p>
-                    <input type="text" placeholder="First Name" className="circular-input" />
-                    <input type="text" placeholder="Last Name" className="circular-input" />
-                    <input type="text" placeholder="Email" className="circular-input" />
-                    <input type="password" placeholder="Password" className="circular-input" />
+                    <h2 style={{ color: "#ffff" }}>Sign Up</h2>
+                    <p style={{ color: "#ffff" }}>This is the sign-up!</p>
+                    <input type="text" value={firstname} onChange={handleFirstnameChange} placeholder="First Name" className="circular-input" />
+                    <input type="text" value={lastname} onChange={handleLastnameChange} placeholder="Last Name" className="circular-input" />
+                    <input type="text" value={regEmail} onChange={handleregEmailChange} placeholder="Email" className="circular-input" />
+                    <input type="password" value={regPassword} onChange={handleregPasswordChange} placeholder="Password" className="circular-input" />
                     <input type="password" placeholder="Re-enter Password" className="circular-input" />
                     <button style={{ display: 'block', margin: '0 auto', marginTop: '30px' }}>Sign Up</button>
                   </>
@@ -83,6 +195,9 @@ function Home() {
           )}
         </div>
       </div>
+
+
+
 
       {/* learn more and about us hyperlinks */}
       <div className="more">
