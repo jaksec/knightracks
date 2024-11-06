@@ -12,7 +12,7 @@ const MongoClient = require('mongodb').MongoClient;
 
 
 const saltRounds = 10; //length of encrypted password 
-const MongoClient = require('mongodb').MongoClient;
+//const MongoClient = require('mongodb').MongoClient;
 const url = process.env.MONGODB_URL; //databse url form .env
 const jwtSecret = process.env.JWT_SECRET || "defaultSecretKey"; // Ensure JWT_SECRET is available and if not set, sets to default 
 
