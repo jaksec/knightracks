@@ -1,5 +1,4 @@
 import 'dotenv/config';
-console.log(MONGODB_URL);
 import express from 'express';
 import axios from 'axios';
 import bodyParser from 'body-parser';
