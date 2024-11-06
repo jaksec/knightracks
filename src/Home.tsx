@@ -37,14 +37,15 @@ function Home() {
       login: logUsername,
       password: logPassword, 
     };
+
+    console.log(logUsername, logPassword);
     
     try {
-      const response = await fetch('http://cop4331-13.xyz:5000/api/login', {
+      const response = await fetch('http://146.190.71.194:5000/api/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data), 
+          'Content-Type': 'application/json' },
+        body: JSON.stringify(data) 
       });
 
       if(response.ok) { {/*If the user sucessfully logs in we need to send the user to the landing page */}
@@ -173,8 +174,8 @@ function Home() {
                   <>
                     <h2 style={{ color: "#ffff" }}>Login</h2>
                     <p style={{ color: "#ffff" }}>This is the login!</p>
-                    <input type="text" value={logUsername} onChange={handlelogUsernameChange} placeholder="Username" className="circular-input" />
-                    <input type="password" value={logPassword} onChange={handlelogPasswordChange} placeholder="Password" className="circular-input" />
+                    <input type="text" id="username" name="username" value={logUsername} onChange={handlelogUsernameChange} placeholder="Username" className="circular-input" />
+                    <input type="password" id="password" name="password" value={logPassword} onChange={handlelogPasswordChange} placeholder="Password" className="circular-input" />
                     <div style={{ display: 'block', textAlign: 'center' }}>
                       <a href="https://www.linkedin.com/in/jaksec" target='_blank' style={{ display: 'inline-block', marginTop: '10px' }}>
                         <p style={{ margin: 0 }}>Forgot Password?</p>

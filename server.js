@@ -17,6 +17,8 @@ const jwtSecret = process.env.JWT_SECRET || "defaultSecretKey"; // Ensure JWT_SE
 
 const app = express();
 
+app.use(express.json());
+
 app.use(cors);
 
 // Connect to Database
