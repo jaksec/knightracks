@@ -1,7 +1,8 @@
-const express = require('express');
-const axios = require('axios');
+import express from 'express';
+import axios from 'axios';
+import 'dotenv/config';
+
 const router = express.Router();
-require('dotenv').config();
 
 const spoonacularApiKey = process.env.API_KEY;
 const spoonacularBaseUrl = 'https://api.spoonacular.com';
