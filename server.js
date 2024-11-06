@@ -150,6 +150,7 @@ app.get('/confirmation/:token', async (req, res) =>
 // Login User 
 app.post('/api/login', async (req, res) => 
     {
+        console.log("someone has tried to login");
         // Incoming: login, password
         // Outgoing: id, firstName, lastName, token, error
     
@@ -158,7 +159,7 @@ app.post('/api/login', async (req, res) =>
         // Connect to the database
         const db = client.db('COP4331LargeProject');
     
-        // Initialize variables for user details
+        // Initialize varziables for user details
         let id = -1;
         let fn = '';
         let ln = '';
@@ -173,6 +174,7 @@ app.post('/api/login', async (req, res) =>
         try 
         {
             // Search for the user in the database
+            console.log("we are trying to reach the database");
             const results = await db.collection('Users').findOne({ Login: login });
             
             // If a user was found
