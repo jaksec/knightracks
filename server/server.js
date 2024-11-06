@@ -1,14 +1,13 @@
-require('dotenv').config();
+import 'dotenv/config';
 
-
-const express = require('express');
-const axios = require('axios');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const bcrypt = require('bcrypt'); // For password hashing
-const jwt = require('jsonwebtoken'); // Import jwt
-const nodemailer = require('nodemailer');
-const MongoClient = require('mongodb').MongoClient;
+import express from 'express';
+import axios from 'axios';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
+import { MongoClient } from 'mongodb';
 
 
 const saltRounds = 10; //length of encrypted password 
