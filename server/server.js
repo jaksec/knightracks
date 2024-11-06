@@ -27,7 +27,7 @@ app.use(cors({
 app.use(bodyParser.json());
 
 app.options('*', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173'); // Specify allowed origin
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Specify allowed origin
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS'); // Allow specific methods
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Authorization'); // Allow specific headers
     res.sendStatus(200); // Respond with 200 OK
