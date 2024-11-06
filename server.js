@@ -215,7 +215,7 @@ app.post('/api/login', async (req, res) =>
 
 
 // Endpoint to add cards
-const { ObjectId } = require('mongodb');
+import { ObjectId } from 'mongodb';
 
 app.post('/api/addcard', async (req, res) => 
     {
