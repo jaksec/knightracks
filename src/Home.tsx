@@ -39,7 +39,7 @@ function Home() {
     };
     
     try {
-      const response = await fetch('http://cop4331-13.xyz/poosd-large/server/api/login/', {
+      const response = await fetch('http://cop4331-13.xyz:5000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
