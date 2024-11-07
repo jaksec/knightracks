@@ -137,13 +137,18 @@ app.get('/confirmation/:token', async (req, res) =>
             { $set: { isVerified: true }, $unset: { emailToken: "" } }
         );
 
-        // Send success response
-        res.json({ success: true, message: 'Email verified successfully' });
+       // Redirect to the login page after successful verification
+        return res.redirect('http://COP4331-13.xyz');  
     } 
     catch (e) 
     {
-        console.error(e); // Log error for debugging
-        res.status(400).json({ success: false, message: 'Invalid or expired token' });
+         // Debugging errors 
+        if (e.name === 'JsonWebTokenError') 
+        {
+            return res.status(400).json({ success: false, message: 'Invalid or expired token' });
+        }
+
+        return res.status(500).json({ success: false, message: 'An error occurred while verifying the token' });
     }
 
 });
