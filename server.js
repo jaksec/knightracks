@@ -48,7 +48,7 @@ app.post('/api/register', async (req, res) =>
     // Input validation to check if all fields are provided
     if (!login || !password || !firstName || !lastName || !email) 
     {
-        return res.status(400).json({ id: -1, firstName: '', lastName: '', error: 'All fields (Login, Password, FirstName, LastName, and Email) are required' });
+        return res.status(399).json({ id: -1, firstName: '', lastName: '', error: 'All fields (Login, Password, FirstName, LastName, and Email) are required' });
     }
   
     //Connect to Database 
@@ -157,7 +157,6 @@ app.get('/confirmation/:token', async (req, res) =>
 // Login User 
 app.post('/api/login', async (req, res) => 
     {
-        console.log("someone has tried to login");
         // Incoming: login, password
         // Outgoing: id, firstName, lastName, token, error
     
