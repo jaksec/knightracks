@@ -2,8 +2,12 @@ import KnightLogo from '/logo.png'
 import './Home.css'
 import React, {useState} from 'react';
 import './background.scss';
+import { useNavigate } from 'react-router-dom';
+
 
 function Home() {
+
+  const navigate = useNavigate();
 
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [pType, setPopupType] = useState('');
@@ -15,7 +19,6 @@ function Home() {
   const [logUsername, setlogUsername] = useState<string>('');
   const [logPassword, setlogPassword] = useState<string>('');
   const [regUsername, setregUsername] = useState<string>('');
-
 
 
   
@@ -52,12 +55,13 @@ function Home() {
         console.log('login successful');
         const info = await response.json();
 
-        console.log(info)
+        console.log(info);
         {/*loadLogin(info); This line will pass the info gathered on login to homepage */}
       }
       else {
         const errorData = await response.json();
         console.error('failed login', errorData.message);
+        navigate('/landing');
       }
 
       
