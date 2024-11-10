@@ -12,8 +12,9 @@ function Home() {
   const [regPassword, setregPassword] = useState<string>('');
   const [firstname, setFirstname] = useState<string>('');
   const [lastname, setLastname] = useState<string>('');
-  const [logEmail, setlogEmail] = useState<string>('');
+  const [logUsername, setlogUsername] = useState<string>('');
   const [logPassword, setlogPassword] = useState<string>('');
+  const [regUsername, setregUsername] = useState<string>('');
 
 
 
@@ -33,7 +34,7 @@ function Home() {
   const login = async () => {
   {/*this will package the data in the format specified by api*/ }
     const data = { 
-      email: logEmail,
+      login: logUsername,
       password: logPassword, 
     };
     
@@ -68,7 +69,7 @@ function Home() {
   const register = async () => {
 
     const regData = {
-      login: ???
+      login: regUsername,
       password: regPassword,
       firstName: firstname,
       lastName: lastname,
@@ -97,10 +98,13 @@ function Home() {
 
 
 
+    } catch(err)
+    {
+      console.log("error sending the register packets");
     }
 
 
-  }
+  } 
     
 
   
@@ -121,8 +125,11 @@ function Home() {
   const handleLastnameChange=(e : React.ChangeEvent<HTMLInputElement>) => (
     setLastname(e.target.value)
   )
-  const handlelogEmailChange=(e : React.ChangeEvent<HTMLInputElement>) => (
-    setlogEmail(e.target.value)
+  const handlelogUsernameChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setlogUsername(e.target.value)
+  )
+  const handleregUsernameChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setregUsername(e.target.value)
   )
 
 
@@ -142,7 +149,7 @@ function Home() {
       </div>
 
       {/* header and slogan */}
-      <h1 className='title' style={{userSelect: 'none', fontSize: 70}}>KnightTrack</h1>
+      <h1 className='title' style={{userSelect: 'none', fontSize: 70}}>KnighTracks</h1>
       <div className="card">
 
         <p style={{userSelect: 'none', fontSize: 20}}>
@@ -166,7 +173,7 @@ function Home() {
                   <>
                     <h2 style={{ color: "#ffff" }}>Login</h2>
                     <p style={{ color: "#ffff" }}>This is the login!</p>
-                    <input type="text" value={logEmail} onChange={handlelogEmailChange} placeholder="Email" className="circular-input" />
+                    <input type="text" value={logUsername} onChange={handlelogUsernameChange} placeholder="Username" className="circular-input" />
                     <input type="password" value={logPassword} onChange={handlelogPasswordChange} placeholder="Password" className="circular-input" />
                     <div style={{ display: 'block', textAlign: 'center' }}>
                       <a href="https://www.linkedin.com/in/jaksec" target='_blank' style={{ display: 'inline-block', marginTop: '10px' }}>
@@ -182,12 +189,13 @@ function Home() {
                   <>
                     <h2 style={{ color: "#ffff" }}>Sign Up</h2>
                     <p style={{ color: "#ffff" }}>This is the sign-up!</p>
+                    <input type="text" value={regUsername} onChange={handleregUsernameChange} placeholder="Username" className="circular-input" />
                     <input type="text" value={firstname} onChange={handleFirstnameChange} placeholder="First Name" className="circular-input" />
                     <input type="text" value={lastname} onChange={handleLastnameChange} placeholder="Last Name" className="circular-input" />
                     <input type="text" value={regEmail} onChange={handleregEmailChange} placeholder="Email" className="circular-input" />
                     <input type="password" value={regPassword} onChange={handleregPasswordChange} placeholder="Password" className="circular-input" />
                     <input type="password" placeholder="Re-enter Password" className="circular-input" />
-                    <button style={{ display: 'block', margin: '0 auto', marginTop: '30px' }}>Sign Up</button>
+                    <button onClick={register} style={{ display: 'block', margin: '0 auto', marginTop: '30px' }}>Sign Up</button>
                   </>
                 )}
               </div>

@@ -12,17 +12,18 @@ const MongoClient = require('mongodb').MongoClient;
 
 
 const saltRounds = 10; //length of encrypted password 
+const MongoClient = require('mongodb').MongoClient;
 const url = process.env.MONGODB_URL; //databse url form .env
 const jwtSecret = process.env.JWT_SECRET || "defaultSecretKey"; // Ensure JWT_SECRET is available and if not set, sets to default 
 
 
 const app = express();
+/*app.use(cors());*/
 app.use(cors({
-    origin: '*', // Allow requests from any origin
+    origin: 'http://localhost:5173/', // Specify the frontend origin
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Authorization']
   }));
-  
 app.use(bodyParser.json());
 
 
@@ -300,6 +301,15 @@ app.post('/api/searchcards', async (req, res, next) =>
     }
 });
 
+
+
+// Set CORS headers to allow requests from any origin
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
+    next();
+});
 
 // Start the node + express server on port 5000
 app.listen(5000);
