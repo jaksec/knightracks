@@ -56,7 +56,5 @@ router.get('/ingredient-nutrition', async (req, res) => {
     }
   });
 
-  
-
-module.exports = router;
+  export { router as ingredientRouter };
 
