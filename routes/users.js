@@ -270,7 +270,7 @@ router.post("/reset-password", extractTokenFromHeader, async (req, res) =>
         // Search database for user based on email
         const user = await db.collection('Users').findOne({ Email: decoded.email });
         
-        if (user) 
+        if (!user) 
         {
             return res.status(404).json({ error: 'User not found' });
         }
