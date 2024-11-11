@@ -180,6 +180,92 @@ router.post('/login', async (req, res) =>
             res.status(500).json({ error: 'An error occurred during login' });
         }
     });
+
+router.post("/reset-password", async (req, res) => 
+{
+    const {email } = req.body;
+
+    if(!email)
+    {
+        return res.status(339).json({ error: 'Please enter an Email' });
+    }
+
+    const db = client.db('COP4331LargeProject');  // Ensure db connection
+
+    try
+    {
+        const user = await db.collection('Users').findOne({ Email: email });
+
+        if(!user)
+        {
+            return res.status(339).json({ error: 'No user with that email was found' });
+        }
+
+        //Generate Password reset token 
+        const resetPasswordToken = jwt.sign({ 
+            email: user.Email, userId: user._id }, jwtSecret,{ expiresIn: '1h' });
+
+        const resetLink = `http://localhost:5000/api/user/reset-password/${resetPasswordToken}`; //will need to change to livedomain 
+        
+        await transporter.sendMail({
+            to: email,
+            subject: 'Password Reset Request',
+            html: `<p>Please click <a href="${resetLink}">here</a> to reset your password. The link will expire in 1 hour.</p>`
+        });
+
+        
+        res.status(200).json({ 
+            message: 'Password reset email sent', 
+            resetPasswordToken  // Including the token in the response for testing
+        });
+        
+    } 
+    catch (error) 
+    {
+        res.status(500).json({ error: 'An error occurred during the reset process' });
+    }
+});
+ 
+
+router.post("/reset-password/:token", async (req, res) => 
+{
+    const { token } = req.params;  //reset token extracted from url 
+    const { password } = req.body; //new password 
+
+    if (!password) 
+    {
+        return res.status(400).json({ error: 'Password is required' });
+    }
+
+    try 
+    {
+        // Verify the reset token  
+        const decoded = jwt.verify(token, jwtSecret); 
+
+        const db = client.db('COP4331LargeProject'); 
+
+        //find user based on email 
+        const user = await db.collection('Users').findOne({ Email: decoded.email });
+
+        if (!user) 
+        {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Update the user's password in the database
+        await db.collection('Users').updateOne({ _id: user._id }, { $set: { Password: hashedPassword } }); //updates password belonging to _id 
+
+        res.status(200).json({ message: 'Password has been reset successfully' });
+
+    } 
+    catch (error) 
+    {
+        res.status(400).json({ error: 'Invalid or expired token' }); 
+    }
+});
     
 
 export { router as userRouter}; 
