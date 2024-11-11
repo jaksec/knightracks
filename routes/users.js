@@ -200,6 +200,11 @@ router.post("/reset-password", async (req, res) =>
         {
             return res.status(339).json({ error: 'No user with that email was found' });
         }
+        // Check if the user is verified before sending reset email 
+        if (!user.isVerified) 
+        {
+        return res.status(400).json({ error: 'Your email is not verified. Please verify your email before requesting a password reset.' });
+        }
 
         //Generate Password reset token 
         const resetPasswordToken = jwt.sign({ 
@@ -213,7 +218,6 @@ router.post("/reset-password", async (req, res) =>
             html: `<p>Please click <a href="${resetLink}">here</a> to reset your password. The link will expire in 1 hour.</p>`
         });
 
-        
         res.status(200).json({ 
             message: 'Password reset email sent', 
             resetPasswordToken  // Including the token in the response for testing
