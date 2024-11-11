@@ -181,8 +181,11 @@ router.post('/login', async (req, res) =>
         }
     });
 
-router.post("/reset-password", async (req, res) => 
+//Forgot Password Email route 
+router.post("/forgot-password", async (req, res) => 
 {
+    //incoming: email 
+    //outgoing: password reset email, message 
     const {email } = req.body;
 
     if(!email)
@@ -190,7 +193,7 @@ router.post("/reset-password", async (req, res) =>
         return res.status(339).json({ error: 'Please enter an Email' });
     }
 
-    const db = client.db('COP4331LargeProject');  // Ensure db connection
+    const db = client.db('COP4331LargeProject');  
 
     try
     {
@@ -200,6 +203,7 @@ router.post("/reset-password", async (req, res) =>
         {
             return res.status(339).json({ error: 'No user with that email was found' });
         }
+
         // Check if the user is verified before sending reset email 
         if (!user.isVerified) 
         {
@@ -210,19 +214,18 @@ router.post("/reset-password", async (req, res) =>
         const resetPasswordToken = jwt.sign({ 
             email: user.Email, userId: user._id }, jwtSecret,{ expiresIn: '1h' });
 
-        const resetLink = `http://localhost:5000/api/user/reset-password/${resetPasswordToken}`; //will need to change to livedomain 
+        
+        const resetLink = `http://localhost:5000/api/user/reset-password`; // Change to live domain 
         
         await transporter.sendMail({
             to: email,
             subject: 'Password Reset Request',
-            html: `<p>Please click <a href="${resetLink}">here</a> to reset your password. The link will expire in 1 hour.</p>`
+            html: `<p>Please click <a href="${resetLink}?token=${resetPasswordToken}">here</a> to reset your password. The link will expire in 1 hour.</p>`
         });
-
         res.status(200).json({ 
             message: 'Password reset email sent', 
             resetPasswordToken  // Including the token in the response for testing
         });
-        
     } 
     catch (error) 
     {
@@ -230,11 +233,27 @@ router.post("/reset-password", async (req, res) =>
     }
 });
  
-
-router.post("/reset-password/:token", async (req, res) => 
+//Middleware to extract token from Authorization header
+const extractTokenFromHeader = (req, res, next) => 
 {
-    const { token } = req.params;  //reset token extracted from url 
-    const { password } = req.body; //new password 
+   
+    if (req.headers.authorization && req.headers.authorization.split(" ")[0] === "Bearer") 
+    {
+        const token = req.headers.authorization.split(" ")[1];  
+        req.token = token;  
+        next();  
+    } 
+    else 
+    {
+        res.status(400).json({ error: 'Authorization header is missing or incorrect format' });
+    }
+};
+
+// Reset password route
+router.post("/reset-password", extractTokenFromHeader, async (req, res) => 
+{
+    const { token } = req; //extracted token saved as resetToken
+    const { password } = req.body; //provide password in body 
 
     if (!password) 
     {
@@ -243,31 +262,42 @@ router.post("/reset-password/:token", async (req, res) =>
 
     try 
     {
-        // Verify the reset token  
+        // Decode and verify the reset token using your secret
         const decoded = jwt.verify(token, jwtSecret); 
-
-        const db = client.db('COP4331LargeProject'); 
-
-        //find user based on email 
+        
+        const db = client.db('COP4331LargeProject');
+        
+        // Search database for user based on email
         const user = await db.collection('Users').findOne({ Email: decoded.email });
-
-        if (!user) 
+        
+        if (user) 
         {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // Hash the new password
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        if (!user.isVerified) 
+        {
+            return res.status(400).json({ error: 'Email is not verified. Please verify your email before resetting the password.' });
+        }
 
-        // Update the user's password in the database
-        await db.collection('Users').updateOne({ _id: user._id }, { $set: { Password: hashedPassword } }); //updates password belonging to _id 
+        // Check if new password same as old password 
+        const isSamePassword = await bcrypt.compare(password, user.Password);
 
+        if (isSamePassword) 
+        {
+            return res.status(400).json({ error: 'New password must be different from the old password' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, saltRounds);  
+
+        await db.collection('Users').updateOne({ _id: user._id }, { $set: { Password: hashedPassword } });
+      
         res.status(200).json({ message: 'Password has been reset successfully' });
 
     } 
     catch (error) 
     {
-        res.status(400).json({ error: 'Invalid or expired token' }); 
+        res.status(400).json({ error: 'Invalid or expired token' });
     }
 });
     
