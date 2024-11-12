@@ -82,10 +82,10 @@ router.get('/ingredient-nutrition', async (req, res) => {
 
 
 router.post('/addIngredient', async (req, res) => {
-  const { foodId, foodName, calories, carbs, fats, protein, weight } = req.body;
+  const {foodName, calories, carbs, fats, protein, weight } = req.body;
 
   // Check if all fields are provided
-  if (!foodId || !foodName || !calories || !carbs || !fats || !protein || !weight) {
+  if (!foodName || !calories || !carbs || !fats || !protein || !weight) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
