@@ -180,6 +180,126 @@ router.post('/login', async (req, res) =>
             res.status(500).json({ error: 'An error occurred during login' });
         }
     });
+
+//Forgot Password Email route 
+router.post("/forgot-password", async (req, res) => 
+{
+    //incoming: email 
+    //outgoing: password reset email, message 
+    const {email } = req.body;
+
+    if(!email)
+    {
+        return res.status(339).json({ error: 'Please enter an Email' });
+    }
+
+    const db = client.db('COP4331LargeProject');  
+
+    try
+    {
+        const user = await db.collection('Users').findOne({ Email: email });
+
+        if(!user)
+        {
+            return res.status(339).json({ error: 'No user with that email was found' });
+        }
+
+        // Check if the user is verified before sending reset email 
+        if (!user.isVerified) 
+        {
+        return res.status(400).json({ error: 'Your email is not verified. Please verify your email before requesting a password reset.' });
+        }
+
+        //Generate Password reset token 
+        const resetPasswordToken = jwt.sign({ 
+            email: user.Email, userId: user._id }, jwtSecret,{ expiresIn: '1h' });
+
+        
+        const resetLink = `http://localhost:5000/api/user/reset-password`; // Change to live domain 
+        
+        await transporter.sendMail({
+            to: email,
+            subject: 'Password Reset Request',
+            html: `<p>Please click <a href="${resetLink}?token=${resetPasswordToken}">here</a> to reset your password. The link will expire in 1 hour.</p>`
+        });
+        res.status(200).json({ 
+            message: 'Password reset email sent', 
+            resetPasswordToken  // Including the token in the response for testing
+        });
+    } 
+    catch (error) 
+    {
+        res.status(500).json({ error: 'An error occurred during the reset process' });
+    }
+});
+ 
+//Middleware to extract token from Authorization header
+const extractTokenFromHeader = (req, res, next) => 
+{
+   
+    if (req.headers.authorization && req.headers.authorization.split(" ")[0] === "Bearer") 
+    {
+        const token = req.headers.authorization.split(" ")[1];  
+        req.token = token;  
+        next();  
+    } 
+    else 
+    {
+        res.status(400).json({ error: 'Authorization header is missing or incorrect format' });
+    }
+};
+
+// Reset password route
+router.post("/reset-password", extractTokenFromHeader, async (req, res) => 
+{
+    const { token } = req; //extracted token saved as resetToken
+    const { password } = req.body; //provide password in body 
+
+    if (!password) 
+    {
+        return res.status(400).json({ error: 'Password is required' });
+    }
+
+    try 
+    {
+        // Decode and verify the reset token using your secret
+        const decoded = jwt.verify(token, jwtSecret); 
+        
+        const db = client.db('COP4331LargeProject');
+        
+        // Search database for user based on email
+        const user = await db.collection('Users').findOne({ Email: decoded.email });
+        
+        if (!user) 
+        {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (!user.isVerified) 
+        {
+            return res.status(400).json({ error: 'Email is not verified. Please verify your email before resetting the password.' });
+        }
+
+        // Check if new password same as old password 
+        const isSamePassword = await bcrypt.compare(password, user.Password);
+
+        if (isSamePassword) 
+        {
+            return res.status(400).json({ error: 'New password must be different from the old password' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, saltRounds);  
+
+        await db.collection('Users').updateOne({ _id: user._id }, { $set: { Password: hashedPassword } });
+      
+        res.status(200).json({ message: 'Password has been reset successfully' });
+
+    } 
+    catch (error) 
+    {
+        res.status(400).json({ error: 'Invalid or expired token' });
+    }
+});
     
 
 export { router as userRouter}; 
