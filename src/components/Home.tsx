@@ -2,8 +2,12 @@ import KnightLogo from '/logo.png'
 import './Home.css'
 import React, {useState} from 'react';
 import './background.scss';
+import { useNavigate } from 'react-router-dom';
+
 
 function Home() {
+
+  const navigate = useNavigate();
 
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [pType, setPopupType] = useState('');
@@ -15,7 +19,9 @@ function Home() {
   const [logUsername, setlogUsername] = useState<string>('');
   const [logPassword, setlogPassword] = useState<string>('');
   const [regUsername, setregUsername] = useState<string>('');
+  const [dupPassword, setdupPassword] = useState<string>('');
 
+  const [error, seterror] = useState<string | null>(null);
 
 
   
@@ -27,6 +33,14 @@ function Home() {
   const closePopup = () => {
     setPopupVisible(false);
     setPopupType('');
+    setRegEmail('');
+    setregPassword('');
+    setFirstname('');
+    setLastname('');
+    setlogUsername('');
+    setlogPassword('');
+    setregUsername('');
+    seterror(null);
   };
 
 
@@ -37,26 +51,35 @@ function Home() {
       login: logUsername,
       password: logPassword, 
     };
+
     
     try {
-      const response = await fetch('http://146.190.71.194/api/user/login', {
+      const response = await fetch('http://146.190.71.194:5000/api/user/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data), 
+          'Content-Type': 'application/json' },
+        body: JSON.stringify(data) 
       });
 
       if(response.ok) { {/*If the user sucessfully logs in we need to send the user to the landing page */}
         console.log('login successful');
         const info = await response.json();
 
-        console.log(info)
+        console.log(info);
+        navigate('/landing');
         {/*loadLogin(info); This line will pass the info gathered on login to homepage */}
       }
+      else if(response.status == 400) {
+        seterror("Please fill out the missing field");
+      }
+      else if(response.status == 401) {
+        seterror("Username and Password combination does not exist");
+      }
       else {
+        
         const errorData = await response.json();
         console.error('failed login', errorData.message);
+
       }
 
       
@@ -67,6 +90,13 @@ function Home() {
   }
 
   const register = async () => {
+    seterror(null);
+    
+    if(regPassword != dupPassword)
+    {
+      seterror("Passwords do not match!");
+      return;
+    }
 
     const regData = {
       login: regUsername,
@@ -77,7 +107,7 @@ function Home() {
     };
 
     try {
-      const response1 = await fetch('http://146.190.71.194/api/user/register', {
+      const response1 = await fetch('http://146.190.71.194:5000/api/user/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,9 +121,17 @@ function Home() {
         const info = await response1.json();
 
         console.log(info);
+        navigate('/landing');
 
         {/*loadLogin(info); this line will hopefully pass information to homepage */}
       }
+      else if (response1.status == 400) {
+        console.log("duplicate email")
+        seterror("There is already an account with this email");
+      }
+      else
+        console.log("registration failed")
+
 
 
 
@@ -130,6 +168,9 @@ function Home() {
   )
   const handleregUsernameChange=(e : React.ChangeEvent<HTMLInputElement>) => (
     setregUsername(e.target.value)
+  )
+  const handledupPasswordChange=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setdupPassword(e.target.value)
   )
 
 
@@ -173,8 +214,9 @@ function Home() {
                   <>
                     <h2 style={{ color: "#ffff" }}>Login</h2>
                     <p style={{ color: "#ffff" }}>This is the login!</p>
-                    <input type="text" value={logUsername} onChange={handlelogUsernameChange} placeholder="Username" className="circular-input" />
-                    <input type="password" value={logPassword} onChange={handlelogPasswordChange} placeholder="Password" className="circular-input" />
+                    {error && <p style={{ color: "#ff0000" }} className="error-message">{error}</p>}
+                    <input type="text" id="username" name="username" value={logUsername} onChange={handlelogUsernameChange} placeholder="Username" className="circular-input" />
+                    <input type="password" id="password" name="password" value={logPassword} onChange={handlelogPasswordChange} placeholder="Password" className="circular-input" />
                     <div style={{ display: 'block', textAlign: 'center' }}>
                       <a href="https://www.linkedin.com/in/jaksec" target='_blank' style={{ display: 'inline-block', marginTop: '10px' }}>
                         <p style={{ margin: 0 }}>Forgot Password?</p>
@@ -189,12 +231,13 @@ function Home() {
                   <>
                     <h2 style={{ color: "#ffff" }}>Sign Up</h2>
                     <p style={{ color: "#ffff" }}>This is the sign-up!</p>
+                    {error && <p style={{ color: "#ff0000" }} className="error-message">{error}</p>}
                     <input type="text" value={regUsername} onChange={handleregUsernameChange} placeholder="Username" className="circular-input" />
                     <input type="text" value={firstname} onChange={handleFirstnameChange} placeholder="First Name" className="circular-input" />
                     <input type="text" value={lastname} onChange={handleLastnameChange} placeholder="Last Name" className="circular-input" />
                     <input type="text" value={regEmail} onChange={handleregEmailChange} placeholder="Email" className="circular-input" />
                     <input type="password" value={regPassword} onChange={handleregPasswordChange} placeholder="Password" className="circular-input" />
-                    <input type="password" placeholder="Re-enter Password" className="circular-input" />
+                    <input type="password" value={dupPassword} onChange={handledupPasswordChange} placeholder="Re-enter Password" className="circular-input" />
                     <button onClick={register} style={{ display: 'block', margin: '0 auto', marginTop: '30px' }}>Sign Up</button>
                   </>
                 )}
