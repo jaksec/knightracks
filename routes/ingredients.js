@@ -11,8 +11,6 @@ const spoonacularBaseUrl = 'https://api.spoonacular.com';
 //Required Nutritional fields
 const requiredNutrients = ["Calories", "Carbohydrates", "Fat", "Protein"];
 
-//Connect to Database 
-const db = client.db('COP4331LargeProject');
 
 // Route to perform partial matching on ingredient names
 router.get('/search-ingredients', async (req, res) => {
@@ -82,31 +80,46 @@ router.get('/ingredient-nutrition', async (req, res) => {
 
 
 router.post('/addIngredient', async (req, res) => {
-  const {foodName, calories, carbs, fats, protein, weight } = req.body;
+  const { userId, foodName, calories, carbs, fats, protein, weight } = req.body;
 
-  // Check if all fields are provided
-  if (!foodName || !calories || !carbs || !fats || !protein || !weight) {
-    return res.status(400).json({ error: 'All fields are required' });
+  // Validate the input to make sure all fields are present
+  if (!userId || !foodName || !calories || !carbs || !fats || !protein || !weight) {
+    return res.status(400).json({ error: 'All fields are required, especially the userId' });
   }
 
-  // Create a new ingredient object
+  // Connect to the database and log connection status
+  const db = client.db('COP4331LargeProject');
+  console.log('Connected to Database');
+
+  // Create a new ingredient object with the provided data
   const newIngredient = {
-    foodId: foodId,
+    userId: userId, // Relationship to a specific user
     foodName: foodName,
     calories: calories,
     carbs: carbs,
     fats: fats,
     protein: protein,
-    weight: weight, //defualted to grams
+    weight: weight, // Defaulted to grams
   };
 
   try {
-    // Insert the new ingredient into the 'Meals' collection
+    // Attempt to insert the ingredient into the Meals collection
     const result = await db.collection('Meals').insertOne(newIngredient);
+    //console.log('Insert operation result:', result); // Log the full result object to inspect its properties
 
-    // Send a success response
-    res.status(201).json({ message: 'Ingredient added successfully', data: result.ops[0] });
+    // Check if the document was successfully inserted
+    if (result.insertedId) {
+      res.status(201).json({
+        message: 'Ingredient added successfully',
+        data: { _id: result.insertedId, ...newIngredient } // Include the new ID and ingredient data in the response
+      });
+    } else {
+      // Log an error if `insertedId` is not present
+      console.error('Insert operation did not return an insertedId');
+      res.status(500).json({ error: 'Failed to add ingredient, no insertedId returned' });
+    }
   } catch (error) {
+    // Catch and log any errors during the insertion process
     console.error('Error adding ingredient:', error);
     res.status(500).json({ error: 'Failed to add ingredient' });
   }
