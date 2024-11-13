@@ -39,7 +39,7 @@ function Home() {
     };
     
     try {
-      const response = await fetch('http://146.190.71.194/api/login', {
+      const response = await fetch('http://146.190.71.194/api/user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ function Home() {
     };
 
     try {
-      const response1 = await fetch('http://146.190.71.194/api/register', {
+      const response1 = await fetch('http://146.190.71.194/api/user/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
