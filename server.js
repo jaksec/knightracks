@@ -30,10 +30,12 @@ export { client };
 // Import routers after MongoDB connection
 import { userRouter } from './routes/users.js';
 import { ingredientRouter } from './routes/ingredients.js';
+import { goalsRouter } from './routes/goals.js';
 
 // API endpoints
 app.use('/api/user', userRouter);
 app.use('/api/ingredient', ingredientRouter);
+app.use('/api/goal', goalsRouter);
 
 // Set CORS headers to allow requests from any origin
 app.use((req, res, next) => {
