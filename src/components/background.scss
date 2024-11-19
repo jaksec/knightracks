@@ -1,82 +1,84 @@
 @use "sass:math";
 @use "sass:string";
 
-@mixin translate50
-{
-  -webkit-transform: translate(-50, -50%);
-  -ms-transform: translate(-50, -50%);
-  -o-transform: translate(-50, -50%);
-  transform: translate(-50, -50%);
+$starFieldSize: 9000; // Increase the star field size to cover zoomed-out view
+$areaMultiplier: math.div($starFieldSize, 2000) * math.div($starFieldSize, 2000); // Calculate area increase factor
+
+// n is number of stars generated
+@function generateStars($n) {
+  $value: '#{0} #{math.random($starFieldSize)}px #{math.random($starFieldSize)}px #FFF';
+
+  @for $i from 2 through $n {
+    $value: '#{$value}, #{math.random($starFieldSize)}px #{math.random($starFieldSize)}px #FFF';
+  }
+
+  @return string.unquote($value);
 }
 
-@mixin roundedCorners
-{
-  -webkit-border-radius: 50%; 
-  -moz-border-radius: 50%; 
+// Adjust the number of stars to maintain the same density
+$stars-small:  generateStars(math.round(700 * $areaMultiplier));
+$stars-medium: generateStars(math.round(200 * $areaMultiplier));
+$stars-big:    generateStars(math.round(100 * $areaMultiplier));
+
+body {
+  overflow: hidden;
+}
+
+#stars-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: $starFieldSize * 1px; // Adjust width to star field size
+  height: $starFieldSize * 1px; // Adjust height to star field size
+  background: radial-gradient(ellipse at bottom, #1B2735 0%, #191F24 100%);
+  overflow: hidden;
+  z-index: -1;
+}
+
+@mixin translate50 {
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+@mixin roundedCorners {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
   border-radius: 50%;
 }
 
-@mixin rotateBase
-{
+@mixin rotateBase {
   -webkit-transform: rotate3d(-1, 1, 0, 0deg);
   -ms-transform: rotate3d(-1, 1, 0, 0deg);
   -o-transform: rotate3d(-1, 1, 0, 0deg);
   transform: rotate3d(-1, 1, 0, 0deg);
 }
 
-@mixin rotateRight
-{
+@mixin rotateRight {
   -webkit-transform: rotate3d(-1, 1, 0, 30deg);
   -ms-transform: rotate3d(-1, 1, 0, 30deg);
   -o-transform: rotate3d(-1, 1, 0, 30deg);
   transform: rotate3d(-1, 1, 0, 30deg);
 }
 
-@mixin rotateLeft
-{
+@mixin rotateLeft {
   -webkit-transform: rotate3d(-1, 1, 0, -30deg);
   -ms-transform: rotate3d(-1, 1, 0, -30deg);
   -o-transform: rotate3d(-1, 1, 0, -30deg);
   transform: rotate3d(-1, 1, 0, -30deg);
 }
 
-// n is number of stars generated
-@function generateStars ($n)
-{ 
-  $value: '#{0} #{math.random(2000)}px #{math.random(2000)}px #FFF';
-
-  @for $i from 2 through $n
-  {
-    $value: '#{$value} , #{math.random(2000)}px #{math.random(2000)}px #FFF';
-  }
-
-  @return string.unquote($value);
-}
-
-$stars-small:  generateStars(700);
-$stars-medium: generateStars(200);
-$stars-big:    generateStars(100);
-
-body
-{
-  overflow: hidden;
-}
-
-#stars-container
-{
-  position: fixed; /* Fixed to cover the entire viewport */
+#stars,
+#stars2,
+#stars3 {
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw; /* Full viewport width */
-  height: 100vh; /* Full viewport height */
-  background: radial-gradient(ellipse at bottom, #1B2735 0%, #191F24 100%);
-  overflow: hidden;
   @include translate50;
-  z-index: -1;
 }
-    
-#stars
-{
+
+#stars {
   width: 1px;
   height: 1px;
   background: transparent;
@@ -84,12 +86,11 @@ body
   animation: animateStars 28.5s ease-in-out infinite;
   @include roundedCorners;
 
-  &::after
-  {
+  &::after {
     content: " ";
     position: absolute;
-    margin: auto;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
     width: 1px;
     height: 1px;
     background: transparent;
@@ -97,22 +98,20 @@ body
     @include roundedCorners;
   }
 }
-    
-#stars2
-{
+
+#stars2 {
   width: 2px;
   height: 2px;
   background: transparent;
   box-shadow: $stars-medium;
-  animation : animateStars 30s ease-in-out infinite;
+  animation: animateStars 30s ease-in-out infinite;
   @include roundedCorners;
-    
-  &::after
-  {
+
+  &::after {
     content: " ";
     position: absolute;
-    margin: auto;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
     width: 2px;
     height: 2px;
     background: transparent;
@@ -120,22 +119,20 @@ body
     @include roundedCorners;
   }
 }
-    
-#stars3
-{
+
+#stars3 {
   width: 3px;
   height: 3px;
   background: transparent;
   box-shadow: $stars-big;
-  animation : animateStars 31.5s ease-in-out infinite;
+  animation: animateStars 31.5s ease-in-out infinite;
   @include roundedCorners;
-    
-  &:after
-  {
+
+  &::after {
     content: " ";
     position: absolute;
-    margin: auto;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
     width: 3px;
     height: 3px;
     background: transparent;
@@ -144,11 +141,20 @@ body
   }
 }
 
-@keyframes animateStars
-{
-  0%{@include rotateBase;}
-  25%{@include rotateRight;}
-  50%{@include rotateBase;}
-  75%{@include rotateLeft;}
-  100%{@include rotateBase;}
+@keyframes animateStars {
+  0% {
+    @include rotateBase;
+  }
+  25% {
+    @include rotateRight;
+  }
+  50% {
+    @include rotateBase;
+  }
+  75% {
+    @include rotateLeft;
+  }
+  100% {
+    @include rotateBase;
+  }
 }

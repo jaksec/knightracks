@@ -65,15 +65,20 @@ function Home() {
         console.log('login successful');
         const info = await response.json();
 
+        // Save cookies
+        document.cookie = `authToken=${info.token}; path=/;`;
+        document.cookie = `firstName=${info.firstName}; path=/;`;
+        document.cookie = `lastName=${info.lastName}; path=/;`;
+
         console.log(info);
         navigate('/landing');
         {/*loadLogin(info); This line will pass the info gathered on login to homepage */}
       }
       else if(response.status == 400) {
-        seterror("Please fill out the missing field");
+        seterror("Please fill out the missing field.");
       }
       else if(response.status == 401) {
-        seterror("Username and Password combination does not exist");
+        seterror("Username and Password combination does not exist.");
       }
       else {
         
