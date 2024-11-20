@@ -189,7 +189,7 @@ function Home() {
       </div>
 
       <div>
-        <a href="https://vite.dev" target="_blank">
+        <a target="_blank">
           <img src={KnightLogo} className="logo" alt="Vite logo" />
         </a>
       </div>
