@@ -266,17 +266,37 @@ function Home() {
                 <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
                 {pType === 'about-us' && (
                   <>
-                    <h2 style={{color: "#ffff" }}>About-Us</h2>
+                    <h2 style={{color: "#ffff" }}>About Us</h2>
                     <div className="grid-container">
                       <div className="box">
                         <img src="Profile Pic.jpg" alt="jamesimg"></img>
                         <p>James Love</p> 
+                        Front-End Developer
                       </div>
-                      <div className="box">Nathan Chery</div>
-                      <div className="box">DM </div>
-                      <div className="box">Chris Jaksec</div>
-                      <div className="box">Michael M</div>
-                      <div className="box">Brandon K</div>
+                      <div className="box">
+                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                        <p>Nathan Chery</p>
+                        API Developer
+                      </div>
+                      <div className="box">
+                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                        <p>DM</p> 
+                        API Devleoper
+                      </div>
+                      <div className="box">
+                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                        <p>Chris Jaksec</p>
+                        Frontend
+                      </div>
+                      <div className="box">
+                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                        <p>Michael Miletic</p>
+                        Project Lead/Mobile Developer</div>
+                      <div className="box">
+                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                        <p>Brandon</p>
+                        Backend/Mobile Developer
+                        </div>
                     </div>
                   
                   </>
