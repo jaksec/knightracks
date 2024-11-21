@@ -189,7 +189,7 @@ function Home() {
       </div>
 
       <div>
-        <a href="https://vite.dev" target="_blank">
+        <a target="_blank">
           <img src={KnightLogo} className="logo" alt="Vite logo" />
         </a>
       </div>
@@ -257,12 +257,61 @@ function Home() {
 
       {/* learn more and about us hyperlinks */}
       <div className="more">
-        <a href="https://github.com/jaksec/poosd-large" target="_blank" rel="noopener noreferrer">
-          About Us
-        </a>
-        <a href="https://github.com/jaksec/poosd-large" target="_blank" rel="noopener noreferrer">
-          Learn More
-        </a>
+        <div className="AbusButton">
+          <button onClick={() => showPopup('about-us')}>About us</button>
+
+          {isPopupVisible && (
+            <div className="AbusOverlay">
+              <div className="Abuspopup" onClick={e => e.stopPropagation()}>
+                <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
+                {pType === 'about-us' && (
+                  <>
+                    <h2 style={{color: "#ffff" }}>About Us</h2>
+                    <div className="grid-container">
+                      <div className="box">
+                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                        <p>James Love</p> 
+                        Front-End Developer
+                      </div>
+                      <div className="box">
+                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                        <p>Nathan Chery</p>
+                        API Developer
+                      </div>
+                      <div className="box">
+                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                        <p>DM</p> 
+                        API Devleoper
+                      </div>
+                      <div className="box">
+                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                        <p>Chris Jaksec</p>
+                        Frontend
+                      </div>
+                      <div className="box">
+                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                        <p>Michael Miletic</p>
+                        Project Lead/Mobile Developer</div>
+                      <div className="box">
+                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                        <p>Brandon</p>
+                        Backend/Mobile Developer
+                        </div>
+                    </div>
+                  
+                  </>
+                )}
+
+              </div>
+            </div>
+          )}
+          
+
+          </div>
+        <button>
+          <a href="https://github.com/jaksec/poosd-large" style={{color: "black"}} target="_blank" rel="noopener noreferrer">Learn More</a>
+        </button>
+
       </div>
 
     </>

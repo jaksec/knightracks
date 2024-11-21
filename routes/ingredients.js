@@ -2,6 +2,7 @@ import express from 'express';
 import axios from 'axios';
 import 'dotenv/config';
 import { client } from '../server.js';  // Import the client from server.js to use in all routes
+import { ObjectId } from 'mongodb';
 
 const router = express.Router();
 
@@ -93,7 +94,7 @@ router.post('/addIngredient', async (req, res) => {
 
   // Create a new ingredient object with the provided data
   const newIngredient = {
-    userId: userId, // Relationship to a specific user
+    userId: new ObjectId(userId), // Relationship to a specific user
     foodName: foodName,
     calories: calories,
     carbs: carbs,
@@ -125,6 +126,28 @@ router.post('/addIngredient', async (req, res) => {
   }
 });
 
+
+router.delete('/deleteMeal', async (req, res) => {
+  const { mealId } = req.body; // Expecting the unique _id of the meal to delete
+
+  if (!mealId) {
+    return res.status(400).json({ error: 'Meal ID is required' });
+  }
+
+  const db = client.db('COP4331LargeProject');
+  try {
+    const result = await db.collection('Meals').deleteOne({ _id: new ObjectId(mealId) });
+
+    if (result.deletedCount > 0) {
+      res.status(200).json({ message: 'Meal deleted successfully', mealId });
+    } else {
+      res.status(404).json({ error: 'Meal not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting meal:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the meal' });
+  }
+});
 
 
 export { router as ingredientRouter };
