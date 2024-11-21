@@ -1,7 +1,7 @@
 @use "sass:math";
 @use "sass:string";
 
-$starFieldSize: 9000; // Increase the star field size to cover zoomed-out view
+$starFieldSize: 8500; // Increase the star field size to cover zoomed-out view
 $areaMultiplier: math.div($starFieldSize, 2000) * math.div($starFieldSize, 2000); // Calculate area increase factor
 
 // n is number of stars generated
@@ -16,9 +16,9 @@ $areaMultiplier: math.div($starFieldSize, 2000) * math.div($starFieldSize, 2000)
 }
 
 // Adjust the number of stars to maintain the same density
-$stars-small:  generateStars(math.round(700 * $areaMultiplier));
-$stars-medium: generateStars(math.round(200 * $areaMultiplier));
-$stars-big:    generateStars(math.round(100 * $areaMultiplier));
+$stars-small:  generateStars(math.round(150 * $areaMultiplier));
+$stars-medium: generateStars(math.round(100 * $areaMultiplier));
+$stars-big:    generateStars(math.round(50 * $areaMultiplier));
 
 body {
   overflow: hidden;

@@ -243,7 +243,7 @@ function Home() {
                     <input type="text" value={regEmail} onChange={handleregEmailChange} placeholder="Email" className="circular-input" />
                     <input type="password" value={regPassword} onChange={handleregPasswordChange} placeholder="Password" className="circular-input" />
                     <input type="password" value={dupPassword} onChange={handledupPasswordChange} placeholder="Re-enter Password" className="circular-input" />
-                    <button onClick={register} style={{ display: 'block', margin: '0 auto', marginTop: '30px' }}>Sign Up</button>
+                    <button onClick={register} style={{ display: 'block', margin: '0 auto', marginTop: '25px' }}>Sign Up</button>
                   </>
                 )}
               </div>
