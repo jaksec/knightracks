@@ -257,12 +257,41 @@ function Home() {
 
       {/* learn more and about us hyperlinks */}
       <div className="more">
-        <a href="https://github.com/jaksec/poosd-large" target="_blank" rel="noopener noreferrer">
-          About Us
-        </a>
-        <a href="https://github.com/jaksec/poosd-large" target="_blank" rel="noopener noreferrer">
-          Learn More
-        </a>
+        <div className="AbusButton">
+          <button onClick={() => showPopup('about-us')}>About us</button>
+
+          {isPopupVisible && (
+            <div className="AbusOverlay">
+              <div className="Abuspopup" onClick={e => e.stopPropagation()}>
+                <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
+                {pType === 'about-us' && (
+                  <>
+                    <h2 style={{color: "#ffff" }}>About-Us</h2>
+                    <div className="grid-container">
+                      <div className="box">
+                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                        <p>James Love</p> 
+                      </div>
+                      <div className="box">Nathan Chery</div>
+                      <div className="box">DM </div>
+                      <div className="box">Chris Jaksec</div>
+                      <div className="box">Michael M</div>
+                      <div className="box">Brandon K</div>
+                    </div>
+                  
+                  </>
+                )}
+
+              </div>
+            </div>
+          )}
+          
+
+          </div>
+        <button>
+          <a href="https://github.com/jaksec/poosd-large" style={{color: "black"}} target="_blank" rel="noopener noreferrer">Learn More</a>
+        </button>
+
       </div>
 
     </>
