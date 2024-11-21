@@ -118,7 +118,7 @@
 
 .more {
   top: 5%;
-  left: 80%;
+  left: 85%;
   position: absolute;
   font-size: 20px;
   display: flex;
@@ -193,6 +193,28 @@
 }
 
 .x:hover {
+  color: #e1ff00; /* Replace with desired hover color */
+}
+
+.x-about {
+  position: absolute;
+  cursor: pointer;
+  padding: 0; /* Ensures no additional padding affects size */
+  background: black;
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  font-weight: 20;
+  box-sizing: border-box; /* Ensures padding is included in width/height */
+  width: 0.5em; /* Adjust as needed */
+  height: 0.5em; /* Adjust as needed */
+  font-size: 30px;
+  top: 0%;
+  right: 2%;
+  user-select: none;
+}
+
+.x-about:hover {
   color: #e1ff00; /* Replace with desired hover color */
 }
 

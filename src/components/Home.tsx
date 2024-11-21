@@ -4,14 +4,12 @@ import React, {useState} from 'react';
 import './background.scss';
 import { useNavigate } from 'react-router-dom';
 
-
 function Home() {
 
   const navigate = useNavigate();
 
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [pType, setPopupType] = useState('');
-  
   const [regEmail, setRegEmail] = useState<string>('');
   const [regPassword, setregPassword] = useState<string>('');
   const [firstname, setFirstname] = useState<string>('');
@@ -20,10 +18,7 @@ function Home() {
   const [logPassword, setlogPassword] = useState<string>('');
   const [regUsername, setregUsername] = useState<string>('');
   const [dupPassword, setdupPassword] = useState<string>('');
-
   const [error, seterror] = useState<string | null>(null);
-
-
   
   const showPopup = (type: React.SetStateAction<string>) => {
     setPopupType(type);
@@ -136,21 +131,13 @@ function Home() {
       }
       else
         console.log("registration failed")
-
-
-
-
-
-    } catch(err)
+    } 
+    catch(err)
     {
       console.log("error sending the register packets");
     }
 
-
-  } 
-    
-
-  
+  }  
   
   {/*Helper Functions for loading user inputs*/}
   const handleregEmailChange=(e : React.ChangeEvent<HTMLInputElement>) => (
@@ -210,13 +197,11 @@ function Home() {
           <button onClick={() => showPopup('login')}>Log In</button> {/* Creates log in button */}
           <button onClick={() => showPopup('sign-up')}>Sign Up</button> {/*Creates sign up button*/}
 
-          {isPopupVisible && (
+          {isPopupVisible && pType === 'login' && (
             <div className="overlay">
               <div className="popup" onClick={e => e.stopPropagation()}>
                 <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
                 {/* Creates login popup*/}
-                {pType === 'login' && ( 
-                  <>
                     <h2 style={{ color: "#ffff" }}>Login</h2>
                     <p style={{ color: "#ffff" }}>This is the login!</p>
                     {error && <p style={{ color: "#ff0000" }} className="error-message">{error}</p>}
@@ -229,11 +214,15 @@ function Home() {
                       <button onClick={login} style={{ display: 'block', margin: '0 auto', marginTop: '30px' }}
                       
                       >Log in</button>
-                    </div>
-                  </>
-                )}
-                {pType === 'sign-up' && (
-                  <>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isPopupVisible && pType === 'sign-up' && (
+            <div className="overlay">
+              <div className="popup" onClick={e => e.stopPropagation()}>
+                <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
                     <h2 style={{ color: "#ffff" }}>Sign Up</h2>
                     <p style={{ color: "#ffff" }}>This is the sign-up!</p>
                     {error && <p style={{ color: "#ff0000" }} className="error-message">{error}</p>}
@@ -244,78 +233,65 @@ function Home() {
                     <input type="password" value={regPassword} onChange={handleregPasswordChange} placeholder="Password" className="circular-input" />
                     <input type="password" value={dupPassword} onChange={handledupPasswordChange} placeholder="Re-enter Password" className="circular-input" />
                     <button onClick={register} style={{ display: 'block', margin: '0 auto', marginTop: '25px' }}>Sign Up</button>
-                  </>
-                )}
               </div>
             </div>
           )}
-        </div>
       </div>
-
-
 
 
       {/* learn more and about us hyperlinks */}
       <div className="more">
-        <div className="AbusButton">
-          <button onClick={() => showPopup('about-us')}>About us</button>
+        <a style={{ cursor: 'pointer' }} onClick={() => showPopup('about-us')}>About Us</a>
 
-          {isPopupVisible && (
+          {isPopupVisible && pType === 'about-us' && (
             <div className="AbusOverlay">
               <div className="Abuspopup" onClick={e => e.stopPropagation()}>
-                <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
-                {pType === 'about-us' && (
-                  <>
-                    <h2 style={{color: "#ffff" }}>About Us</h2>
-                    <div className="grid-container">
-                      <div className="box">
-                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
-                        <p>James Love</p> 
-                        Front-End Developer
-                      </div>
-                      <div className="box">
-                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
-                        <p>Nathan Chery</p>
-                        API Developer
-                      </div>
-                      <div className="box">
-                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
-                        <p>DM</p> 
-                        API Devleoper
-                      </div>
-                      <div className="box">
-                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
-                        <p>Chris Jaksec</p>
-                        Frontend
-                      </div>
-                      <div className="box">
-                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
-                        <p>Michael Miletic</p>
-                        Project Lead/Mobile Developer</div>
-                      <div className="box">
-                        <img src="Profile Pic.jpg" alt="jamesimg"></img>
-                        <p>Brandon</p>
-                        Backend/Mobile Developer
-                        </div>
+                <div className="x-about" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
+                  <h2 style={{color: "#ffff" }}>About Us</h2>
+                  <div className="grid-container">
+                    <div className="box">
+                      <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                      <p>James Love</p> 
+                      Front-End Developer
                     </div>
-                  
-                  </>
-                )}
-
+                    <div className="box">
+                      <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                      <p>Nathan Chery</p>
+                      API Developer
+                    </div>
+                    <div className="box">
+                      <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                      <p>DM</p> 
+                      API Devleoper
+                    </div>
+                    <div className="box">
+                      <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                      <p>Chris Jaksec</p>
+                      Frontend
+                    </div>
+                    <div className="box">
+                      <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                      <p>Michael Miletic</p>
+                      Project Lead/Mobile Developer</div>
+                    <div className="box">
+                      <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                      <p>Brandon</p>
+                      Backend/Mobile Developer
+                    </div>
+                </div>
               </div>
             </div>
           )}
+
+          <a href="https://github.com/jaksec/poosd-large" target="_blank" rel="noopener noreferrer">
+            Learn More
+          </a>
           
 
-          </div>
-        <button>
-          <a href="https://github.com/jaksec/poosd-large" style={{color: "black"}} target="_blank" rel="noopener noreferrer">Learn More</a>
-        </button>
-
+        </div>
       </div>
 
     </>
-  )
-}
+  )}
 
 export default Home
