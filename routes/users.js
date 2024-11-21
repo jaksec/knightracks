@@ -60,14 +60,18 @@ router.post('/register', async (req, res) =>
     
           //MongoDB generated _id set to UserId here
           const userId = result.insertedId; 
-
+        
+          const serverIP = 'http://146.190.71.194:5000';
+          
           // Send verification email, with url linked token
           await transporter.sendMail({
             to: email,
             subject: 'Verify Your Email',
-            html: `<p>Please click <a href="http://localhost:5000/api/user/confirmation/${verificationToken}">here</a> to verify your email.</p>
-            <p>If the link doesn't work, you can also copy and paste the following URL into your browser:</p>
-            <p>http://localhost:5000/api/user/confirmation/${verificationToken}</p>`, 
+             html: `
+                <p>Please click <a href="${serverIP}/api/user/confirmation/${verificationToken}">here</a> to verify your email.</p>
+                <p>If the link doesn't work, copy and paste this URL into your browser:</p>
+                <p>${serverIP}/api/user/confirmation/${verificationToken}</p>
+            `, 
         });
           const response = { id: userId, firstName, lastName, error: '' };
           res.status(200).json(response); 
@@ -98,7 +102,7 @@ router.post('/register', async (req, res) =>
             await db.collection('Users').updateOne(
                 { emailToken: token },{ $set: { isVerified: true }, $unset: { emailToken: "" } });
          
-            return res.redirect('http://COP4331-13.xyz');  //redirect for successful verification 
+             return res.redirect('http://146.190.71.194:5000');  //redirect for successful verification 
             
     
         } 
