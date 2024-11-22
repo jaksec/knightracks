@@ -36,6 +36,7 @@ function Home() {
     setlogUsername('');
     setlogPassword('');
     setregUsername('');
+    setdupPassword('');
     seterror(null);
     setforgoremail('');
   };
