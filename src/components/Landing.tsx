@@ -5,28 +5,29 @@ import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
 import pfp from '/profile_icon.png';
 import arrow from '/arrow-dm.png';
+import plus from '/add.png';
 
 const Landing: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
+  const [isPopupVisible, setPopupVisible] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
+  const [isChartMode, setIsChartMode] = useState(true);
 
-  useEffect(() => {
-    const applyTransform = () => {
-        document.body.style.transform = "scale(1)";
-        document.body.style.transformOrigin = "0 0";
-    };
+  const handleToggle = () => {
+    setIsChartMode((prevMode) => !prevMode);
+  };
 
-    applyTransform();
-    window.addEventListener('resize', applyTransform);
+  const closePopup = () => {
+    setPopupVisible(false);
+  };
 
-    return () => {
-        window.removeEventListener('resize', applyTransform);
-    };
-  }, []);
+  const showPopup = () => {
+    setPopupVisible(true);
+  };
 
 
   useEffect(() => {
@@ -35,10 +36,10 @@ const Landing: React.FC = () => {
       return match ? decodeURIComponent(match[2]) : '';
     };
 
-    setFirstName(getCookie('firstName'));
-    setLastName(getCookie('lastName'));
+  setFirstName(getCookie('firstName'));
+  setLastName(getCookie('lastName'));
 
-    const handleClickOutside = (event: MouseEvent) => {
+  const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node) &&
@@ -74,18 +75,51 @@ const Landing: React.FC = () => {
         <div id="stars3"></div>
       </div>
 
-      <div className="background-menu" />
+      <div className="background-menu">
+        <div className="table-container" />
+        <span className={`title_mode ${isChartMode ? "fade-in" : "fade-out"}`}>Entries</span>
+        <span className={`title_mode ${!isChartMode ? "fade-in" : "fade-out"}`}>Nutrition</span>
+      </div>
+      
+      <div className="container">
+        <input
+          type="checkbox"
+          id="toggle"
+          style={{ display: "none" }}
+          onChange={handleToggle}
+        />
+        <label htmlFor="toggle" className="toggle-button">
+          <span className={`emoji ${isChartMode ? "fade-in" : "fade-out"}`}>📊</span>
+          <span className={`emoji ${!isChartMode ? "fade-in" : "fade-out"}`}>🍎</span>
+        </label>
+      </div>
 
-      <div className="bar">
+      <div className="plus-button" onClick={showPopup}>
+        <img src={plus} className="plus-button"></img>
+      </div>
+
+      {isPopupVisible && (
+        <div className="overlay">
+          <div className="popup-add" onClick={e => e.stopPropagation()}>
+            <div className="x-add" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
+              <p>Custom and Search Mode</p>
+              <p>Search Bar on search mode</p>
+              <p>Fields on custom mode</p>
+              <p>Result selected on search mode</p>
+              <p>Add button</p>
+          </div>
+        </div>
+      )}
+
+      <div className="profile-container">
         <img src={pfp} className="profile" />
         <div onClick={() => setIsDropdownOpen((prev) => !prev)} ref={profileRef}>
           <img src={arrow} className={`arrow ${isDropdownOpen ? 'rotate' : ''}`} />
         </div>
-      </div>
-
-      <div className={`dropdown-menu ${isDropdownOpen ? 'show' : 'hide'}`} ref={dropdownRef}>
-        <p className="profile-name">{firstName} {lastName}</p>
-        <button className="logout-button" onClick={handleLogout}>Log Out</button>
+        <div className={`dropdown-menu ${isDropdownOpen ? 'show' : 'hide'}`} ref={dropdownRef}>
+          <p className="profile-name">{firstName} {lastName}</p>
+          <button className="logout-button" onClick={handleLogout}>Log Out</button>
+        </div>
       </div>
 
       <div>
@@ -95,4 +129,4 @@ const Landing: React.FC = () => {
   );
 };
 
-export default Landing;
+export default Landing

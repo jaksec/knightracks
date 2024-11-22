@@ -1,31 +1,184 @@
-.bar {
-    position: absolute;
-    top: 0%;
-    width: 100%;
-    height: 20%;
-    right: 0%;
-}
-
 .background-menu {
     position: absolute;
     background-color: black;
     top: 10%;
     width: 60%;
     height: 95%;
-    z-index: -1;
-    opacity: 0.5;
+    opacity: 1;
     right: 20%;
     border-radius: 30px;
+    z-index: -1;
+    text-align: center;
+    justify-content: center;
+    font-size: 40px;
+    font-family: "Minecraft", sans-serif;
+}
+
+.profile-container {
+    position: fixed;
+    top: 5%;
+    right: 5%;
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Align profile and arrow vertically */
+    gap: 5px; /* Create a gap between the profile and the arrow */
+}
+
+.title_mode {
+    position: absolute; /* Ensure text layers don't affect layout */
+    transition: opacity 0.5s ease, visibility 0.5s ease; /* Smooth fade-in and fade-out */
+    opacity: 0;
+    visibility: hidden; /* Hide the text during fade-out */
+    right: 42%;
+    top: 1%;
+}
+
+.title_mode.fade-in {
+    opacity: 1;
+    visibility: visible; /* Show the text during fade-in */
+}
+
+.title_mode.fade-out {
+    opacity: 0;
+    visibility: hidden; /* Ensure hidden text doesn't interfere */
+}
+
+.table-container {
+    position: absolute;
+    background-color: black;
+    border: solid 1px white;
+    top: 10%;
+    width: 90%;
+    height: 85%;
+    opacity: 1;
+    right: 5%;
+    z-index: 0;
+}
+
+.plus-button {
+    position: absolute;
+    user-select: none;
+    top: 12%;
+    right: 21.5%;
+    width: 20px;
+    height: 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 30px; /* Text size */
+    border: none;
+    border-radius: 50%; /* Optional: Keep if you want a circular hitbox */
+    cursor: pointer;
+    display: inline-flex; /* Adjust to shrink to the size of text */
+    align-items: center;
+    justify-content: center;
+    padding: 5px; /* Minimal padding for clickable area */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Optional */
+    transition: transform 0.2s;
+    z-index: 1;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 12.5%;
+    left: 22%;
+}
+
+.toggle-button {
+    position: relative;
+    background-color: green;
+    width: 60px;
+    height: 30px;
+    border-radius: 60px; 
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    z-index: 1;
+    transition: background-color 0.2s ease;
+    overflow: hidden;
+}
+
+.toggle-button::before {
+    position: absolute;
+    content: '';
+    background-color: #fff;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%; 
+    top: 2.5px; 
+    left: 2px;
+    transition: transform 0.2s ease;
+}
+
+.emoji {
+    position: absolute;
+    font-size: 15px;
+    z-index: 2; 
+    transition: opacity 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 3px; 
+    left: 4.5px;
+    user-select: none;
+}
+
+.fade-in {
+    opacity: 1;
+}
+
+.fade-out {
+    opacity: 0;
+}
+
+input:checked + .toggle-button {
+    background-color: darkred;
+    justify-content: flex-end;
+}
+
+input:checked + .toggle-button::before {
+    transform: translateX(31px);
+    transition: transform 0.3s ease;
+}
+
+input:checked + .toggle-button .emoji {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateX(31px);
+}
+
+input:not(:checked) + .toggle-button {
+    background-color: green;
+    justify-content: flex-start;
+}
+
+input:not(:checked) + .toggle-button::before {
+    transform: translateX(0px);
+    transition: transform 0.3s ease;
+}
+
+input:not(:checked) + .toggle-button .emoji {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateX(0px);
+}
+
+.profile {
+    width: 35px;
+    height: 35px;
+    user-select: none;
+}
+
+.profile-name {
+    font-weight: 500;
 }
 
 .arrow {
-    position: absolute;
-    top: 42.5%;
-    right: 3.7%;
     width: 18px;
     height: 10px;
     cursor: pointer;
     transition: transform 0.3s ease; /* Smooth rotation */
+    user-select: none;
 }
 
 /* Rotate arrow when dropdown is open */
@@ -33,30 +186,68 @@
     transform: rotate(180deg); /* Adjust angle as needed */
 }
 
-.profile {
+.overlay {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.popup-add {
+    background-color: black;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    border: 2px solid #c6cf80;
+    height: 60%;
+    width: 45%;
+    transform: translateY(100%);
+    animation: slideUpFadeIn 0.5s forwards;
+}
+
+.x-add {
     position: absolute;
-    top: 35%;
-    right: 5%;
-    width: 35px;
-    height: 35px;
+    cursor: pointer;
+    padding: 0; /* Ensures no additional padding affects size */
+    background: black;
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+    font-weight: 20;
+    box-sizing: border-box; /* Ensures padding is included in width/height */
+    width: 0.5em; /* Adjust as needed */
+    height: 0.5em; /* Adjust as needed */
+    font-size: 30px;
+    top: 0%;
+    right: 2.5%;
+    user-select: none;
 }
 
-.title_landing {
-    font-size: 60px;
-    font-weight: 600;
+.x-add:hover {
+    color: #e1ff00; /* Replace with desired hover color */
 }
-
-.profile-name {
-    font-weight: 500;
+  
+.plus-button:hover {
+    transform: scale(1.1);
 }
 
 /* Dropdown menu */
 .dropdown-menu {
-    position: absolute;
-    top: 12%;
-    right: 1.5%;
+    position: absolute; /* Relative to nearest positioned ancestor */
+    top: calc(100% + 5px); /* Add a gap of 5px between the dropdown and the profile-container */
+    left: 50%; /* Start positioning from the horizontal center of the container */
+    width: 100%;
+    transform: translateX(-50%); /* Center the dropdown by shifting it left by 50% of its own width */
+    width: auto; /* Adjust width dynamically */
+    height: auto; /* Adjust height dynamically */
     background-color: black;
-    border-radius: 8px;
+    border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 10px;
     z-index: 10;
@@ -64,6 +255,15 @@
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.dropdown-menu p {
+    display: block;
+    width: 100%; /* Text spans the full width of the dropdown menu */
+    text-align: left; /* Optional: Align text to the left */
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Add ellipsis (...) for overflowing text */
 }
 
 /* Fade-in effect */

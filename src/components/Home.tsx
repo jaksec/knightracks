@@ -79,7 +79,7 @@ function Home() {
         seterror("Username and Password combination does not exist.");
       }
       else if(response.status == 403) {
-        seterror("Please verify your email before logging in");
+        seterror("Please verify your email before logging in.");
       }
       else {
         
@@ -277,7 +277,7 @@ function Home() {
 
           {isPopupVisible && pType === 'sign-up' && (
             <div className="overlay">
-              <div className="popup" onClick={e => e.stopPropagation()}>
+              <div className="popup-signup" onClick={e => e.stopPropagation()}>
                 <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
                     <h2 style={{ color: "#ffff" }}>Sign Up</h2>
                     <p style={{ color: "#ffff" }}>This is the sign-up!</p>
@@ -319,45 +319,45 @@ function Home() {
                   <h2 style={{color: "#ffff" }}>About Us</h2>
                   <div className="grid-container">
                     <div className="box">
-                      <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                      <img src="JamesLove.jpg" alt="jamesimg"></img>
                       <div className="devname">
                         <p>James Love</p> 
                         Front-End Developer
                       </div>
                     </div>
                     <div className="box">
-                      <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                      <img src="NathanChery.jpg" alt="jamesimg"></img>
                       <div className="devname">
                         <p>Nathan Chery</p>
                         API Developer
                         </div>
                     </div>
                     <div className="box">
-                      <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                      <img src="JamesLove.jpg" alt="jamesimg"></img>
                       <div className="devname">
-                        <p>DM</p> 
+                        <p>Ning Dim</p> 
                         API Devleoper
                       </div>
                     </div>
                     <div className="box">
-                      <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                      <img src="ChrisJaksec.jpg" alt="jamesimg"></img>
                       <div className="devname">                      
                         <p>Chris Jaksec</p>
-                        Frontend
+                        Front-End Developer
                       </div>
                     </div>
                     <div className="box">
-                      <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                      <img src="JamesLove.jpg" alt="jamesimg"></img>
                       <div className="devname">  
                         <p>Michael Miletic</p>
                         Project Lead/Mobile Developer
                       </div>
                     </div>
                     <div className="box">
-                      <img src="Profile Pic.jpg" alt="jamesimg"></img>
+                      <img src="JamesLove.jpg" alt="jamesimg"></img>
                       <div className="devname">
-                        <p>Brandon</p>
-                        Backend/Mobile Developer
+                        <p>Brandon Ramlagan</p>
+                        Database/Mobile Developer
                       </div>
                     </div>
                 </div>
