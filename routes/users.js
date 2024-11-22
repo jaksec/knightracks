@@ -171,7 +171,6 @@ router.post('/login', async (req, res) =>
                 }
                 else if (!isVerified) 
                 {
-                    
                     return res.status(403).json({ id, firstName: fn, lastName: ln, token: '', error: 'Email not verified. Please check your inbox for the verification email.' });
                 }
             }
@@ -205,7 +204,7 @@ router.post("/forgot-password", async (req, res) =>
 
         if(!user)
         {
-            return res.status(339).json({ error: 'No user with that email was found' });
+            return res.status(338).json({ error: 'No user with that email was found' });
         }
 
         // Check if the user is verified before sending reset email 

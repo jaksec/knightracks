@@ -19,6 +19,7 @@ function Home() {
   const [regUsername, setregUsername] = useState<string>('');
   const [dupPassword, setdupPassword] = useState<string>('');
   const [error, seterror] = useState<string | null>(null);
+  const [forgoremail, setforgoremail] = useState<string>('');
   
   const showPopup = (type: React.SetStateAction<string>) => {
     setPopupType(type);
@@ -36,6 +37,7 @@ function Home() {
     setlogPassword('');
     setregUsername('');
     seterror(null);
+    setforgoremail('');
   };
 
 
@@ -74,6 +76,9 @@ function Home() {
       }
       else if(response.status == 401) {
         seterror("Username and Password combination does not exist.");
+      }
+      else if(response.status == 403) {
+        seterror("Please verify your email before logging in");
       }
       else {
         
@@ -129,6 +134,10 @@ function Home() {
         console.log("duplicate email")
         seterror("There is already an account with this email");
       }
+      else if (response1.status == 399) {
+        console.log("All fields not filled out")
+        seterror("Please fill out all fields")
+      }
       else
         console.log("registration failed")
     } 
@@ -138,6 +147,51 @@ function Home() {
     }
 
   }  
+
+  const forgotpass = async () => {
+
+    console.log(forgoremail);
+    
+    const emaildata = {
+      email: forgoremail, 
+    };
+
+    try {
+      const response2 = await fetch('http://146.190.71.194:5000/api/user/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emaildata), 
+      });
+
+      if(response2.ok) {
+
+        console.log("Email should be sent")
+        const info = await response2.json;
+        console.log(info);
+        navigate("/home");
+        
+      }
+      else if (response2.status == 339){
+        seterror("Please enter an email");
+      }
+      else if (response2.status == 338){
+        seterror("That email has not been used");
+      }
+      else if (response2.status == 400) {
+        seterror("You need to verify your email first")
+      }
+      else if (response2.status == 500) {
+        seterror("There has been an error");
+      }
+      
+
+
+
+    } catch (err) {seterror("there has been an unexpected error")}
+
+  }
   
   {/*Helper Functions for loading user inputs*/}
   const handleregEmailChange=(e : React.ChangeEvent<HTMLInputElement>) => (
@@ -163,6 +217,9 @@ function Home() {
   )
   const handledupPasswordChange=(e : React.ChangeEvent<HTMLInputElement>) => (
     setdupPassword(e.target.value)
+  )
+  const handleforgoremail=(e : React.ChangeEvent<HTMLInputElement>) => (
+    setforgoremail(e.target.value)
   )
 
 
@@ -208,9 +265,7 @@ function Home() {
                     <input type="text" id="username" name="username" value={logUsername} onChange={handlelogUsernameChange} placeholder="Username" className="circular-input" />
                     <input type="password" id="password" name="password" value={logPassword} onChange={handlelogPasswordChange} placeholder="Password" className="circular-input" />
                     <div style={{ display: 'block', textAlign: 'center' }}>
-                      <a href="https://www.linkedin.com/in/jaksec" target='_blank' style={{ display: 'inline-block', marginTop: '10px' }}>
-                        <p style={{ margin: 0 }}>Forgot Password?</p>
-                      </a>
+                      <button className='forgot-password' onClick={() => showPopup('forgot-password')}>Forgot Password?</button> 
                       <button onClick={login} style={{ display: 'block', margin: '0 auto', marginTop: '30px' }}
                       
                       >Log in</button>
@@ -236,6 +291,19 @@ function Home() {
               </div>
             </div>
           )}
+
+          {isPopupVisible && pType === 'forgot-password' && (
+            <div className="fpoverlay">
+              <div className="fppopup" onClick={e => e.stopPropagation()}>
+                <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
+                  <h2 style={{ color: "#ffff"}}>Forgot Password</h2>
+                  <p style={{ color: "#ffff"}}>Please enter your email!</p>
+                  {error && <p style={{ color: "#ff0000" }} className="error-message">{error}</p>}
+                  <input type="text" value={forgoremail} onChange={handleforgoremail} placeholder="Emails" className="circular-input" />
+                  <button onClick={forgotpass} style={{ display: 'block', margin: '0 auto', marginTop: '25px' }}>Reset</button>
+              </div>
+            </div>
+          )}
       </div>
 
 
@@ -251,32 +319,45 @@ function Home() {
                   <div className="grid-container">
                     <div className="box">
                       <img src="Profile Pic.jpg" alt="jamesimg"></img>
-                      <p>James Love</p> 
-                      Front-End Developer
+                      <div className="devname">
+                        <p>James Love</p> 
+                        Front-End Developer
+                      </div>
                     </div>
                     <div className="box">
                       <img src="Profile Pic.jpg" alt="jamesimg"></img>
-                      <p>Nathan Chery</p>
-                      API Developer
+                      <div className="devname">
+                        <p>Nathan Chery</p>
+                        API Developer
+                        </div>
                     </div>
                     <div className="box">
                       <img src="Profile Pic.jpg" alt="jamesimg"></img>
-                      <p>DM</p> 
-                      API Devleoper
+                      <div className="devname">
+                        <p>DM</p> 
+                        API Devleoper
+                      </div>
                     </div>
                     <div className="box">
                       <img src="Profile Pic.jpg" alt="jamesimg"></img>
-                      <p>Chris Jaksec</p>
-                      Frontend
+                      <div className="devname">                      
+                        <p>Chris Jaksec</p>
+                        Frontend
+                      </div>
                     </div>
                     <div className="box">
                       <img src="Profile Pic.jpg" alt="jamesimg"></img>
-                      <p>Michael Miletic</p>
-                      Project Lead/Mobile Developer</div>
+                      <div className="devname">  
+                        <p>Michael Miletic</p>
+                        Project Lead/Mobile Developer
+                      </div>
+                    </div>
                     <div className="box">
                       <img src="Profile Pic.jpg" alt="jamesimg"></img>
-                      <p>Brandon</p>
-                      Backend/Mobile Developer
+                      <div className="devname">
+                        <p>Brandon</p>
+                        Backend/Mobile Developer
+                      </div>
                     </div>
                 </div>
               </div>
