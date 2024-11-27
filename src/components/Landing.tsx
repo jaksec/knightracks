@@ -7,6 +7,8 @@ import pfp from '/profile_icon.png';
 import arrow from '/arrow-dm.png';
 import plus from '/add.png';
 import axios from 'axios';
+import edit from '/edit.png';
+import del from '/trash.png';
 
 const Landing: React.FC = () => {
   // State variables
@@ -213,6 +215,7 @@ const Landing: React.FC = () => {
                 <th>Fats (g)</th>
                 <th>Proteins (g)</th>
                 <th>Weight (g)</th>
+                <th style={{ color: 'black'}}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -224,6 +227,12 @@ const Landing: React.FC = () => {
                   <td className="name-cell-wrap">{meal.fats}</td>
                   <td className="name-cell-wrap">{meal.protein}</td>
                   <td className="name-cell-wrap">{meal.weight}</td>
+                  <td className="name-cell-wrap">
+                    <div className="delete-edit-pair">
+                      <img src={edit} />
+                      <img src={del} />
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
