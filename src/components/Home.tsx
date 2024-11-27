@@ -67,6 +67,7 @@ function Home() {
         document.cookie = `authToken=${info.token}; path=/;`;
         document.cookie = `firstName=${info.firstName}; path=/;`;
         document.cookie = `lastName=${info.lastName}; path=/;`;
+        document.cookie = `id=${info.id}; path=/;`; // Store id with name 'id'
 
         console.log(info);
         navigate('/landing');
