@@ -178,7 +178,7 @@ function Home() {
         seterror("Please enter an email");
       }
       else if (response2.status == 338){
-        seterror("That email has not been used");
+        seterror("An account with that email does not exist");
       }
       else if (response2.status == 400) {
         seterror("You need to verify your email first")
@@ -300,7 +300,7 @@ function Home() {
                   <h2 style={{ color: "#ffff"}}>Forgot Password</h2>
                   <p style={{ color: "#ffff"}}>Please enter your email!</p>
                   {error && <p style={{ color: "#ff0000" }} className="error-message">{error}</p>}
-                  <input type="text" value={forgoremail} onChange={handleforgoremail} placeholder="Emails" className="circular-input" />
+                  <input type="text" value={forgoremail} onChange={handleforgoremail} placeholder="Email" className="circular-input" />
                   <button onClick={forgotpass} style={{ display: 'block', margin: '0 auto', marginTop: '25px' }}>Reset</button>
               </div>
             </div>
