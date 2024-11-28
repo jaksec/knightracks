@@ -12,7 +12,6 @@ const spoonacularBaseUrl = 'https://api.spoonacular.com';
 //Required Nutritional fields
 const requiredNutrients = ["Calories", "Carbohydrates", "Fat", "Protein"];
 
-
 // Route to perform partial matching on ingredient names
 router.get('/search-ingredients', async (req, res) => {
   const query = req.query.q; // Expecting partial term from query parameter

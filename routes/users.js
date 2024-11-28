@@ -280,7 +280,7 @@ router.post("/reset-password", extractTokenFromHeader, async (req, res) =>
 
         if (!user.isVerified) 
         {
-            return res.status(400).json({ error: 'Email is not verified. Please verify your email before resetting the password.' });
+            return res.status(401).json({ error: 'Email is not verified. Please verify your email before resetting the password.' });
         }
 
         // Check if new password same as old password 
