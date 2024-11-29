@@ -218,7 +218,7 @@ router.post("/forgot-password", async (req, res) =>
             email: user.Email, userId: user._id }, jwtSecret,{ expiresIn: '1h' });
 
         
-        const resetLink = `http://localhost:5000/api/user/reset-password`; // Change to live domain 
+        const resetLink = `http://cop4331-13.xyz/ChngPass`; // Change to live domain 
         
         await transporter.sendMail({
             to: email,
