@@ -229,6 +229,7 @@ router.post("/forgot-password", async (req, res) =>
             message: 'Password reset email sent', 
             resetPasswordToken  // Including the token in the response for testing
         });
+        console.log("The email should have been sent");
     } 
     catch (error) 
     {
