@@ -102,7 +102,7 @@ router.post('/register', async (req, res) =>
             await db.collection('Users').updateOne(
                 { emailToken: token },{ $set: { isVerified: true }, $unset: { emailToken: "" } });
          
-             return res.redirect('http://146.190.71.194:5000');  //redirect for successful verification 
+             return res.redirect('http://146.190.71.194');  //redirect for successful verification 
             
     
         } 
