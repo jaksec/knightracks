@@ -172,7 +172,7 @@ function Home() {
         console.log("Email should be sent")
         const info = await response2.json;
         console.log(info);
-        navigate("/home");
+        navigate("/");
         
       }
       else if (response2.status == 339){

@@ -109,7 +109,7 @@ const ChngPass: React.FC = () => {
                 </div>
                 <input type='password' className='password-box' placeholder="Password" onChange={handleFnewPasswordChange} />
                 <input type='password' className='password-box' placeholder="Password" onChange={handledupPasswordChange}/>
-                <button onClick={resetPassword} >Click me</button>
+                <button onClick={resetPassword} >Submit</button>
               </div>
             </div>
 
