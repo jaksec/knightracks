@@ -239,8 +239,10 @@
   color: #ffff;
 }
 
-.error-message {
+.error-message1 {
+  visibility: visible !important;
   font-size: 16px;
+  color: red !important;
 }
 
 .x {

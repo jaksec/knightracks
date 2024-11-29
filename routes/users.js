@@ -102,7 +102,7 @@ router.post('/register', async (req, res) =>
             await db.collection('Users').updateOne(
                 { emailToken: token },{ $set: { isVerified: true }, $unset: { emailToken: "" } });
          
-             return res.redirect('http://146.190.71.194:5000');  //redirect for successful verification 
+             return res.redirect('http://146.190.71.194');  //redirect for successful verification 
             
     
         } 
@@ -218,7 +218,7 @@ router.post("/forgot-password", async (req, res) =>
             email: user.Email, userId: user._id }, jwtSecret,{ expiresIn: '1h' });
 
         
-        const resetLink = `http://localhost:5000/api/user/reset-password`; // Change to live domain 
+        const resetLink = `http://cop4331-13.xyz/ChngPass`; // Change to live domain 
         
         await transporter.sendMail({
             to: email,
@@ -229,6 +229,7 @@ router.post("/forgot-password", async (req, res) =>
             message: 'Password reset email sent', 
             resetPasswordToken  // Including the token in the response for testing
         });
+        console.log("The email should have been sent");     
     } 
     catch (error) 
     {
@@ -280,7 +281,7 @@ router.post("/reset-password", extractTokenFromHeader, async (req, res) =>
 
         if (!user.isVerified) 
         {
-            return res.status(400).json({ error: 'Email is not verified. Please verify your email before resetting the password.' });
+            return res.status(401).json({ error: 'Email is not verified. Please verify your email before resetting the password.' });
         }
 
         // Check if new password same as old password 

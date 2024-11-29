@@ -172,7 +172,7 @@ function Home() {
         console.log("Email should be sent")
         const info = await response2.json;
         console.log(info);
-        navigate("/home");
+        navigate("/");
         
       }
       else if (response2.status == 339){
@@ -263,7 +263,7 @@ function Home() {
                 {/* Creates login popup*/}
                     <h2 style={{ color: "#ffff" }}>Login</h2>
                     <p style={{ color: "#ffff" }}>This is the login!</p>
-                    {error && <p style={{ color: "#ff0000" }} className="error-message">{error}</p>}
+                    {error && <p className="error-message1">{error}</p>}
                     <input type="text" id="username" name="username" value={logUsername} onChange={handlelogUsernameChange} placeholder="Username" className="circular-input" />
                     <input type="password" id="password" name="password" value={logPassword} onChange={handlelogPasswordChange} placeholder="Password" className="circular-input" />
                     <div style={{ display: 'block', textAlign: 'center' }}>
@@ -282,7 +282,7 @@ function Home() {
                 <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
                     <h2 style={{ color: "#ffff" }}>Sign Up</h2>
                     <p style={{ color: "#ffff" }}>This is the sign-up!</p>
-                    {error && <p style={{ color: "#ff0000" }} className="error-message">{error}</p>}
+                    {error && <p style={{ color: "#ff0000" }} className="error-message1">{error}</p>}
                     <input type="text" value={regUsername} onChange={handleregUsernameChange} placeholder="Username" className="circular-input" />
                     <input type="text" value={firstname} onChange={handleFirstnameChange} placeholder="First Name" className="circular-input" />
                     <input type="text" value={lastname} onChange={handleLastnameChange} placeholder="Last Name" className="circular-input" />
@@ -300,7 +300,7 @@ function Home() {
                 <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
                   <h2 style={{ color: "#ffff"}}>Forgot Password</h2>
                   <p style={{ color: "#ffff"}}>Please enter your email!</p>
-                  {error && <p style={{ color: "#ff0000" }} className="error-message">{error}</p>}
+                  {error && <p style={{ color: "#ff0000" }} className="error-message1">{error}</p>}
                   <input type="text" value={forgoremail} onChange={handleforgoremail} placeholder="Email" className="circular-input" />
                   <button onClick={forgotpass} style={{ display: 'block', margin: '0 auto', marginTop: '25px' }}>Reset</button>
               </div>

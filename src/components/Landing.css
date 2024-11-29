@@ -333,3 +333,52 @@ input:not(:checked) + .toggle-button .emoji {
     opacity: 0;
     visibility: hidden;
 }
+
+.Nutrition_box {
+    position: absolute;
+    top: 200px; 
+    left: 20px; 
+    width: 240px; 
+    height: 380px; 
+    background-color: Black; 
+    border: 1px solid white; 
+    display: flex; 
+    flex-direction: column;
+    z-index: 1000; 
+    text-align: center;
+}
+
+.Nutrition_box hr {
+    height: 2px; 
+    background-color: white; 
+    width: 100%; 
+    margin: 10px 0; 
+    border: none;
+    align-self: stretch;
+
+}
+
+.Nutrition_box_button {
+    background-color: white;
+    color: black;
+    border-color: black;
+    width: 40%;
+    align-items: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.Nutrition_box_items {
+    color: white;
+    font-size: 20px;
+}
+
+
+
+.Nutrition_box_title {
+    text-align: center;
+    color: white;
+    font-size: 30px;    
+    margin-bottom: 0.25em;
+    margin-top: 0.5em;
+}

@@ -20,6 +20,11 @@ const Landing: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const [isChartMode, setIsChartMode] = useState(true);
+  const [GoalCals, setGoalCals] = useState<number>(0);
+  const [GoalProt, setGoalProt] = useState<number>(0);
+  const [GoalCarb, setGoalCarb] = useState<number>(0);
+  const [GoalFats, setGoalFats] = useState<number>(0);
+  const [firstLogin, setfirstLogin] = useState(false);
 
   const [name, setName] = useState<string>('');
   const [calories, setCalories] = useState<string>('');
@@ -28,6 +33,7 @@ const Landing: React.FC = () => {
   const [proteins, setProteins] = useState<string>('');
   const [weight, setWeight] = useState<string>(''); // Added state for weight
   const [error, setError] = useState("");
+
 
   const [meals, setMeals] = useState<any[]>([]); // State for meals
 
@@ -82,8 +88,15 @@ const Landing: React.FC = () => {
     setPopupVisible(true);
   };
 
+
+
+  const handleUpdateGoal = async () => { /*This will handle when a user hits edit to change their goal */
+    return 1;
+
+  };
+
   // Fetch meals when the component mounts
-  useEffect(() => {
+  useEffect(() => { /*Add to this function the ability to call the goals and set the variable firsttime login */
     setFirstName(getCookie('firstName'));
     setLastName(getCookie('lastName'));
 
@@ -201,6 +214,20 @@ const Landing: React.FC = () => {
         <div id="stars"></div>
         <div id="stars2"></div>
         <div id="stars3"></div>
+      </div>
+
+      <div className="Nutrition_box"> 
+        <p className="Nutrition_box_title">Goals</p> 
+        <hr />
+        <div className="Nutrition_box_items">
+          <p>Calories: {GoalCals}</p>
+          <p>Protein: {GoalProt}</p>
+          <p>Carbs: {GoalCarb}</p>
+          <p>Fats: {GoalFats}</p>
+          <button className="Nutrition_box_button" onClick={handleUpdateGoal} >Edit</button>
+        </div>
+          
+        
       </div>
 
       <div className="background-menu">
