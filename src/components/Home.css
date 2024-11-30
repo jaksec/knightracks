@@ -186,6 +186,10 @@
   margin-top: 1em;
 }
 
+.forgot-password:hover {
+  color: #e1ff00;
+}
+
 .PopUpButton {
   text-align: center;
   display: flex;

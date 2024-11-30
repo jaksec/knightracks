@@ -88,8 +88,6 @@ const Landing: React.FC = () => {
     setPopupVisible(true);
   };
 
-
-
   const handleUpdateGoal = async () => { /*This will handle when a user hits edit to change their goal */
     return 1;
 
@@ -117,35 +115,64 @@ const Landing: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     }
 
-    // Fetch meals
-    const fetchMeals = async () => {
-      const userId = getCookie('id'); // Retrieve the user ID from the cookie
-
-      if (!userId) {
-        setError('User ID is missing. Please log in again.');
-        return;
-      }
-
-      try {
-        const response = await axios.get('http://146.190.71.194:5000/api/ingredient/getMeals', {
-          params: { userId },
-        });
-
-        if (response.data) {
-          setMeals(response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching meals:', error);
-        setError('Failed to fetch meals. Please try again.');
-      }
-    };
-
     fetchMeals();
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isDropdownOpen]);
+
+  const fetchMeals = async () => {
+    const userId = getCookie('id'); // Retrieve the user ID from the cookie
+
+    if (!userId) {
+      setError('User ID is missing. Please log in again.');
+      return;
+    }
+
+    try {
+      const response = await axios.get('http://146.190.71.194:5000/api/ingredient/getMeals', {
+        params: { userId },
+      });
+
+      if (response.data) {
+        setMeals(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching meals:', error);
+      setError('Failed to fetch meals. Please try again.');
+    }
+  };
+
+  const handleDelete = async (mealId: string) => {
+    try {
+      const userId = getCookie('id'); // Retrieve the user ID from the cookie
+  
+      if (!userId) {
+        setError('User ID is missing. Please log in again.');
+        return;
+      }
+  
+      // Call the API to delete the meal
+      const response = await axios.delete('http://146.190.71.194:5000/api/ingredient/deleteMeal', {
+        data: {
+          userId,
+          mealId,
+        },
+      });
+  
+      if (response.data.success) {
+        // Update the meals state to remove the deleted meal
+        setMeals((prevMeals) => prevMeals.filter((meal) => meal._id !== mealId));
+        console.log('Meal deleted successfully!');
+      }
+    } catch (error) {
+      console.error('Error deleting meal:', error);
+      setError('Failed to delete meal. Please try again.');
+    }
+
+    fetchMeals();
+  };
 
   const handleLogout = () => {
     document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
@@ -225,12 +252,12 @@ const Landing: React.FC = () => {
           <p>Carbs: {GoalCarb}</p>
           <p>Fats: {GoalFats}</p>
           <button className="Nutrition_box_button" onClick={handleUpdateGoal} >Edit</button>
-        </div>
-          
-        
+        </div>  
       </div>
 
       <div className="background-menu">
+        <span className={`title_mode ${isChartMode ? "fade-in" : "fade-out"}`}>Entries</span>
+      </div>
         <div className="table-container">
           {/* Updated table to include weight column */}
           <table className="nutrition-table">
@@ -255,18 +282,17 @@ const Landing: React.FC = () => {
                   <td className="name-cell-wrap">{meal.protein}</td>
                   <td className="name-cell-wrap">{meal.weight}</td>
                   <td className="name-cell-wrap">
-                    <div className="delete-edit-pair">
-                      <img src={edit} />
-                      <img src={del} />
-                    </div>
+                  
+                  <div style={{ display: 'flex', gap: '15px'}}>
+                    <button className="pen" onClick={showPopup}><img src={edit} /></button>
+                    <button className="trash" onClick={() => handleDelete(meal._id)}><img src={del} /></button>
+                  </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <span className={`title_mode ${isChartMode ? "fade-in" : "fade-out"}`}>Entries</span>
-      </div>
 
       <div className="container">
         <input
