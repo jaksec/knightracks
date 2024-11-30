@@ -9,6 +9,18 @@ import plus from '/add.png';
 import axios from 'axios';
 import edit from '/edit.png';
 import del from '/trash.png';
+import ProgressBar from './ProgressBar';
+
+// Function to save toggle state to localStorage
+const saveToggleState = (isChartMode: boolean) => {
+  localStorage.setItem('isChartMode', JSON.stringify(isChartMode));
+};
+
+// Function to load toggle state from localStorage
+const loadToggleState = (): boolean => {
+  const savedState = localStorage.getItem('isChartMode');
+  return savedState !== null ? JSON.parse(savedState) : true; // Default to true (Entries)
+};
 
 const Landing: React.FC = () => {
   // State variables
@@ -20,7 +32,7 @@ const Landing: React.FC = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
-  const [isChartMode, setIsChartMode] = useState(true);
+  const [isChartMode, setIsChartMode] = useState<boolean>(loadToggleState()); // Initialize with saved state
   const [GoalCals, setGoalCals] = useState<string>('');
   const [GoalProt, setGoalProt] = useState<string>('');
   const [GoalCarb, setGoalCarb] = useState<string>('');
@@ -37,6 +49,15 @@ const Landing: React.FC = () => {
 
 
   const [meals, setMeals] = useState<any[]>([]); // State for meals
+
+  // On component mount, ensure the correct mode is applied
+  useEffect(() => {
+    document.body.classList.toggle('chart-mode', isChartMode);
+    document.body.classList.toggle('nutrition-mode', !isChartMode);
+  }, [isChartMode]);
+
+  const currentCalories = 900;
+  const goalCalories = 2000;
 
   // Function to get cookies
   const getCookie = (name: string): string => {
@@ -71,7 +92,11 @@ const Landing: React.FC = () => {
   };
 
   const handleToggle = () => {
-    setIsChartMode((prevMode) => !prevMode);
+    setIsChartMode((prevMode) => {
+      const newMode = !prevMode;
+      saveToggleState(newMode); // Save the new state
+      return newMode;
+    });
   };
 
   const handleGoalCalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,6 +199,18 @@ const Landing: React.FC = () => {
       setError('Failed to fetch meals. Please try again.');
     }
   };
+
+  const hasLoginCookie = (): boolean => {
+    const match = document.cookie.match(new RegExp('(^| )authToken=([^;]+)'));
+    return !!match; // Returns true if the cookie exists, false otherwise
+  };
+
+  useEffect(() => {
+    if (!hasLoginCookie()) {
+      // Redirect to the homepage or login page if no login cookie is found
+      navigate('/');
+    }
+  }, [navigate]);
 
   const handleDelete = async (mealId: string) => {
     try {
@@ -302,42 +339,66 @@ const Landing: React.FC = () => {
       </div>
 
       <div className="background-menu">
-        <span className={`title_mode ${isChartMode ? "fade-in" : "fade-out"}`}>Entries</span>
+        <div className="title-container">
+          <span className={`title_mode ${isChartMode ? "fade-in" : "fade-out"}`}>Entries</span>
+          <span className={`title_mode ${!isChartMode ? "fade-in" : "fade-out"}`}>Nutrition</span>
+        </div>
       </div>
         <div className="table-container">
           {/* Updated table to include weight column */}
-          <table className="nutrition-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Calories</th>
-                <th>Carbs (g)</th>
-                <th>Fats (g)</th>
-                <th>Proteins (g)</th>
-                <th>Weight (g)</th>
-                <th style={{ color: 'black'}}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {meals.map((meal, index) => (
-                <tr key={index}>
-                  <td className="name-cell-wrap">{meal.foodName}</td>
-                  <td className="name-cell-wrap">{meal.calories}</td>
-                  <td className="name-cell-wrap">{meal.carbs}</td>
-                  <td className="name-cell-wrap">{meal.fats}</td>
-                  <td className="name-cell-wrap">{meal.protein}</td>
-                  <td className="name-cell-wrap">{meal.weight}</td>
-                  <td className="name-cell-wrap">
-                  
-                  <div style={{ display: 'flex', gap: '15px'}}>
-                    <button className="pen" onClick={showPopup}><img src={edit} /></button>
-                    <button className="trash" onClick={() => handleDelete(meal._id)}><img src={del} /></button>
-                  </div>
-                  </td>
+          <div className={`nutrition-table-wrapper ${isChartMode ? "fade-in" : "fade-out"}`}>
+            <table className="nutrition-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Calories</th>
+                  <th>Carbs (g)</th>
+                  <th>Fats (g)</th>
+                  <th>Proteins (g)</th>
+                  <th>Weight (g)</th>
+                  <th style={{ color: 'black'}}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
+              </thead>
+              <tbody>
+                {meals.map((meal, index) => (
+                  <tr key={index}>
+                    <td className="name-cell-wrap">{meal.foodName}</td>
+                    <td className="name-cell-wrap">{meal.calories}</td>
+                    <td className="name-cell-wrap">{meal.carbs}</td>
+                    <td className="name-cell-wrap">{meal.fats}</td>
+                    <td className="name-cell-wrap">{meal.protein}</td>
+                    <td className="name-cell-wrap">{meal.weight}</td>
+                    <td className="name-cell-wrap">
+                    
+                    <div style={{ display: 'flex', gap: '15px'}}>
+                      <button className="pen" onClick={showPopup}><img src={edit} /></button>
+                      <button className="trash" onClick={() => handleDelete(meal._id)}><img src={del} /></button>
+                    </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
           </table>
+          </div>
+
+          <div className={`nutrition-section-wrapper ${!isChartMode ? "fade-in" : "fade-out"}`}>
+            <h2 style={{ position: 'absolute', left: '23%', top: '8%' }}>
+              Calories
+            </h2>
+            <h2 style={{ position: 'absolute', right: '23.5%', bottom: '23%' }}>
+              Protein
+            </h2>
+            <h2 style={{ position: 'absolute', right: '25.5%', top: '8%' }}>
+              Fats
+            </h2>
+            <h2 style={{ position: 'absolute', left: '19.5%', bottom: '23%' }}>
+              Carbohydrates
+            </h2>
+            <ProgressBar value={currentCalories} max={goalCalories} classNameBar='progress-bar-protein' classNameFill='fill-bar-protein' />
+            <ProgressBar value={currentCalories} max={goalCalories} classNameBar='progress-bar-calories' classNameFill='fill-bar-calories' />
+            <ProgressBar value={currentCalories} max={goalCalories} classNameBar='progress-bar-carbs' classNameFill='fill-bar-carbs' />
+            <ProgressBar value={currentCalories} max={goalCalories} classNameBar='progress-bar-fats' classNameFill='fill-bar-fats' />
+          </div>
         </div>
 
       <div className="container">
@@ -346,6 +407,7 @@ const Landing: React.FC = () => {
           id="toggle"
           style={{ display: "none" }}
           onChange={handleToggle}
+          checked={!isChartMode}
         />
         <label htmlFor="toggle" className="toggle-button">
           <span className={`emoji ${isChartMode ? "fade-in" : "fade-out"}`}>📊</span>
@@ -353,8 +415,10 @@ const Landing: React.FC = () => {
         </label>
       </div>
 
-      <div className="plus-button" onClick={showPopup}>
-        <img src={plus} className="plus-button" alt="Add" />
+      <div className={`plus-button-wrapper ${isChartMode ? "fade-in" : "fade-out"}`}>
+        <div className="plus-button" onClick={showPopup}>
+          <img src={plus} className="plus-button" alt="Add" />
+        </div>
       </div>
 
       {isPopupVisible && (
@@ -373,7 +437,7 @@ const Landing: React.FC = () => {
             <input type="text" value={weight} onChange={handleWeightChange} placeholder="Weight (g)" className="circular-input" />
 
             <div>
-              <button onClick={handleAdd}>Add</button>
+              <button style={{ marginTop: '25px'}}onClick={handleAdd}>Add</button>
             </div>
           </div>
         </div>

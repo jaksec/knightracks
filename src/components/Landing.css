@@ -3,7 +3,7 @@
     background-color: black;
     top: 10%;
     width: 65%;
-    height: 95%;
+    height: 85%;
     opacity: 1;
     right: 17.5%;
     z-index: -1;
@@ -24,8 +24,18 @@
     gap: 5px; /* Create a gap between the profile and the arrow */
 }
 
+.title-container {
+    position: relative; /* Ensures child elements are positioned relative to this */
+    height: 50px; /* Adjust to your content height */
+    width: 100%; /* Adjust to your content width */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
 .title_mode {
-    position: relative; /* Ensure text layers don't affect layout */
+    position: absolute; /* Ensure text layers don't affect layout */
     top: 0.5%;
     transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth fade-in and fade-out */
     opacity: 0;
@@ -48,7 +58,7 @@
     border: groove 1px rgb(239, 241, 252);
     top: 18%;
     width: 60%;
-    height: 90%;
+    height: 72%;
     opacity: 1;
     right: 20%;
     z-index: 0;
@@ -89,9 +99,67 @@
     word-wrap: break-word;     /* Breaks long words if necessary */
 }
 
-.name-cell-wrap {
-    position: relative;
-    z-index: 1;
+.nutrition-table-wrapper,
+.plus-button-wrapper,
+.nutrition-section-wrapper {
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth fade-in and fade-out */
+}
+
+.progress-bar-calories,
+.progress-bar-carbs,
+.progress-bar-fats,
+.progress-bar-protein {
+    width: 15%;
+    height: 20px;
+    background-color: #ddd;
+    border-radius: 15px;
+    overflow: hidden;
+    position: absolute;
+}
+
+.progress-bar-calories {
+    top: 20%;
+    left: 20%;
+}
+
+.progress-bar-carbs {
+    bottom: 20%;
+    left: 20%;
+}
+
+.progress-bar-protein {
+    bottom: 20%;
+    right: 20%;
+}
+
+.progress-bar-fats {
+    top: 20%;
+    right: 20%;
+}
+  
+.fill-bar-protein,
+.fill-bar-calories,
+.fill-bar-carbs,
+.fill-bar-fats {
+    height: 100%;
+    width: 0;
+    transition: width 0.5s ease-in-out;
+}
+
+.fill-bar-protein {
+    background: linear-gradient(90deg, #76c7c0, #2c7e2f);
+}
+
+.fill-bar-calories {
+    background: linear-gradient(90deg, #76c7c0, #3f4640);
+}
+
+.fill-bar-carbs {
+    background: linear-gradient(90deg, #76c7c0, #4c9baf);
+}
+
+.fill-bar-fats {
+    background: linear-gradient(90deg, #76c7c0, #721f43);
 }
 
 .pen,
@@ -125,7 +193,7 @@
     padding: 5px; /* Minimal padding for clickable area */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Optional */
     transition: transform 0.2s;
-    z-index: 1;
+    z-index: 0;
 }
 
 .container {
@@ -135,6 +203,7 @@
     position: absolute;
     top: 12.5%;
     left: 19%;
+    z-index: 0;
 }
 
 .toggle-button {
@@ -179,10 +248,12 @@
 
 .fade-in {
     opacity: 1;
+    pointer-events: auto;
 }
 
 .fade-out {
     opacity: 0;
+    pointer-events: none;
 }
 
 input:checked + .toggle-button {
@@ -248,7 +319,7 @@ input:not(:checked) + .toggle-button .emoji {
     background: rgba(0, 0, 0, 0.8);
     justify-content: center;
     align-items: center;
-    z-index: 1;
+    z-index: 2;
 }
 
 .GoalChangeOverlay {
@@ -280,7 +351,7 @@ input:not(:checked) + .toggle-button .emoji {
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border: 3px inset #fdfdfd82;
-    height: 60%;
+    height: 70%;
     width: 45%;
     transform: translateY(100%);
     animation: slideUpFadeIn 0.8s forwards;
@@ -367,7 +438,7 @@ input:not(:checked) + .toggle-button .emoji {
     border: 1px solid white; 
     display: flex; 
     flex-direction: column;
-    z-index: 1000; 
+    z-index: 1; 
     text-align: center;
 }
 
