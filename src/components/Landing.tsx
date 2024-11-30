@@ -345,6 +345,7 @@ const Landing: React.FC = () => {
         </div>
       </div>
         <div className="table-container">
+          <div className='table-content'>
           {/* Updated table to include weight column */}
           <div className={`nutrition-table-wrapper ${isChartMode ? "fade-in" : "fade-out"}`}>
             <table className="nutrition-table">
@@ -378,7 +379,8 @@ const Landing: React.FC = () => {
                   </tr>
                 ))}
               </tbody>
-          </table>
+            </table>
+            </div>
           </div>
 
           <div className={`nutrition-section-wrapper ${!isChartMode ? "fade-in" : "fade-out"}`}>
