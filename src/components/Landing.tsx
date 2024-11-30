@@ -16,14 +16,15 @@ const Landing: React.FC = () => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [isPopupVisible, setPopupVisible] = useState(false);
+  const [isGoalsPopupVisible, setisGoalsPopupVisible] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const [isChartMode, setIsChartMode] = useState(true);
-  const [GoalCals, setGoalCals] = useState<number>(0);
-  const [GoalProt, setGoalProt] = useState<number>(0);
-  const [GoalCarb, setGoalCarb] = useState<number>(0);
-  const [GoalFats, setGoalFats] = useState<number>(0);
+  const [GoalCals, setGoalCals] = useState<string>('');
+  const [GoalProt, setGoalProt] = useState<string>('');
+  const [GoalCarb, setGoalCarb] = useState<string>('');
+  const [GoalFats, setGoalFats] = useState<string>('');
   const [firstLogin, setfirstLogin] = useState(false);
 
   const [name, setName] = useState<string>('');
@@ -73,6 +74,22 @@ const Landing: React.FC = () => {
     setIsChartMode((prevMode) => !prevMode);
   };
 
+  const handleGoalCalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGoalCals(e.target.value);
+  };
+
+  const handleGoalCarbChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGoalCarb(e.target.value);
+  };
+
+  const handleGoalProteinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGoalProt(e.target.value);
+  };
+
+  const handleGoalFatChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGoalFats(e.target.value);
+  };
+
   const closePopup = () => {
     setPopupVisible(false);
     setName('');
@@ -84,9 +101,23 @@ const Landing: React.FC = () => {
     setError('');
   };
 
+  const closeGoalsPopup = () => {
+    setisGoalsPopupVisible(false);
+    setGoalCals('');
+    setGoalCarb('');
+    setGoalProt('');
+    setGoalFats('');
+  }
+
   const showPopup = () => {
     setPopupVisible(true);
   };
+
+  const showGoalsPopup = () => {
+    setisGoalsPopupVisible(true)
+  }
+
+
 
   const handleUpdateGoal = async () => { /*This will handle when a user hits edit to change their goal */
     return 1;
@@ -251,7 +282,22 @@ const Landing: React.FC = () => {
           <p>Protein: {GoalProt}</p>
           <p>Carbs: {GoalCarb}</p>
           <p>Fats: {GoalFats}</p>
-          <button className="Nutrition_box_button" onClick={handleUpdateGoal} >Edit</button>
+          <button className="Nutrition_box_button" onClick={showGoalsPopup} >Edit</button>
+          {isGoalsPopupVisible && (
+            <div className='GoalChangeOverlay'>
+              <div className="GoalChangePopup">
+                <h2>Update Your Goals</h2>
+                <div className="GroupEntryGrid">
+                  <input type="number" id="Cals" name="Cals" value={GoalCals} onChange={handleGoalCalChange} placeholder="kCal" className="GoalHolders"/>
+                  <input type="number" id="Carbs" name="Carbs" value={GoalCarb} onChange={handleGoalCarbChange} placeholder="kCal" className="GoalHolders"/>
+                  <input type="number" id="Prot" name="Prot" value={GoalProt} onChange={handleGoalProteinChange} placeholder="kCal" className="GoalHolders"/>
+                  <input type="number" id="Fats" name="Fats" value={GoalFats} onChange={handleGoalFatChange} placeholder="kCal" className="GoalHolders"/>
+
+                </div>
+                <div className="x-add" onClick={closeGoalsPopup}>&times;</div>
+              </div>
+            </div>
+          )}
         </div>  
       </div>
 
