@@ -33,17 +33,27 @@ const Landing: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const [isChartMode, setIsChartMode] = useState<boolean>(loadToggleState()); // Initialize with saved state
+  
   const [GoalCals, setGoalCals] = useState<string>('');
   const [GoalProt, setGoalProt] = useState<string>('');
   const [GoalCarb, setGoalCarb] = useState<string>('');
   const [GoalFats, setGoalFats] = useState<string>(''); // Corrected setter function
+  const [GoalCalPercent, setGoalCalPercent] = useState<number | "">("");
+  const [GoalProtPercent, setGoalProtPercent] = useState<number | "">("");
+  const [GoalCarbPercent, setGoalCarbPercent] = useState<number | "">("");
+  const [GoalFatPercent, setGoalFatPercent] = useState<number | "">("");
+
+
   const [goalExists, setGoalExists] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+
+
 
   const [goalCalories, setGoalCalories] = useState<number>(0);
   const [goalProtein, setGoalProtein] = useState<number>(0);
   const [goalCarbs, setGoalCarbs] = useState<number>(0);
   const [goalFats, setGoalFatsNumeric] = useState<number>(0); // Renamed to avoid conflict
+
 
   const [currentCalories, setCurrentCalories] = useState<number>(0);
   const [currentProtein, setCurrentProtein] = useState<number>(0);
@@ -120,6 +130,7 @@ const Landing: React.FC = () => {
   const handleGoalFatChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGoalFats(e.target.value); // Corrected setter function
   };
+
 
   const closePopup = () => {
     setPopupVisible(false);
@@ -503,6 +514,7 @@ const Landing: React.FC = () => {
                 <h2>Update Your Goals</h2>
                 {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
                 <div className="GroupEntryGrid">
+                  <div className="subtitles">Calories</div>
                   <input
                     type="text"
                     id="Cals"
@@ -512,6 +524,8 @@ const Landing: React.FC = () => {
                     placeholder="Calories"
                     className="circular-input"
                   />
+                  <div> </div>
+                  <div className="subtitles">Carbohydrates</div>
                   <input
                     type="text"
                     id="Carbs"
@@ -522,6 +536,14 @@ const Landing: React.FC = () => {
                     className="circular-input"
                   />
                   <input
+                    type="number"
+                    id="%carb"
+                    value={GoalCarbPercent}
+                    onChange={(e) => setGoalCarbPercent(Number(e.target.value) || "")}
+                    placeholder="%"
+                  />
+                  <div className="subtitles">Protein</div>
+                  <input
                     type="text"
                     id="Prot"
                     name="Prot"
@@ -531,6 +553,14 @@ const Landing: React.FC = () => {
                     className="circular-input"
                   />
                   <input
+                    type="number"
+                    id="%prot"
+                    value={GoalProtPercent}
+                    onChange={(e) => setGoalProtPercent(Number(e.target.value) || "")}
+                    placeholder="%"
+                  />
+                  <div className="subtitles">Fats</div>
+                  <input
                     type="text"
                     id="Fats"
                     name="Fats"
@@ -538,6 +568,13 @@ const Landing: React.FC = () => {
                     onChange={handleGoalFatChange}
                     placeholder="Fats (g)"
                     className="circular-input"
+                  />
+                  <input
+                    type="number"
+                    id="%fats"
+                    value={GoalFatPercent}
+                    onChange={(e) => setGoalFatPercent(Number(e.target.value) || "")}
+                    placeholder="%"
                   />
                 </div>
                 <div>
