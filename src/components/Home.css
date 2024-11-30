@@ -196,7 +196,7 @@
   gap: 1em;
 }
 
-.overlay {
+.signoverlay {
   display: flex;
   position: fixed;
   top: 0;

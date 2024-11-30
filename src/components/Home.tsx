@@ -277,7 +277,7 @@ function Home() {
           )}
 
           {isPopupVisible && pType === 'sign-up' && (
-            <div className="overlay">
+            <div className="signoverlay">
               <div className="popup-signup" onClick={e => e.stopPropagation()}>
                 <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
                     <h2 style={{ color: "#ffff" }}>Sign Up</h2>

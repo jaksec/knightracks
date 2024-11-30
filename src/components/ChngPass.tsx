@@ -101,7 +101,7 @@ const ChngPass: React.FC = () => {
             </div>
 
             <div className="container">
-              <div className="box"> 
+              <div className="RPbox"> 
                 <h2 className="RPtitle">Reset Password</h2> 
                 <p style={{ color: "#ffff", marginBottom: '1em' }}>Please reset your password!</p>
                 <div className="error">
