@@ -84,13 +84,79 @@ const Landing: React.FC = () => {
       return;
     else 
     {
-      setGoalCarbPercent(Math.round(100*(Number(GoalCarb)/Number(GoalCals)))) 
-      setGoalFatPercent(Math.round(100*(Number(GoalFats)/Number(GoalCals))))
-      setGoalProtPercent(Math.round(100*(Number(GoalProt)/Number(GoalCals))))
+      setGoalCarbPercent(Math.round(100*((Number(GoalCarb)*4)/Number(GoalCals)))) 
+      setGoalFatPercent(Math.round(100*((Number(GoalFats)*8)/Number(GoalCals))))
+      setGoalProtPercent(Math.round(100*((Number(GoalProt)*4)/Number(GoalCals))))
       if(Number(GoalCarbPercent)+Number(GoalFatPercent)+Number(GoalProtPercent) != 100) //line check if we have accidently rounded to 99 and adds the extra percent to carbs
       {
         setGoalCarbPercent(Number(GoalCarbPercent) + 1); 
       }
+    }
+  }
+
+  const adjustCalorieChange = () => {
+    if(GoalCals == "")
+    {
+      setError("Please fill out Calories");
+      setGoalCarb("");
+      setGoalCarbPercent("");
+      setGoalProt("");
+      setGoalProtPercent("");
+      setGoalFats("");
+      setGoalFatPercent("");
+    }
+    else if (!(GoalCarbPercent == "") && !(GoalProtPercent == "") && !(GoalFatPercent == ""))
+    {
+      setError("")
+      setGoalCarb(Math.round(GoalCals * (GoalCarbPercent/100)/4));
+      setGoalProt(Math.round(GoalCals * (GoalProtPercent/100)/4));
+      setGoalFats(Math.round(GoalCals * (GoalFatPercent/100)/8));
+      setError(String(GoalCals));
+    }
+    else
+    {
+      setError("")
+      setGoalCarbPercent(55);
+      setGoalCarb(Math.round(GoalCals * (Number(GoalCarbPercent)/100)/4));
+      setGoalProtPercent(25);
+      setGoalProt(Math.round(GoalCals * (Number(GoalProtPercent)/100)/4));
+      setGoalFatPercent(20);
+      setGoalFats(Math.round(10*(GoalCals * (Number(GoalFatPercent)/100)/8)));
+    }
+  }
+
+  const adjustMacroChange = () => {
+    if(GoalCarb == '' || GoalProt == '' || GoalFats == "")
+    {
+      setError("Please fill out all macros");
+      return;
+    }
+    else 
+    {
+      setError("");
+      setGoalCals(GoalCarb*4 + GoalProt*4 + GoalFats*8);
+      setGoalCarbPercent(Math.round(GoalCarb*4 / Number(GoalCals)));
+      setGoalProtPercent(Math.round(GoalProt*4 / Number(GoalCals)));
+      setGoalFatPercent(Math.round(GoalFats*8 / Number(GoalCals)));
+      if(Number(GoalCarbPercent) + Number(GoalProtPercent) + Number(GoalFatPercent) != 100)
+        setGoalCarbPercent(Number(GoalCarbPercent) + 1);
+    }
+      
+  }
+
+  const adjustPercentChange = () => {
+    if(GoalCals == "")
+      setError("Please fill out calories");
+    else if (GoalCarbPercent == "" || GoalProtPercent == "" || GoalFatPercent == "")
+      setError("Please fill out all percentages");
+    else if (GoalCarbPercent + GoalProtPercent + GoalFatPercent != 100)
+      setError("Ensure all percentages add up to 100");
+    else
+    {
+      setError("");
+      setGoalCarb(Math.round(GoalCals * (GoalCarbPercent/100)));
+      setGoalProt(Math.round(GoalCals * (GoalProtPercent/100)));
+      setGoalFats(Math.round(GoalCals * (GoalFatPercent/100)));
     }
   }
 
@@ -130,30 +196,37 @@ const Landing: React.FC = () => {
 
   const handleGoalCalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGoalCals(Number(e.target.value));
+    adjustCalorieChange();
   };
 
   const handleGoalCarbChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGoalCarb(Number(e.target.value));
+    adjustMacroChange();
   };
 
   const handleGoalProteinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGoalProt(Number(e.target.value));
+    adjustMacroChange();
   };
 
   const handleGoalFatChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGoalFats(Number(e.target.value)); // Corrected setter function
+    adjustMacroChange();
   };
 
   const handleGoalFatPercentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGoalFatPercent(parseInt(e.target.value));
+    adjustPercentChange();
   }
 
   const handleGoalProtPercentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGoalProtPercent(parseInt(e.target.value));
+    adjustPercentChange();
   }
 
   const handleGoalCarbPercentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGoalCarbPercent(parseInt(e.target.value));
+    adjustPercentChange();
   }
 
 
