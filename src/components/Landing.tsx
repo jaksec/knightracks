@@ -34,11 +34,10 @@ const Landing: React.FC = () => {
   const profileRef = useRef<HTMLDivElement>(null);
   const [isChartMode, setIsChartMode] = useState<boolean>(loadToggleState()); // Initialize with saved state
   
-  const [GoalCals, setGoalCals] = useState<string>('');
-  const [GoalProt, setGoalProt] = useState<string>('');
-  const [GoalCarb, setGoalCarb] = useState<string>('');
-  const [GoalFats, setGoalFats] = useState<string>(''); // Corrected setter function
-  const [GoalCalPercent, setGoalCalPercent] = useState<number | "">("");
+  const [GoalCals, setGoalCals] = useState<number | "">("");
+  const [GoalProt, setGoalProt] = useState<number | "">("");
+  const [GoalCarb, setGoalCarb] = useState<number | "">("");
+  const [GoalFats, setGoalFats] = useState<number | "">(""); // Corrected setter function
   const [GoalProtPercent, setGoalProtPercent] = useState<number | "">("");
   const [GoalCarbPercent, setGoalCarbPercent] = useState<number | "">("");
   const [GoalFatPercent, setGoalFatPercent] = useState<number | "">("");
@@ -46,7 +45,6 @@ const Landing: React.FC = () => {
 
   const [goalExists, setGoalExists] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-
 
 
   const [goalCalories, setGoalCalories] = useState<number>(0);
@@ -80,6 +78,21 @@ const Landing: React.FC = () => {
     const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
     return match ? decodeURIComponent(match[2]) : '';
   };
+
+  const AutoFillPercent = () => {
+    if(GoalCals == "")
+      return;
+    else 
+    {
+      setGoalCarbPercent(Math.round(100*(Number(GoalCarb)/Number(GoalCals)))) 
+      setGoalFatPercent(Math.round(100*(Number(GoalFats)/Number(GoalCals))))
+      setGoalProtPercent(Math.round(100*(Number(GoalProt)/Number(GoalCals))))
+      if(Number(GoalCarbPercent)+Number(GoalFatPercent)+Number(GoalProtPercent) != 100) //line check if we have accidently rounded to 99 and adds the extra percent to carbs
+      {
+        setGoalCarbPercent(Number(GoalCarbPercent) + 1); 
+      }
+    }
+  }
 
   const validateInput = (value: string) => /^[0-9]*\.?[0-9]*$/.test(value);
 
@@ -116,20 +129,32 @@ const Landing: React.FC = () => {
   };
 
   const handleGoalCalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGoalCals(e.target.value);
+    setGoalCals(Number(e.target.value));
   };
 
   const handleGoalCarbChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGoalCarb(e.target.value);
+    setGoalCarb(Number(e.target.value));
   };
 
   const handleGoalProteinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGoalProt(e.target.value);
+    setGoalProt(Number(e.target.value));
   };
 
   const handleGoalFatChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGoalFats(e.target.value); // Corrected setter function
+    setGoalFats(Number(e.target.value)); // Corrected setter function
   };
+
+  const handleGoalFatPercentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGoalFatPercent(parseInt(e.target.value));
+  }
+
+  const handleGoalProtPercentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGoalProtPercent(parseInt(e.target.value));
+  }
+
+  const handleGoalCarbPercentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGoalCarbPercent(parseInt(e.target.value));
+  }
 
 
   const closePopup = () => {
@@ -154,6 +179,7 @@ const Landing: React.FC = () => {
 
   const showGoalsPopup = () => {
     setisGoalsPopupVisible(true);
+    AutoFillPercent();
   };
 
   const handleSaveGoal = async () => {
@@ -177,12 +203,8 @@ const Landing: React.FC = () => {
     // Validate inputs
     const isValidNumber = (value: string) => /^[0-9]+(\.[0-9]+)?$/.test(value);
 
-    if (
-      !isValidNumber(GoalCals) ||
-      !isValidNumber(GoalCarb) ||
-      !isValidNumber(GoalFats) ||
-      !isValidNumber(GoalProt)
-    ) {
+    if (GoalCals == '') 
+    {
       setError('Please enter valid numbers for all fields.');
       return;
     }
@@ -190,10 +212,10 @@ const Landing: React.FC = () => {
     try {
       const newGoal = {
         userId,
-        calories: parseFloat(GoalCals),
-        carbs: parseFloat(GoalCarb),
-        fats: parseFloat(GoalFats),
-        proteins: parseFloat(GoalProt),
+        calories: GoalCals,
+        carbs: GoalCarb,
+        fats: GoalFats,
+        proteins: GoalProt,
       };
 
       const response = await axios.post('http://146.190.71.194:5000/api/goal/addGoal', newGoal);
@@ -203,9 +225,9 @@ const Landing: React.FC = () => {
 
         // Update numeric goal values
         setGoalCalories(newGoal.calories);
-        setGoalProtein(newGoal.proteins);
-        setGoalCarbs(newGoal.carbs);
-        setGoalFatsNumeric(newGoal.fats); // Updated setter
+        setGoalProtein(Number(newGoal.proteins));
+        setGoalCarbs(Number(newGoal.carbs));
+        setGoalFatsNumeric(Number(newGoal.fats)); // Updated setter
 
         closeGoalsPopup();
         console.log('Goal added successfully!');
@@ -228,10 +250,7 @@ const Landing: React.FC = () => {
     const isValidNumber = (value: string) => /^[0-9]+(\.[0-9]+)?$/.test(value);
 
     if (
-      !isValidNumber(GoalCals) ||
-      !isValidNumber(GoalCarb) ||
-      !isValidNumber(GoalFats) ||
-      !isValidNumber(GoalProt)
+      GoalCals == ''
     ) {
       setError('Please enter valid numbers for all fields.');
       return;
@@ -240,10 +259,10 @@ const Landing: React.FC = () => {
     try {
       const updatedGoal = {
         userId,
-        calories: parseFloat(GoalCals),
-        carbs: parseFloat(GoalCarb),
-        fats: parseFloat(GoalFats),
-        proteins: parseFloat(GoalProt),
+        calories: GoalCals,
+        carbs: GoalCarb,
+        fats: GoalFats,
+        proteins: GoalProt,
       };
 
       const response = await axios.put('http://146.190.71.194:5000/api/goal/updateGoal', updatedGoal);
@@ -251,9 +270,9 @@ const Landing: React.FC = () => {
       if (response.data.success) {
         // Update numeric goal values
         setGoalCalories(updatedGoal.calories);
-        setGoalProtein(updatedGoal.proteins);
-        setGoalCarbs(updatedGoal.carbs);
-        setGoalFatsNumeric(updatedGoal.fats); // Updated setter
+        setGoalProtein(Number(updatedGoal.proteins));
+        setGoalCarbs(Number(updatedGoal.carbs));
+        setGoalFatsNumeric(Number(updatedGoal.fats)); // Updated setter
 
         closeGoalsPopup();
         console.log('Goal updated successfully!');
@@ -502,9 +521,9 @@ const Landing: React.FC = () => {
         <hr />
         <div className="Nutrition_box_items">
           <p>Calories: {GoalCals}</p>
-          <p>Protein: {formatWithUnit(GoalProt, "g")}</p>
-          <p>Carbs: {formatWithUnit(GoalCarb, "g")}</p>
-          <p>Fats: {formatWithUnit(GoalFats, "g")}</p>
+          <p>Protein: {formatWithUnit(String(GoalProt), "g")}</p>
+          <p>Carbs: {formatWithUnit(String(GoalCarb), "g")}</p>
+          <p>Fats: {formatWithUnit(String(GoalFats), "g")}</p>
           <button className="Nutrition_box_button" onClick={showGoalsPopup}>
             Edit
           </button>
@@ -540,7 +559,7 @@ const Landing: React.FC = () => {
                     type="number"
                     id="%carb"
                     value={GoalCarbPercent}
-                    onChange={(e) => setGoalCarbPercent(Number(e.target.value) || "")}
+                    onChange={handleGoalCarbPercentChange}
                     placeholder="%"
                   />
                   <div className="subtitles">Protein</div>
@@ -558,7 +577,7 @@ const Landing: React.FC = () => {
                     className="GoalInputBoxes"
                     id="%prot"
                     value={GoalProtPercent}
-                    onChange={(e) => setGoalProtPercent(Number(e.target.value) || "")}
+                    onChange={handleGoalProtPercentChange}
                     placeholder="%"
                   />
                   <div className="subtitles">Fats</div>
@@ -576,7 +595,7 @@ const Landing: React.FC = () => {
                     className="GoalInputBoxes"
                     id="%fats"
                     value={GoalFatPercent}
-                    onChange={(e) => setGoalFatPercent(Number(e.target.value) || "")}
+                    onChange={handleGoalFatPercentChange}
                     placeholder="%"
                   />
                 </div>
