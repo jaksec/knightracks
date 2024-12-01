@@ -67,6 +67,10 @@ const Landing: React.FC = () => {
 
   const [meals, setMeals] = useState<any[]>([]); // State for meals
 
+  const [isEditPopupVisible, setEditPopupVisible] = useState(false);
+  const [editMeal, setEditMeal] = useState<any>(null); // State to hold the meal being edited
+
+
   // On component mount, ensure the correct mode is applied
   useEffect(() => {
     document.body.classList.toggle('chart-mode', isChartMode);
@@ -169,6 +173,7 @@ const Landing: React.FC = () => {
   };
 
   const closeGoalsPopup = () => {
+    fetchGoal();
     setisGoalsPopupVisible(false);
     setError('');
   };
@@ -224,7 +229,7 @@ const Landing: React.FC = () => {
         setGoalExists(true);
 
         // Update numeric goal values
-        setGoalCalories(newGoal.calories);
+        setGoalCalories(Number(newGoal.calories));
         setGoalProtein(Number(newGoal.proteins));
         setGoalCarbs(Number(newGoal.carbs));
         setGoalFatsNumeric(Number(newGoal.fats)); // Updated setter
@@ -269,7 +274,7 @@ const Landing: React.FC = () => {
 
       if (response.data.success) {
         // Update numeric goal values
-        setGoalCalories(updatedGoal.calories);
+        setGoalCalories(Number(updatedGoal.calories));
         setGoalProtein(Number(updatedGoal.proteins));
         setGoalCarbs(Number(updatedGoal.carbs));
         setGoalFatsNumeric(Number(updatedGoal.fats)); // Updated setter
@@ -436,6 +441,50 @@ const Landing: React.FC = () => {
     }
 
     fetchMeals();
+  };
+
+  const showEditPopup = (meal: any) => {
+    setEditMeal(meal); // Set the meal to be edited
+    setEditPopupVisible(true); // Show the edit popup
+  };
+  
+
+  const handleEdit = async () => {
+    if (!editMeal) return;
+  
+    const userId = getCookie('id'); // Retrieve the user ID from the cookie
+  
+    if (!userId) {
+      setError('User ID is missing. Please log in again.');
+      return;
+    }
+  
+    try {
+      const response = await axios.put('http://146.190.71.194:5000/api/ingredient/updateMeal', {
+        userId,
+        mealId: editMeal._id, // Pass the meal's ID
+        foodName: editMeal.foodName,
+        calories: parseFloat(editMeal.calories),
+        carbs: parseFloat(editMeal.carbs),
+        fats: parseFloat(editMeal.fats),
+        protein: parseFloat(editMeal.protein),
+        weight: parseFloat(editMeal.weight),
+      });
+  
+      if (response.data.success) {
+        // Update the meals state with the edited meal
+        setMeals((prevMeals) =>
+          prevMeals.map((meal) => (meal._id === editMeal._id ? { ...meal, ...editMeal } : meal))
+        );
+        
+        fetchMeals();
+        setEditPopupVisible(false); // Close the edit popup
+        setEditMeal(null); // Clear the edit meal state
+      }
+    } catch (error) {
+      console.error('Error editing meal:', error);
+      setError('Failed to edit meal. Please try again.');
+    }
   };
 
   const handleLogout = () => {
@@ -644,7 +693,7 @@ const Landing: React.FC = () => {
                     <td className="name-cell-wrap">{meal.weight}</td>
                     <td className="name-cell-wrap">
                       <div style={{ display: 'flex', gap: '15px' }}>
-                        <button className="pen" onClick={showPopup}>
+                        <button className="pen" onClick={() => showEditPopup(meal)}>
                           <img src={edit} />
                         </button>
                         <button className="trash" onClick={() => handleDelete(meal._id)}>
@@ -666,6 +715,7 @@ const Landing: React.FC = () => {
             max={goalCalories}
             classNameBar="progress-bar-calories"
             classNameFill="fill-bar-calories"
+            showGrams={false}
           />
 
           <h2 style={{ position: 'absolute', right: '23.5%', bottom: '23%' }}>Protein</h2>
@@ -674,6 +724,7 @@ const Landing: React.FC = () => {
             max={goalProtein}
             classNameBar="progress-bar-protein"
             classNameFill="fill-bar-protein"
+            showGrams={true}
           />
 
           <h2 style={{ position: 'absolute', right: '25.5%', top: '8%' }}>Fats</h2>
@@ -682,6 +733,7 @@ const Landing: React.FC = () => {
             max={goalFats}
             classNameBar="progress-bar-fats"
             classNameFill="fill-bar-fats"
+            showGrams={true}
           />
 
           <h2 style={{ position: 'absolute', left: '19.5%', bottom: '23%' }}>Carbohydrates</h2>
@@ -690,6 +742,7 @@ const Landing: React.FC = () => {
             max={goalCarbs}
             classNameBar="progress-bar-carbs"
             classNameFill="fill-bar-carbs"
+            showGrams={true}
           />
         </div>
       </div>
@@ -713,6 +766,68 @@ const Landing: React.FC = () => {
           <img src={plus} className="plus-button" alt="Add" />
         </div>
       </div>
+
+      {isEditPopupVisible && (
+        <div className="overlay">
+          <div className="popup-add" onClick={(e) => e.stopPropagation()}>
+            <div className="x-add" onClick={() => { setEditPopupVisible(false); setError('');}}>
+              &times;
+            </div>
+            <div className="add-title">Edit Meal</div>
+
+            {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+
+            <input
+              type="text"
+              value={editMeal?.foodName || ''}
+              onChange={(e) => setEditMeal({ ...editMeal, foodName: e.target.value })}
+              placeholder="Name"
+              className="circular-input"
+            />
+            <input
+              type="text"
+              value={editMeal?.calories || ''}
+              onChange={(e) => setEditMeal({ ...editMeal, calories: e.target.value })}
+              placeholder="Calories"
+              className="circular-input"
+            />
+            <input
+              type="text"
+              value={editMeal?.carbs || ''}
+              onChange={(e) => setEditMeal({ ...editMeal, carbs: e.target.value })}
+              placeholder="Carbohydrates (g)"
+              className="circular-input"
+            />
+            <input
+              type="text"
+              value={editMeal?.fats || ''}
+              onChange={(e) => setEditMeal({ ...editMeal, fats: e.target.value })}
+              placeholder="Fats (g)"
+              className="circular-input"
+            />
+            <input
+              type="text"
+              value={editMeal?.protein || ''}
+              onChange={(e) => setEditMeal({ ...editMeal, protein: e.target.value })}
+              placeholder="Proteins (g)"
+              className="circular-input"
+            />
+            <input
+              type="text"
+              value={editMeal?.weight || ''}
+              onChange={(e) => setEditMeal({ ...editMeal, weight: e.target.value })}
+              placeholder="Weight (g)"
+              className="circular-input"
+            />
+
+            <div>
+              <button style={{ marginTop: '25px' }} onClick={handleEdit}>
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isPopupVisible && (
         <div className="overlay">
