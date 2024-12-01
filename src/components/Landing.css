@@ -142,8 +142,6 @@
     width: 15%;
     height: 20px;
     background-color: #ddd;
-    border-radius: 15px;
-    overflow: hidden;
     position: absolute;
 }
 
@@ -191,6 +189,25 @@
 .fill-bar-fats {
     background: linear-gradient(90deg, #76c7c0, #721f43);
 }
+  
+/* Line at the front of the fill bar */
+.progress-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px; /* Thickness of the line */
+    background-color: black;
+    transform: translateX(-50%);
+}
+  
+.progress-number {
+    position: absolute;
+    top: 25px; /* Adjust this to move it closer to the bar */
+    left: 50%; /* Adjust dynamically or test with static values */
+    transform: translateX(-50%);
+    font-weight: bold;
+    pointer-events: none;
+}
 
 .pen,
 .trash {
@@ -202,6 +219,13 @@
     display: inline-block;
     padding: 0;
     margin: 0;
+    transition: transform 0.2s;
+    border: none;
+}
+
+.pen:focus,
+.trash:focus {
+    outline: none;
 }
 
 .plus-button {
@@ -454,6 +478,11 @@ input:not(:checked) + .toggle-button .emoji {
 }
   
 .plus-button:hover {
+    transform: scale(1.1);
+}
+
+.pen:hover,
+.trash:hover {
     transform: scale(1.1);
 }
 
