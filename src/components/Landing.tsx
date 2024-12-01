@@ -512,7 +512,7 @@ const Landing: React.FC = () => {
             <div className="GoalChangeOverlay">
               <div className="GoalChangePopup">
                 <h2>Update Your Goals</h2>
-                {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+                {error && <div className="GoalsError" style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
                 <div className="GroupEntryGrid">
                   <div className="subtitles">Calories</div>
                   <input
@@ -522,7 +522,7 @@ const Landing: React.FC = () => {
                     value={GoalCals}
                     onChange={handleGoalCalChange}
                     placeholder="Calories"
-                    className="circular-input"
+                    className="GoalInputBoxes"
                   />
                   <div> </div>
                   <div className="subtitles">Carbohydrates</div>
@@ -533,9 +533,10 @@ const Landing: React.FC = () => {
                     value={GoalCarb}
                     onChange={handleGoalCarbChange}
                     placeholder="Carbohydrates (g)"
-                    className="circular-input"
+                    className="GoalInputBoxes"
                   />
                   <input
+                    className="GoalInputBoxes"
                     type="number"
                     id="%carb"
                     value={GoalCarbPercent}
@@ -550,10 +551,11 @@ const Landing: React.FC = () => {
                     value={GoalProt}
                     onChange={handleGoalProteinChange}
                     placeholder="Protein (g)"
-                    className="circular-input"
+                    className="GoalInputBoxes"
                   />
                   <input
                     type="number"
+                    className="GoalInputBoxes"
                     id="%prot"
                     value={GoalProtPercent}
                     onChange={(e) => setGoalProtPercent(Number(e.target.value) || "")}
@@ -567,10 +569,11 @@ const Landing: React.FC = () => {
                     value={GoalFats}
                     onChange={handleGoalFatChange}
                     placeholder="Fats (g)"
-                    className="circular-input"
+                    className="GoalInputBoxes"
                   />
                   <input
                     type="number"
+                    className="GoalInputBoxes"
                     id="%fats"
                     value={GoalFatPercent}
                     onChange={(e) => setGoalFatPercent(Number(e.target.value) || "")}

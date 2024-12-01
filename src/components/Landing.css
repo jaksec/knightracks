@@ -377,6 +377,42 @@ input:not(:checked) + .toggle-button .emoji {
     animation: slideUpFadeIn 0.8s forwards;
 }
 
+.GoalsError {
+    font-size: 25px;
+    position: absolute;
+    bottom: 80%;
+    align-items: center;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.GroupEntryGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+    margin: 0 auto;
+    padding: 10px;
+    margin-top: 65px;
+    margin-bottom: 50px;
+}
+
+.subtitles {
+    font-size: 25px;
+}
+
+.GoalInputBoxes {
+    width: 60%;
+    padding: 10px;
+    margin: 0px;
+    border: 2px solid gray;
+    border-radius: 20px; /* Adjust as needed to achieve circular appearance */
+    background: black;
+    outline: none;
+    box-sizing: border-box;
+    color: #ffff;
+    font-size: 18px;
+}
+
 .popup-add {
     background-color: black;
     padding: 20px;
@@ -492,6 +528,7 @@ input:not(:checked) + .toggle-button .emoji {
     align-items: center;
     font-size: 18px;
     margin-bottom: 20px;
+    border-color: white;
 }
 
 .Nutrition_box_items {
