@@ -89,7 +89,7 @@ const Landing: React.FC = () => {
     else 
     {
       setGoalCarbPercent(Math.round(100*((Number(GoalCarb)*4)/Number(GoalCals)))) 
-      setGoalFatPercent(Math.round(100*((Number(GoalFats)*8)/Number(GoalCals))))
+      setGoalFatPercent(Math.round(100*((Number(GoalFats)*9)/Number(GoalCals))))
       setGoalProtPercent(Math.round(100*((Number(GoalProt)*4)/Number(GoalCals))))
       if(Number(GoalCarbPercent)+Number(GoalFatPercent)+Number(GoalProtPercent) != 100) //line check if we have accidently rounded to 99 and adds the extra percent to carbs
       {
@@ -99,7 +99,7 @@ const Landing: React.FC = () => {
   }
 
   const adjustCalorieChange = () => {
-    if(GoalCals == "")
+    if(GoalCals == "") //error and erase if there are no calories filled out
     {
       setError("Please fill out Calories");
       setGoalCarb("");
@@ -109,37 +109,35 @@ const Landing: React.FC = () => {
       setGoalFats("");
       setGoalFatPercent("");
     }
-    else if (!(GoalCarbPercent == "") && !(GoalProtPercent == "") && !(GoalFatPercent == ""))
+    else if (!(GoalCarbPercent == "") && !(GoalProtPercent == "") && !(GoalFatPercent == "")) //if all the percentages are filled fill macros according to %
     {
       setError("")
       if(GoalCarbPercent + GoalProtPercent + GoalFatPercent != 100)
         setError("Ensure all percentages add up to 100");
       setGoalCarb(Math.round(GoalCals * (GoalCarbPercent/100)/4));
       setGoalProt(Math.round(GoalCals * (GoalProtPercent/100)/4));
-      setGoalFats(Math.round(GoalCals * (GoalFatPercent/100)/8));
+      setGoalFats(Math.round(GoalCals * (GoalFatPercent/100)/9));
       //setError(String(GoalCals));
     }
-    else
+    else if (GoalCarbPercent == "" && GoalFatPercent == "" && GoalProtPercent == "") //If all the % are empty then run the default config
     {
       setError("")
-      setGoalCarbPercent(55);
-      setGoalCarb(Math.round(GoalCals * (Number(GoalCarbPercent)/100)/4));
-      setGoalProtPercent(25);
-      setGoalProt(Math.round(GoalCals * (Number(GoalProtPercent)/100)/4));
+      setGoalCarbPercent(50);
+      setGoalCarb(Math.round(GoalCals * (Number(50)/100)/4));
+      setGoalProtPercent(30);
+      setGoalProt(Math.round(GoalCals * (Number(30)/100)/4));
       setGoalFatPercent(20);
-      setGoalFats(Math.round(10*(GoalCals * (Number(GoalFatPercent)/100)/8)));
-      setError(String(GoalCarbPercent))
+      setGoalFats(Math.round(10*(GoalCals * (Number(20)/100)/9)));
     }
-  }
-
-  useEffect(() => {
-    if (GoalCals !== "") {
-      adjustCalorieChange();
+    
+    else  //if % are partially filled error and do nothing
+    {
+      setError("Please fill out all percentages")
     }
-  }, [GoalCals, GoalCarbPercent, GoalProtPercent, GoalFatPercent]);
+  };
 
   const adjustMacroChange = () => {
-    if(GoalCarb == '' || GoalProt == '' || GoalFats == "")
+    if(GoalCarb == "" || GoalProt == "" || GoalFats == "")
     {
       setError("Please fill out all macros");
       return;
@@ -147,19 +145,18 @@ const Landing: React.FC = () => {
     else 
     {
       setError("");
-      setGoalCals(GoalCarb*4 + GoalProt*4 + GoalFats*8);
-      setGoalCarbPercent(Math.round(GoalCarb*4 / Number(GoalCals)));
-      setGoalProtPercent(Math.round(GoalProt*4 / Number(GoalCals)));
-      setGoalFatPercent(Math.round(GoalFats*8 / Number(GoalCals)));
-      if(Number(GoalCarbPercent) + Number(GoalProtPercent) + Number(GoalFatPercent) != 100)
-        setGoalCarbPercent(Number(GoalCarbPercent) + 1);
+      setGoalCals(GoalCarb*4 + GoalProt*4 + GoalFats*9); //update the total calories based upon the macros
+      setGoalCarbPercent(Math.round(((GoalCarb * 4) / (GoalCarb * 4 + GoalProt * 4 + GoalFats * 9)) * 1000) / 10);
+      setGoalProtPercent(Math.round(((GoalProt * 4) / (GoalCarb * 4 + GoalProt * 4 + GoalFats * 9)) * 1000) / 10);
+      setGoalFatPercent(Math.round(((GoalFats * 9) / (GoalCarb * 4 + GoalProt * 4 + GoalFats * 9)) * 1000) / 10);
+      
     }
       
   }
 
   const adjustPercentChange = () => {
     if(GoalCals == "")
-      setError("Please fill out calories");
+      setError("Please fill out Calories");
     else if (GoalCarbPercent == "" || GoalProtPercent == "" || GoalFatPercent == "")
       setError("Please fill out all percentages");
     else if (GoalCarbPercent + GoalProtPercent + GoalFatPercent != 100)
@@ -167,9 +164,9 @@ const Landing: React.FC = () => {
     else
     {
       setError("");
-      setGoalCarb(Math.round(GoalCals * (GoalCarbPercent/100)));
-      setGoalProt(Math.round(GoalCals * (GoalProtPercent/100)));
-      setGoalFats(Math.round(GoalCals * (GoalFatPercent/100)));
+      setGoalCarb(Math.round((GoalCals * (GoalCarbPercent/100))/4));
+      setGoalProt(Math.round((GoalCals * (GoalProtPercent/100))/4));
+      setGoalFats(Math.round((GoalCals * (GoalFatPercent/100))/9));
     }
   }
 
