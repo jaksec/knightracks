@@ -427,10 +427,11 @@ input:not(:checked) + .toggle-button .emoji {
 
 .GoalInputBoxes {
     width: 60%;
+    position:relative;
     padding: 10px;
     margin: 0px;
     border: 2px solid gray;
-    border-radius: 20px; /* Adjust as needed to achieve circular appearance */
+    border-radius: 20px; 
     background: black;
     outline: none;
     box-sizing: border-box;
