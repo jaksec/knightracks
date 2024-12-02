@@ -459,6 +459,17 @@ input:not(:checked) + .toggle-button .emoji {
     font-size: 18px;
 }
 
+.CustomSucess {
+    font-size: 35px;
+    position: absolute;
+    bottom: 20%;
+    align-items: center;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    color: green;
+}
+
 .CustomGoalError {
     font-size: 25px;
     position: absolute;
@@ -648,7 +659,6 @@ input:not(:checked) + .toggle-button .emoji {
     margin: 10px 0; 
     border: none;
     align-self: stretch;
-
 }
 
 .CustomGoalGrid {

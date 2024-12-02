@@ -46,6 +46,7 @@ const Landing: React.FC = () => {
 
   const [goalExists, setGoalExists] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [sucess, setsucess] = useState<string>('');
 
 
   const [goalCalories, setGoalCalories] = useState<number>(0);
@@ -281,6 +282,7 @@ const Landing: React.FC = () => {
   };
 
   const closeCustomGoalPopup = () => {
+    adjustCalorieChange();
     setisCustomGoalPopupVisible(false);
     setheight("");
     setUserweight("");
@@ -579,12 +581,11 @@ const Landing: React.FC = () => {
       setError("Oopsies")
 
       customCals = Math.round(customCals)
+      setGoalCals(customCals)
       setGoalCarbPercent(50)
       setGoalFatPercent(20)
       setGoalProtPercent(30)
-      setGoalCals(customCals)
-      adjustCalorieChange()
-      closeCustomGoalPopup()
+      setsucess("Goal Generated!")
   }
 
   const hasLoginCookie = (): boolean => {
@@ -895,6 +896,7 @@ const Landing: React.FC = () => {
 
                           </div>
                           <button onClick={handleCustomGoal}>Generate</button>
+                          {sucess && <div className="CustomSucess">{sucess}</div>}
                           <div className="x-add" onClick={closeCustomGoalPopup}>
                           &times;
                           </div>
