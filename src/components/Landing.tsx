@@ -316,7 +316,9 @@ const Landing: React.FC = () => {
   };
 
   const handleSaveGoal = async () => {
-    if (goalExists) {
+    if(error != '')
+      return;
+    else if (goalExists) {
       await handleUpdateGoal();
     } else {
       await handleAddGoal();
