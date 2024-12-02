@@ -291,6 +291,7 @@ const Landing: React.FC = () => {
     setactivityLevel("");
     setweightLossStyle("");
     setError('');
+    setsucess('');
   }
 
   const showPopup = () => {
