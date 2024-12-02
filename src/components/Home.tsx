@@ -126,6 +126,7 @@ function Home() {
 
         console.log('sucessful registration');
         const info = await response1.json();
+        seterror("Account created successfully. Please verify your email.");
 
         console.log(info);
         navigate('/landing');
@@ -134,11 +135,11 @@ function Home() {
       }
       else if (response1.status == 400) {
         console.log("duplicate email")
-        seterror("There is already an account with this email");
+        seterror("There is already an account with this email.");
       }
       else if (response1.status == 399) {
         console.log("All fields not filled out")
-        seterror("Please fill out all fields")
+        seterror("Please fill out all fields.")
       }
       else
         console.log("registration failed")

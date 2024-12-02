@@ -34,7 +34,8 @@ const Landing: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const [isChartMode, setIsChartMode] = useState<boolean>(loadToggleState()); // Initialize with saved state
-  
+  const [activeMode, setActiveMode] = useState<'Search' | 'Custom'>('Custom'); // Default to "Custom" mode
+
   const [GoalCals, setGoalCals] = useState<number | "">("");
   const [GoalProt, setGoalProt] = useState<number | "">("");
   const [GoalCarb, setGoalCarb] = useState<number | "">("");
@@ -522,7 +523,7 @@ const Landing: React.FC = () => {
     let customCals = 0;
     if(height ==  ""|| Userweight==  "" || sex==  "" || age==  "" || activityLevel==  "" || weightLossStyle==  "")
     {
-      setError("Please Fill Out All Boxes")
+      setError("Please fill out all of the boxes.")
       return;
     }
     
@@ -587,6 +588,7 @@ const Landing: React.FC = () => {
       setGoalFatPercent(20)
       setGoalProtPercent(30)
       setsucess("Goal Generated!")
+      setError("")
   }
 
   const hasLoginCookie = (): boolean => {
@@ -796,7 +798,7 @@ const Landing: React.FC = () => {
                     />
                     <span className="BoldUnit">%</span>
                   </div>
-                  <p style={{ fontWeight: 1000 }}>{formatWithUnit(String(GoalCarb), "g")}</p>
+                  <p style={{ fontWeight: 100 }}>{formatWithUnit(String(GoalCarb), "g")}</p>
 
                   <div className="subtitles">Protein</div>
                   <div className="InputWithUnit">
@@ -811,7 +813,7 @@ const Landing: React.FC = () => {
                     />
                     <span className="BoldUnit">%</span>
                   </div>
-                  <p style={{ fontWeight: 1000 }}>{formatWithUnit(String(GoalProt), "g")}</p>
+                  <p style={{ fontWeight: 100 }}>{formatWithUnit(String(GoalProt), "g")}</p>
 
                   <div className="subtitles">Fats</div>
                   <div className="InputWithUnit">
@@ -826,7 +828,7 @@ const Landing: React.FC = () => {
                     />
                     <span className="BoldUnit">%</span>
                   </div>
-                  <p style={{ fontWeight: 1000 }}>{formatWithUnit(String(GoalFats), "g")}</p>
+                  <p style={{ fontWeight: 100 }}>{formatWithUnit(String(GoalFats), "g")}</p>
                 </div>
                 <div className="Buttons">
                   <button onClick={handleSaveGoal}>Save</button>
@@ -835,7 +837,7 @@ const Landing: React.FC = () => {
                       <div className="GoalChangeOverlay">
                         <div className="CustomGoalPopup">
                           <h2>Generate a Custom Goal</h2>
-                          <p>KnighTracks will never store your information</p>
+                          <p>KnighTracks will never store your information.</p>
                           {error && <div className="CustomGoalError" style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
                           <div className="CustomGoalGrid">
                             <div className="CustomGoalinp">
@@ -847,7 +849,7 @@ const Landing: React.FC = () => {
                               onChange={handleheightChange}
                               placeholder="Height"
                               />
-                              <span className="BoldUnit1">In</span>
+                              <span className="BoldUnit1">inches</span>
                             </div>
                             <div className="CustomGoalinp">
                               <input
@@ -858,7 +860,7 @@ const Landing: React.FC = () => {
                               onChange={handleUserWeightChange}
                               placeholder="Weight"
                               />
-                              <span className="BoldUnit1">Lbs</span>
+                              <span className="BoldUnit1">lbs.</span>
                             </div>
                             <div className="SmallCustomInp">
                               <input
@@ -869,7 +871,7 @@ const Landing: React.FC = () => {
                               onChange={handleage}
                               placeholder="Age"
                               />
-                              <span className="BoldUnit1">Yr</span>
+                              <span className="BoldUnit1">yrs.</span>
                             </div>
                             <select id="dropdown" className="dropdown" value={activityLevel} onChange={handleactivityLevelChange}>
                               <option value="" disabled>Choose your Activity Level</option>
@@ -885,7 +887,7 @@ const Landing: React.FC = () => {
                               <option value = "F">Female</option>
                             </select>
                             <select className= "dropdown" value={weightLossStyle} onChange={handleWightLossStyleChange}>
-                              <option value="" disabled>Choose a Weight Change Goal</option>
+                              <option value="" disabled>Choose Weight Change Goal</option>
                               <option value ="1">Aggresively Gain Weight (+2lbs/Week)</option>
                               <option value="2">Gain Weight (+1lb/Week)</option>
                               <option value="3">Maintain Weight (+0lb/Week)</option>
@@ -1087,67 +1089,93 @@ const Landing: React.FC = () => {
       )}
 
       {isPopupVisible && (
-        <div className="overlay">
-          <div className="popup-add" onClick={(e) => e.stopPropagation()}>
-            <div className="x-add" onClick={closePopup}>
-              &times;
-            </div>
-            <div className="add-title">Add Meal</div>
+          <div className="overlay">
+            <div className="popup-add" onClick={(e) => e.stopPropagation()}>
+              <div className="x-add" onClick={closePopup}>
+                &times;
+              </div>
+              <div className="add-title">
+                <button
+                  className={`add-button ${activeMode === 'Search' ? 'active' : ''}`}
+                  onClick={() => setActiveMode('Search')}
+                >
+                  Search
+                </button>
+                |
+                <button
+                  className={`add-button ${activeMode === 'Custom' ? 'active' : ''}`}
+                  onClick={() => setActiveMode('Custom')}
+                >
+                  Custom
+                </button>
+              </div>
 
-            {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+              {activeMode === 'Search' && (
+                <>
+                  {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
 
-            <input
-              type="text"
-              value={name}
-              onChange={handleNameChange}
-              placeholder="Name"
-              className="circular-input"
-            />
-            <input
-              type="text"
-              value={calories}
-              onChange={handleCalorieChange}
-              placeholder="Calories"
-              className="circular-input"
-            />
-            <input
-              type="text"
-              value={carbs}
-              onChange={handleCarbChange}
-              placeholder="Carbohydrates (g)"
-              className="circular-input"
-            />
-            <input
-              type="text"
-              value={fats}
-              onChange={handleFatChange}
-              placeholder="Fats (g)"
-              className="circular-input"
-            />
-            <input
-              type="text"
-              value={proteins}
-              onChange={handleProteinChange}
-              placeholder="Proteins (g)"
-              className="circular-input"
-            />
-            <input
-              type="text"
-              value={weight}
-              onChange={handleWeightChange}
-              placeholder="Weight (g)"
-              className="circular-input"
-            />
+                  <div>hi</div>
+                
+                
+                </>
+              )}
 
-            <div>
-              <button style={{ marginTop: '25px' }} onClick={handleAdd}>
-                Add
-              </button>
+              {activeMode === 'Custom' && (
+                <>
+                  {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={handleNameChange}
+                    placeholder="Name"
+                    className="circular-input"
+                  />
+                  <input
+                    type="text"
+                    value={calories}
+                    onChange={handleCalorieChange}
+                    placeholder="Calories"
+                    className="circular-input"
+                  />
+                  <input
+                    type="text"
+                    value={carbs}
+                    onChange={handleCarbChange}
+                    placeholder="Carbohydrates (g)"
+                    className="circular-input"
+                  />
+                  <input
+                    type="text"
+                    value={fats}
+                    onChange={handleFatChange}
+                    placeholder="Fats (g)"
+                    className="circular-input"
+                  />
+                  <input
+                    type="text"
+                    value={proteins}
+                    onChange={handleProteinChange}
+                    placeholder="Proteins (g)"
+                    className="circular-input"
+                  />
+                  <input
+                    type="text"
+                    value={weight}
+                    onChange={handleWeightChange}
+                    placeholder="Weight (g)"
+                    className="circular-input"
+                  />
+
+                  <div>
+                    <button style={{ marginTop: '25px' }} onClick={handleAdd}>
+                      Add
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
-        </div>
-      )}
-
+        )}
       <div className="profile-container">
         <img src={pfp} className="profile" alt="Profile" />
         <div onClick={() => setIsDropdownOpen((prev) => !prev)} ref={profileRef}>
