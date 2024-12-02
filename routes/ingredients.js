@@ -78,6 +78,53 @@ router.get('/ingredient-nutrition', async (req, res) => {
 
 });
 
+router.post('/addIngredient', async (req, res) => {
+  const { userId, foodName, calories, carbs, fats, protein, weight } = req.body;
+
+  // Validate the input to make sure all fields are present
+  if (!userId || !foodName || !calories || !carbs || !fats || !protein || !weight) {
+    return res.status(400).json({ error: 'All fields are required, especially the userId' });
+  }
+
+  // Connect to the database and log connection status
+  const db = client.db('COP4331LargeProject');
+  console.log('Connected to Database');
+
+  // Create a new ingredient object with the provided data
+  const newIngredient = {
+    userId: new ObjectId(userId), // Relationship to a specific user
+    foodName: foodName,
+    calories: calories,
+    carbs: carbs,
+    fats: fats,
+    protein: protein,
+    weight: weight, // Defaulted to grams
+  };
+
+  try {
+    // Attempt to insert the ingredient into the Meals collection
+    const result = await db.collection('Meals').insertOne(newIngredient);
+    //console.log('Insert operation result:', result); // Log the full result object to inspect its properties
+
+    // Check if the document was successfully inserted
+    if (result.insertedId) {
+      res.status(201).json({
+        message: 'Ingredient added successfully',
+        data: { _id: result.insertedId, ...newIngredient } // Include the new ID and ingredient data in the response
+      });
+    } else {
+      // Log an error if `insertedId` is not present
+      console.error('Insert operation did not return an insertedId');
+      res.status(500).json({ error: 'Failed to add ingredient, no insertedId returned' });
+    }
+  } catch (error) {
+    // Catch and log any errors during the insertion process
+    console.error('Error adding ingredient:', error);
+    res.status(500).json({ error: 'Failed to add ingredient' });
+  }
+});
+
+
 
 router.post('/addIngredient', async (req, res) => {
   const { userId, foodName, calories, carbs, fats, protein, weight } = req.body;

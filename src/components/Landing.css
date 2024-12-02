@@ -461,8 +461,8 @@ input:not(:checked) + .toggle-button .emoji {
 
 .CustomSucess {
     font-size: 35px;
-    position: absolute;
-    bottom: 20%;
+    position: relative;
+    top: 40px;
     align-items: center;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -472,8 +472,8 @@ input:not(:checked) + .toggle-button .emoji {
 
 .CustomGoalError {
     font-size: 25px;
-    position: absolute;
-    bottom: 75%;
+    position: relative;
+    top: 5%;
     align-items: center;
     left: 50%;
     transform: translate(-50%, -50%);
