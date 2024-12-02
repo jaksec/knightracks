@@ -101,7 +101,7 @@ const Landing: React.FC = () => {
   const adjustCalorieChange = () => {
     if(GoalCals == "") //error and erase if there are no calories filled out
     {
-      setError("Please fill out Calories");
+      setError("Please fill out calories.");
       setGoalCarb("");
       setGoalCarbPercent("");
       setGoalProt("");
@@ -113,7 +113,7 @@ const Landing: React.FC = () => {
     {
       setError("")
       if(GoalCarbPercent + GoalProtPercent + GoalFatPercent != 100)
-        setError("Ensure all percentages add up to 100");
+        setError("Ensure all percentages add up to 100%.");
       setGoalCarb(Math.round(GoalCals * (GoalCarbPercent/100)/4));
       setGoalProt(Math.round(GoalCals * (GoalProtPercent/100)/4));
       setGoalFats(Math.round(GoalCals * (GoalFatPercent/100)/9));
@@ -132,35 +132,17 @@ const Landing: React.FC = () => {
     
     else  //if % are partially filled error and do nothing
     {
-      setError("Please fill out all percentages")
+      setError("Please fill out all percentages.")
     }
   };
 
-  const adjustMacroChange = () => {
-    if(GoalCarb == "" || GoalProt == "" || GoalFats == "")
-    {
-      setError("Please fill out all macros");
-      return;
-    }
-    else 
-    {
-      setError("");
-      setGoalCals(GoalCarb*4 + GoalProt*4 + GoalFats*9); //update the total calories based upon the macros
-      setGoalCarbPercent(Math.round(((GoalCarb * 4) / (GoalCarb * 4 + GoalProt * 4 + GoalFats * 9)) * 1000) / 10);
-      setGoalProtPercent(Math.round(((GoalProt * 4) / (GoalCarb * 4 + GoalProt * 4 + GoalFats * 9)) * 1000) / 10);
-      setGoalFatPercent(Math.round(((GoalFats * 9) / (GoalCarb * 4 + GoalProt * 4 + GoalFats * 9)) * 1000) / 10);
-      
-    }
-      
-  }
-
   const adjustPercentChange = () => {
     if(GoalCals == "")
-      setError("Please fill out Calories");
+      setError("Please fill out calories.");
     else if (GoalCarbPercent == "" || GoalProtPercent == "" || GoalFatPercent == "")
-      setError("Please fill out all percentages");
+      setError("Please fill out all percentages.");
     else if (GoalCarbPercent + GoalProtPercent + GoalFatPercent != 100)
-      setError("Ensure all percentages add up to 100");
+      setError("Ensure all percentages add up to 100%.");
     else
     {
       setError("");
@@ -204,7 +186,7 @@ const Landing: React.FC = () => {
     });
   };
 
-  const handleGoalCalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGoalCalChange = () => {
     adjustCalorieChange();
   };
 
@@ -216,43 +198,7 @@ const Landing: React.FC = () => {
       setGoalCals(Number(e.target.value));
   };
 
-  const handleGoalCarbChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    adjustMacroChange();
-  };
-
-  const handleGoalCarbChange1 = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    if(val == "")
-      setGoalCarb("");
-    else
-      setGoalCarb(Number(e.target.value));
-  };
-
-  const handleGoalProteinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    adjustMacroChange();
-  };
-
-  const handleGoalProteinChange1 = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    if(val == "")
-      setGoalProt("");
-    else
-      setGoalProt(Number(e.target.value));
-  };
-
-  const handleGoalFatChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    adjustMacroChange();
-  };
-
-  const handleGoalFatChange1 = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    if(val == "")
-      setGoalFats("");
-    else
-      setGoalFats(Number(e.target.value)); // Corrected setter function
-  };
-
-  const handleGoalFatPercentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGoalFatPercentChange = () => {
     adjustPercentChange();
   };
 
@@ -264,7 +210,7 @@ const Landing: React.FC = () => {
       setGoalFatPercent(Number(e.target.value));
   };
 
-  const handleGoalProtPercentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGoalProtPercentChange = () => {
     adjustPercentChange();
   };
 
@@ -276,7 +222,7 @@ const Landing: React.FC = () => {
       setGoalProtPercent(Number(e.target.value));
   };
 
-  const handleGoalCarbPercentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGoalCarbPercentChange = () => {
     adjustPercentChange();
   };
 
@@ -335,9 +281,6 @@ const Landing: React.FC = () => {
       return;
     }
 
-    // Validate inputs
-    const isValidNumber = (value: string) => /^[0-9]+(\.[0-9]+)?$/.test(value);
-
     if (GoalCals == '') 
     {
       setError('Please enter valid numbers for all fields.');
@@ -380,9 +323,6 @@ const Landing: React.FC = () => {
       setError('User ID is missing. Please log in again.');
       return;
     }
-
-    // Validate inputs
-    const isValidNumber = (value: string) => /^[0-9]+(\.[0-9]+)?$/.test(value);
 
     if (
       GoalCals == ''
@@ -527,7 +467,6 @@ const Landing: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching meals:', error);
-      setError('Failed to fetch meals. Please try again.');
     }
   };
 
@@ -723,67 +662,52 @@ const Landing: React.FC = () => {
                     placeholder="Calories"
                     className="GoalInputBoxes"
                   />
-                  <div> </div>
+                  <div></div> {/* Empty placeholder for alignment */}
+
                   <div className="subtitles">Carbohydrates</div>
-                  <input
-                    type="number"
-                    id="Carbs"
-                    name="Carbs"
-                    value={GoalCarb}
-                    onChange={handleGoalCarbChange1}
-                    onBlur={handleGoalCarbChange}
-                    placeholder="Carbohydrates (g)"
-                    className="GoalInputBoxes"
-                  />
-                  <input
-                    className="GoalInputBoxes"
-                    type="number"
-                    id="%carb"
-                    value={GoalCarbPercent}
-                    onChange={handleGoalCarbPercentChange1}
-                    onBlur={handleGoalCarbPercentChange}
-                    placeholder="%"
-                  />
+                  <div className="InputWithUnit">
+                    <input
+                      type="number"
+                      className="GoalInputBoxes"
+                      id="%carb"
+                      value={GoalCarbPercent}
+                      onChange={handleGoalCarbPercentChange1}
+                      onBlur={handleGoalCarbPercentChange}
+                      placeholder="%"
+                    />
+                    <span className="BoldUnit">%</span>
+                  </div>
+                  <p style={{ fontWeight: 1000 }}>{formatWithUnit(String(GoalCarb), "g")}</p>
+
                   <div className="subtitles">Protein</div>
-                  <input
-                    type="number"
-                    id="Prot"
-                    name="Prot"
-                    value={GoalProt}
-                    onChange={handleGoalProteinChange1}
-                    onBlur={handleGoalProteinChange}
-                    placeholder="Protein (g)"
-                    className="GoalInputBoxes"
-                  />
-                  <input
-                    type="number"
-                    className="GoalInputBoxes"
-                    id="%prot"
-                    value={GoalProtPercent}
-                    onChange={handleGoalProtPercentChange1}
-                    onBlur={handleGoalProtPercentChange}
-                    placeholder="%"
-                  />
+                  <div className="InputWithUnit">
+                    <input
+                      type="number"
+                      className="GoalInputBoxes"
+                      id="%prot"
+                      value={GoalProtPercent}
+                      onChange={handleGoalProtPercentChange1}
+                      onBlur={handleGoalProtPercentChange}
+                      placeholder="%"
+                    />
+                    <span className="BoldUnit">%</span>
+                  </div>
+                  <p style={{ fontWeight: 1000 }}>{formatWithUnit(String(GoalProt), "g")}</p>
+
                   <div className="subtitles">Fats</div>
-                  <input
-                    type="number"
-                    id="Fats"
-                    name="Fats"
-                    value={GoalFats}
-                    onChange={handleGoalFatChange1}
-                    onBlur={handleGoalFatChange}
-                    placeholder="Fats (g)"
-                    className="GoalInputBoxes"
-                  />
-                  <input
-                    type="number"
-                    className="GoalInputBoxes"
-                    id="%fats"
-                    value={GoalFatPercent}
-                    onChange={handleGoalFatPercentChange1}
-                    onBlur={handleGoalFatPercentChange}
-                    placeholder="%"
-                  />
+                  <div className="InputWithUnit">
+                    <input
+                      type="number"
+                      className="GoalInputBoxes"
+                      id="%fats"
+                      value={GoalFatPercent}
+                      onChange={handleGoalFatPercentChange1}
+                      onBlur={handleGoalFatPercentChange}
+                      placeholder="%"
+                    />
+                    <span className="BoldUnit">%</span>
+                  </div>
+                  <p style={{ fontWeight: 1000 }}>{formatWithUnit(String(GoalFats), "g")}</p>
                 </div>
                 <div>
                   <button onClick={handleSaveGoal}>Save</button>

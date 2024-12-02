@@ -414,7 +414,8 @@ input:not(:checked) + .toggle-button .emoji {
 .GroupEntryGrid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 30px;
+    align-items: center; /* Align items vertically in the center */
+    gap: 40px;
     margin: 0 auto;
     padding: 10px;
     margin-top: 65px;
@@ -423,11 +424,23 @@ input:not(:checked) + .toggle-button .emoji {
 
 .subtitles {
     font-size: 25px;
+    font-weight: 100;
+}
+
+.InputWithUnit {
+    display: flex;
+    align-items: center; /* Align input box and percentage sign vertically */
+    gap: 5px; /* Add space between the input box and the percentage sign */
+}
+  
+.BoldUnit {
+    font-weight: bold; /* Make the percentage sign bold */
+    font-size: 20px; /* Adjust size to match input box */
 }
 
 .GoalInputBoxes {
     width: 60%;
-    position:relative;
+    position: relative;
     padding: 10px;
     margin: 0px;
     border: 2px solid gray;
@@ -437,6 +450,7 @@ input:not(:checked) + .toggle-button .emoji {
     box-sizing: border-box;
     color: #ffff;
     font-size: 18px;
+    height: 40px;
 }
 
 .popup-add {
@@ -566,8 +580,6 @@ input:not(:checked) + .toggle-button .emoji {
     color: white;
     font-size: 20px;
 }
-
-
 
 .Nutrition_box_title {
     text-align: center;
