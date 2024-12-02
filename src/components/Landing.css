@@ -401,6 +401,74 @@ input:not(:checked) + .toggle-button .emoji {
     animation: slideUpFadeIn 0.8s forwards;
 }
 
+.dropdown {
+    border: 2px solid gray;
+    border-radius: 20px; /* Adjust as needed to achieve circular appearance */
+    background: black;
+    outline: none;
+    box-sizing: border-box;
+    color: #ffff;
+    width: 83%;
+    font-size: 16px;
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+}
+
+.smallDropdown {
+    border: 2px solid gray;
+    border-radius: 20px; /* Adjust as needed to achieve circular appearance */
+    background: black;
+    outline: none;
+    box-sizing: border-box;
+    color: #ffff;
+    width: 55%;
+    font-size: 16px;
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+}
+
+.circular-input-Gen {
+    width: 30%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid gray;
+    border-radius: 20px; /* Adjust as needed to achieve circular appearance */
+    background: black;
+    outline: none;
+    box-sizing: border-box;
+    color: #ffff;
+    text-align: center;
+    font-size: 17px;
+}
+
+.CustomGoalPopup {
+    background-color: black;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 3px inset #fdfdfd82;
+    height: 95%;
+    width: 100%;
+    transform: translateY(100%);
+    animation: slideUpFadeIn 0.8s forwards;
+    
+}
+
+.CustomGoalPopup p {
+    font-size: 18px;
+}
+
+.CustomGoalError {
+    font-size: 25px;
+    position: absolute;
+    bottom: 75%;
+    align-items: center;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+}
+
 .GoalsError {
     font-size: 25px;
     position: absolute;
@@ -436,6 +504,23 @@ input:not(:checked) + .toggle-button .emoji {
 .BoldUnit {
     font-weight: bold; /* Make the percentage sign bold */
     font-size: 20px; /* Adjust size to match input box */
+}
+
+.BoldUnit1 {
+    margin-left: 5px;
+}
+
+.CustomGoalButton {
+    
+    display:block;
+    align-items: center;
+    margin:0;
+    margin-top: 25px;
+}
+
+.Buttons {
+    align-items: center;
+    place-items: center;
 }
 
 .GoalInputBoxes {
@@ -564,6 +649,19 @@ input:not(:checked) + .toggle-button .emoji {
     border: none;
     align-self: stretch;
 
+}
+
+.CustomGoalGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-bottom: 40px;
+    margin-top: 80px;
+    justify-items: center;
+}
+
+.CustomGoalinp {
+    width: 100%;
 }
 
 .Nutrition_box_button {

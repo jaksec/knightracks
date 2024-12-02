@@ -29,6 +29,7 @@ const Landing: React.FC = () => {
   const [lastName, setLastName] = useState<string>('');
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [isGoalsPopupVisible, setisGoalsPopupVisible] = useState(false);
+  const [isCustomGoalPopupVisible, setisCustomGoalPopupVisible] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -65,6 +66,13 @@ const Landing: React.FC = () => {
   const [proteins, setProteins] = useState<string>('');
   const [weight, setWeight] = useState<string>(''); // Added state for weight
 
+  const [height, setheight] = useState<string>('');
+  const [Userweight, setUserweight] = useState<string>('');
+  const [sex, setsex] = useState<string>('');
+  const [age, setage] = useState<string>('');
+  const [activityLevel, setactivityLevel] = useState<string>('');
+  const [weightLossStyle, setweightLossStyle] = useState<string>('');
+
   const [meals, setMeals] = useState<any[]>([]); // State for meals
 
   const [isEditPopupVisible, setEditPopupVisible] = useState(false);
@@ -91,17 +99,13 @@ const Landing: React.FC = () => {
       setGoalCarbPercent(Math.round(100*((Number(GoalCarb)*4)/Number(GoalCals)))) 
       setGoalFatPercent(Math.round(100*((Number(GoalFats)*9)/Number(GoalCals))))
       setGoalProtPercent(Math.round(100*((Number(GoalProt)*4)/Number(GoalCals))))
-      if(Number(GoalCarbPercent)+Number(GoalFatPercent)+Number(GoalProtPercent) != 100) //line check if we have accidently rounded to 99 and adds the extra percent to carbs
-      {
-        setGoalCarbPercent(Number(GoalCarbPercent) + 1); 
-      }
     }
   }
 
   const adjustCalorieChange = () => {
     if(GoalCals == "") //error and erase if there are no calories filled out
     {
-      setError("Please fill out calories.");
+      setError("Please Fill Out Calories.");
       setGoalCarb("");
       setGoalCarbPercent("");
       setGoalProt("");
@@ -113,7 +117,7 @@ const Landing: React.FC = () => {
     {
       setError("")
       if(GoalCarbPercent + GoalProtPercent + GoalFatPercent != 100)
-        setError("Ensure all percentages add up to 100%.");
+        setError("Ensure All Percentages Add Up To 100%.");
       setGoalCarb(Math.round(GoalCals * (GoalCarbPercent/100)/4));
       setGoalProt(Math.round(GoalCals * (GoalProtPercent/100)/4));
       setGoalFats(Math.round(GoalCals * (GoalFatPercent/100)/9));
@@ -132,17 +136,17 @@ const Landing: React.FC = () => {
     
     else  //if % are partially filled error and do nothing
     {
-      setError("Please fill out all percentages.")
+      setError("Please Fill Out All Percentages.")
     }
   };
 
   const adjustPercentChange = () => {
     if(GoalCals == "")
-      setError("Please fill out calories.");
+      setError("Please Fill Out Calories.");
     else if (GoalCarbPercent == "" || GoalProtPercent == "" || GoalFatPercent == "")
-      setError("Please fill out all percentages.");
+      setError("Please Fill Out All Percentages.");
     else if (GoalCarbPercent + GoalProtPercent + GoalFatPercent != 100)
-      setError("Ensure all percentages add up to 100%.");
+      setError("Ensure All Percentages Add Up To 100%.");
     else
     {
       setError("");
@@ -185,6 +189,30 @@ const Landing: React.FC = () => {
       return newMode;
     });
   };
+
+  const handleheightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setheight(e.target.value)
+  }
+
+  const handleUserWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserweight(e.target.value)
+  }
+
+  const handleage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setage(e.target.value)
+  }
+
+  const handleactivityLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setactivityLevel(e.target.value)
+  }
+
+  const handlesexChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setsex(e.target.value)
+  }
+
+  const handleWightLossStyleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setweightLossStyle(e.target.value)
+  }
 
   const handleGoalCalChange = () => {
     adjustCalorieChange();
@@ -252,6 +280,17 @@ const Landing: React.FC = () => {
     setError('');
   };
 
+  const closeCustomGoalPopup = () => {
+    setisCustomGoalPopupVisible(false);
+    setheight("");
+    setUserweight("");
+    setsex("");
+    setage("");
+    setactivityLevel("");
+    setweightLossStyle("");
+    setError('');
+  }
+
   const showPopup = () => {
     setPopupVisible(true);
   };
@@ -260,6 +299,11 @@ const Landing: React.FC = () => {
     setisGoalsPopupVisible(true);
     AutoFillPercent();
   };
+
+  const ShowCustomGoalPopup = () => {
+    setError("");
+    setisCustomGoalPopupVisible(true);
+  }
 
   const handleSaveGoal = async () => {
     if(error != '')
@@ -277,13 +321,13 @@ const Landing: React.FC = () => {
     const userId = getCookie('id');
 
     if (!userId) {
-      setError('User ID is missing. Please log in again.');
+      setError('User ID Is Missing. Please Log In Again.');
       return;
     }
 
     if (GoalCals == '') 
     {
-      setError('Please enter valid numbers for all fields.');
+      setError('Please Enter Valid Numbers For All Fields.');
       return;
     }
 
@@ -312,7 +356,7 @@ const Landing: React.FC = () => {
       }
     } catch (error) {
       console.error('Error adding goal:', error);
-      setError('Failed to add goal. Please try again.');
+      setError('Failed To Add Goal. Please Try Again.');
     }
   };
 
@@ -320,14 +364,14 @@ const Landing: React.FC = () => {
     const userId = getCookie('id');
 
     if (!userId) {
-      setError('User ID is missing. Please log in again.');
+      setError('User ID Is Missing. Please Log In Again.');
       return;
     }
 
     if (
       GoalCals == ''
     ) {
-      setError('Please enter valid numbers for all fields.');
+      setError('Please Enter Valid Numbers For All Fields.');
       return;
     }
 
@@ -354,7 +398,7 @@ const Landing: React.FC = () => {
       }
     } catch (error) {
       console.error('Error updating goal:', error);
-      setError('Failed to update goal. Please try again.');
+      setError('Failed To Update Goal. Please Try Again.');
     }
   };
 
@@ -362,7 +406,7 @@ const Landing: React.FC = () => {
     const userId = getCookie('id');
 
     if (!userId) {
-      setError('User ID is missing. Please log in again.');
+      setError('User ID Is Missing. Please Log In Again.');
       return;
     }
 
@@ -393,10 +437,11 @@ const Landing: React.FC = () => {
         setGoalExists(false);
       } else {
         console.error('Error fetching goal:', error);
-        setError('Failed to fetch goal. Please try again.');
+        setError('Failed To Fetch Goal. Please Try Again.');
       }
     }
   };
+
 
   // Fetch meals and goals when the component mounts
   useEffect(() => {
@@ -453,7 +498,7 @@ const Landing: React.FC = () => {
     const userId = getCookie('id'); // Retrieve the user ID from the cookie
 
     if (!userId) {
-      setError('User ID is missing. Please log in again.');
+      setError('User ID Is Missing. Please Log In Again.');
       return;
     }
 
@@ -469,6 +514,78 @@ const Landing: React.FC = () => {
       console.error('Error fetching meals:', error);
     }
   };
+
+  const handleCustomGoal = () => { //Class updates the variables on the Goal Page based on user inputs
+    let customCals = 0;
+    if(height ==  ""|| Userweight==  "" || sex==  "" || age==  "" || activityLevel==  "" || weightLossStyle==  "")
+    {
+      setError("Please Fill Out All Boxes")
+      return;
+    }
+    
+    if(sex == "M") 
+    {
+      customCals = 10 * (parseFloat(Userweight) / 2.20462) + 6.25 * (parseFloat(height)  * 2.54) - 5 * parseFloat(age) + 5;
+    }
+    else
+    {
+      customCals = 10 * (parseFloat(Userweight) / 2.20462) + 6.25 * (parseFloat(height)  * 2.54) - 5 * parseFloat(age) - 16;
+    }
+
+    if(activityLevel == "1")
+    {
+      customCals = customCals * 1.2
+    }
+    else if(activityLevel == "2")
+    {
+      customCals = customCals * 1.375
+    }
+    else if(activityLevel == "3")
+    {
+      customCals = customCals * 1.55
+    }
+    else if(activityLevel == "4")
+    {
+      customCals = customCals * 1.725
+    }
+    else if(activityLevel == "5")
+    {
+      customCals = customCals * 1.9
+    }
+    else
+      setError("Oopsies")
+
+    if(weightLossStyle == "1")
+    {
+      customCals = customCals + 1000
+    }
+    else if(weightLossStyle == "2")
+    {
+      customCals = customCals + 500
+    }
+    else if (weightLossStyle == "3")
+    {
+      customCals = customCals
+    }
+    else if (weightLossStyle == "4")
+    {
+      customCals = customCals - 500
+    }
+    else if (weightLossStyle == "5")
+    {
+      customCals = customCals - 1000
+    }
+    else
+      setError("Oopsies")
+
+      customCals = Math.round(customCals)
+      setGoalCarbPercent(50)
+      setGoalFatPercent(20)
+      setGoalProtPercent(30)
+      setGoalCals(customCals)
+      adjustCalorieChange()
+      closeCustomGoalPopup()
+  }
 
   const hasLoginCookie = (): boolean => {
     const match = document.cookie.match(new RegExp('(^| )authToken=([^;]+)'));
@@ -487,7 +604,7 @@ const Landing: React.FC = () => {
       const userId = getCookie('id'); // Retrieve the user ID from the cookie
 
       if (!userId) {
-        setError('User ID is missing. Please log in again.');
+        setError('User ID Is Missing. Please Log In Again.');
         return;
       }
 
@@ -506,7 +623,7 @@ const Landing: React.FC = () => {
       }
     } catch (error) {
       console.error('Error deleting meal:', error);
-      setError('Failed to delete meal. Please try again.');
+      setError('Failed To Delete Meal. Please Try Again.');
     }
 
     fetchMeals();
@@ -524,7 +641,7 @@ const Landing: React.FC = () => {
     const userId = getCookie('id'); // Retrieve the user ID from the cookie
   
     if (!userId) {
-      setError('User ID is missing. Please log in again.');
+      setError('User ID Is Missing. Please Log In Again.');
       return;
     }
   
@@ -552,7 +669,7 @@ const Landing: React.FC = () => {
       }
     } catch (error) {
       console.error('Error editing meal:', error);
-      setError('Failed to edit meal. Please try again.');
+      setError('Failed To Edit Meal. Please Try Again.');
     }
   };
 
@@ -568,7 +685,7 @@ const Landing: React.FC = () => {
     const isValidNumber = (value: string) => /^[0-9]+(\.[0-9]+)?$/.test(value);
 
     if (!name || !calories || !carbs || !fats || !proteins || !weight) {
-      setError('All fields must be filled with valid numbers.');
+      setError('All Fields Must Be Filled With Valid Numbers.');
       return;
     }
 
@@ -580,7 +697,7 @@ const Landing: React.FC = () => {
       !isValidNumber(weight)
     ) {
       setError(
-        'All fields must contain valid integers or decimals without starting or ending with a decimal.'
+        'All Fields Must Contain Valid Integers Or Decimals Without Starting Or Ending With A Decimal.'
       );
       return;
     }
@@ -591,7 +708,7 @@ const Landing: React.FC = () => {
       const userId = getCookie('id'); // Retrieve the user ID from the cookie
 
       if (!userId) {
-        setError('User ID is missing. Please log in again.');
+        setError('User ID Is Missing. Please Log In Again.');
         return;
       }
 
@@ -618,7 +735,7 @@ const Landing: React.FC = () => {
       }
     } catch (error) {
       console.error('Error adding meal:', error);
-      setError('Failed to add meal. Please try again.');
+      setError('Failed To Add Meal. Please Try Again.');
     }
   };
 
@@ -709,8 +826,84 @@ const Landing: React.FC = () => {
                   </div>
                   <p style={{ fontWeight: 1000 }}>{formatWithUnit(String(GoalFats), "g")}</p>
                 </div>
-                <div>
+                <div className="Buttons">
                   <button onClick={handleSaveGoal}>Save</button>
+                  <button className = "CustomGoalButton" onClick={ShowCustomGoalPopup}>Generate Custom Calorie Goal</button>
+                  {isCustomGoalPopupVisible && (
+                      <div className="GoalChangeOverlay">
+                        <div className="CustomGoalPopup">
+                          <h2>Generate a Custom Goal</h2>
+                          <p>KnighTracks will never store your information</p>
+                          {error && <div className="CustomGoalError" style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+                          <div className="CustomGoalGrid">
+                            <div className="CustomGoalinp">
+                              <input
+                              type="text"
+                              className="circular-input-Gen"
+                              id="Height"
+                              value={height}
+                              onChange={handleheightChange}
+                              placeholder="Height"
+                              />
+                              <span className="BoldUnit1">In</span>
+                            </div>
+                            <div className="CustomGoalinp">
+                              <input
+                              type="text"
+                              className="circular-input-Gen"
+                              id="weight"
+                              value={Userweight}
+                              onChange={handleUserWeightChange}
+                              placeholder="Weight"
+                              />
+                              <span className="BoldUnit1">Lbs</span>
+                            </div>
+                            <div className="SmallCustomInp">
+                              <input
+                              type="text"
+                              className="circular-input-Gen"
+                              id="age"
+                              value={age}
+                              onChange={handleage}
+                              placeholder="Age"
+                              />
+                              <span className="BoldUnit1">Yr</span>
+                            </div>
+                            <select id="dropdown" className="dropdown" value={activityLevel} onChange={handleactivityLevelChange}>
+                              <option value="" disabled>Choose your Activity Level</option>
+                              <option value="1">Sedentary</option>
+                              <option value="2">Lightly Exercise</option>
+                              <option value = "3">Moderately Active</option>
+                              <option value="4">Very Active</option>
+                              <option value="5">Super Active</option>
+                            </select>
+                            <select className="smallDropdown" value={sex} onChange={handlesexChange}>
+                              <option value="" disabled>Choose your sex</option>
+                              <option value = "M">Male</option>
+                              <option value = "F">Female</option>
+                            </select>
+                            <select className= "dropdown" value={weightLossStyle} onChange={handleWightLossStyleChange}>
+                              <option value="" disabled>Choose a Weight Change Goal</option>
+                              <option value ="1">Aggresively Gain Weight (+2lbs/Week)</option>
+                              <option value="2">Gain Weight (+1lb/Week)</option>
+                              <option value="3">Maintain Weight (+0lb/Week)</option>
+                              <option value="4">Lose Weight (-1lb/Week)</option>
+                              <option value="5">Aggressively Lose Weight (-2lb/Week)</option>
+                            </select>
+                            
+
+
+                          </div>
+                          <button onClick={handleCustomGoal}>Generate</button>
+                          <div className="x-add" onClick={closeCustomGoalPopup}>
+                          &times;
+                          </div>
+                        </div>
+                      </div>
+
+
+                  )}
+
                   <div className="x-add" onClick={closeGoalsPopup}>
                     &times;
                   </div>
