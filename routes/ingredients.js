@@ -78,53 +78,60 @@ router.get('/ingredient-nutrition', async (req, res) => {
 
 });
 
-router.post('/addIngredient', async (req, res) => {
-  const { userId, foodName, calories, carbs, fats, protein, weight } = req.body;
+router.put('/updateMeal', async (req, res) => {
+  const { mealId, userId, foodName, calories, carbs, fats, protein, weight } = req.body;
 
-  // Validate the input to make sure all fields are present
-  if (!userId || !foodName || !calories || !carbs || !fats || !protein || !weight) {
-    return res.status(400).json({ error: 'All fields are required, especially the userId' });
+  // Validate input to ensure all required fields are present
+  if (!mealId || !userId || !foodName || !calories || !carbs || !fats || !protein || !weight) {
+    return res.status(400).json({ error: 'All fields are required, especially mealId and userId.' });
   }
 
-  // Connect to the database and log connection status
-  const db = client.db('COP4331LargeProject');
+  const db = client.db('COP4331LargeProject'); // Connect to the database
   console.log('Connected to Database');
 
-  // Create a new ingredient object with the provided data
-  const newIngredient = {
-    userId: new ObjectId(userId), // Relationship to a specific user
-    foodName: foodName,
-    calories: calories,
-    carbs: carbs,
-    fats: fats,
-    protein: protein,
-    weight: weight, // Defaulted to grams
-  };
-
   try {
-    // Attempt to insert the ingredient into the Meals collection
-    const result = await db.collection('Meals').insertOne(newIngredient);
-    //console.log('Insert operation result:', result); // Log the full result object to inspect its properties
+    // Update the meal and return the result
+    const updatedMeal = await db.collection('Meals').findOneAndUpdate(
+      { _id: new ObjectId(mealId), userId: new ObjectId(userId) }, // Match meal by ID and user ID
+      { $set: { foodName, calories, carbs, fats, protein, weight } }, // Update fields
+      { returnDocument: 'after' } // Return the updated document
+    );
 
-    // Check if the document was successfully inserted
-    if (result.insertedId) {
-      res.status(201).json({
-        message: 'Ingredient added successfully',
-        data: { _id: result.insertedId, ...newIngredient } // Include the new ID and ingredient data in the response
-      });
-    } else {
-      // Log an error if `insertedId` is not present
-      console.error('Insert operation did not return an insertedId');
-      res.status(500).json({ error: 'Failed to add ingredient, no insertedId returned' });
+    // Handle case where the meal is not found
+    if (!updatedMeal.value) {
+      return res.status(404).json({ error: 'Meal not found.' });
     }
+
+    // Respond with the updated meal data
+    return res.status(200).json({
+      message: 'Meal updated successfully',
+      data: updatedMeal.value
+    });
   } catch (error) {
-    // Catch and log any errors during the insertion process
-    console.error('Error adding ingredient:', error);
-    res.status(500).json({ error: 'Failed to add ingredient' });
+    // Catch and log any errors during the update process
+    console.error('Error updating meal:', error);
+    return res.status(500).json({ error: 'Failed to update meal.' });
   }
 });
 
+// Route to get all meals for a specific user
+router.get('/getMeals', async (req, res) => {
+  const { userId } = req.query;
 
+  if (!userId) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  const db = client.db('COP4331LargeProject');
+
+  try {
+    const meals = await db.collection('Meals').find({ userId: new ObjectId(userId) }).toArray();
+    res.status(200).json(meals);
+  } catch (error) {
+    console.error('Error fetching meals:', error);
+    res.status(500).json({ error: 'An error occurred while fetching the meals' });
+  }
+});
 
 router.post('/addIngredient', async (req, res) => {
   const { userId, foodName, calories, carbs, fats, protein, weight } = req.body;
