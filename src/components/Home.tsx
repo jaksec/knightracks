@@ -330,7 +330,7 @@ function Home() {
                         </div>
                     </div>
                     <div className="box">
-                      <img src="JamesLove.jpg" alt="jamesimg"></img>
+                      <img src="DM.jpg" alt="DM"></img>
                       <div className="devname">
                         <p>Ning Dim</p> 
                         API Devleoper
@@ -344,7 +344,7 @@ function Home() {
                       </div>
                     </div>
                     <div className="box">
-                      <img src="JamesLove.jpg" alt="jamesimg"></img>
+                      <img src="MikeM.jpg" alt="michaelimg"></img>
                       <div className="devname">  
                         <p>Michael Miletic</p>
                         Project Lead/Mobile Developer

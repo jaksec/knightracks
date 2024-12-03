@@ -80,6 +80,14 @@ const Landing: React.FC = () => {
   const [isEditPopupVisible, setEditPopupVisible] = useState(false);
   const [editMeal, setEditMeal] = useState<any>(null); // State to hold the meal being edited
 
+  const [searchValue, setsearchValue] = useState<string>('');
+  const [filteredResults, setFilteredResults] = useState<string[]>([]);
+  const [resultName, setresultName] = useState<string>("");
+  const [resultCals, setresultCals] = useState<number>(0);
+  const [resultCarbs, setresultCarbs] = useState<number>(0);
+  const [resultProt, setresultProt] = useState<number>(0);
+  const [resultFat, setresultFat] = useState<number>(0);
+  const [resultSize, setresultSize] = useState<number>(0);
 
   // On component mount, ensure the correct mode is applied
   useEffect(() => {
@@ -863,6 +871,35 @@ const Landing: React.FC = () => {
     }
   };
 
+  const handlesearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    setsearchValue(e.target.value);
+
+
+
+
+  }
+
+  const handleBlur = () => {
+    setTimeout(() => {
+      setFilteredResults([]);
+
+    }, 200);
+  };
+
+
+  const handleClickedItem = (result: string) => {
+
+  }
+
+  const addSearchItem = () => {
+
+  }
+
+  const adjustSize = () => {
+
+  }
+
   return (
     <>
       <div id="stars-container">
@@ -1250,9 +1287,56 @@ const Landing: React.FC = () => {
               {activeMode === 'Search' && (
                 <>
                   {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
-
-                  <div>hi</div>
-                
+                  <div className="searchBarContainer">
+                    <input
+                    type="text"
+                    value={searchValue}
+                    onChange={handlesearchValueChange}
+                    placeholder='Search...'
+                    className="searchBar"
+                    onBlur={handleBlur}
+                    />
+                    {filteredResults.length > 0 && (
+                      <ul className="results-dropdown">
+                        {filteredResults.map((result, rIndex) => (
+                          <li
+                          key={rIndex}
+                          className="resultItem"
+                          //onClick={handleClickedItem}
+                          >
+                            {result}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                  <p className="food-name">NAME</p>
+                  <input className="circular-input search-input" onChange={adjustSize} value={resultSize}/>
+                  <span className="BoldUnit">g</span>
+                  <div className='searchGrid'>
+                    <div>
+                      <p className="resultOutput">Calories: {resultCals}</p>
+                      <span className="BoldUnit">kCal</span>
+                    </div>
+                    <div>
+                      <p className="resultOutput">Carbohydrates: {resultCarbs}</p>
+                      <span className="BoldUnit">g</span>
+                    </div >
+                    <div>
+                      <p className="resultOutput">Protein: {resultProt}</p>
+                      <span className="BoldUnit">g</span>
+                    </div>
+                    <div>
+                      <p className="resultOutput">Fats: {resultFat}</p>
+                      <span className="BoldUnit">g</span>
+                    </div>
+                  </div>
+                  
+                  
+                  <button
+                  className="addSearchButton"
+                  onClick={addSearchItem}
+                  >ADD</button>
                 
                 </>
               )}

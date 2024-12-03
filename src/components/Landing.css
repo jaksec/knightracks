@@ -42,6 +42,17 @@
     transition: border-color 0.3s ease; /* Smooth transition effect */
 }
 
+.search-input {
+    width: 10%; /* Smaller width */
+    padding: 5px; /* Inner spacing */
+    font-size: 18px; /* Larger font size */
+    padding-left: 10px;
+    border: 1px solid #ccc; /* Optional border for styling */
+    border-radius: 15px; /* Rounded corners */
+    transition: border-color 0.3s ease; 
+    margin: 10px;
+}
+
 .input-row {
     display: flex;
     align-items: center;
@@ -505,12 +516,13 @@ input:not(:checked) + .toggle-button .emoji {
 }
 
 .add-button {
-    background: none;
+    background: white;
     border: none;
-    margin: 0;
+    margin: 10px;
     transition: transform 0.2s;
     padding: 15px; /* Minimal padding for clickable area */
-    border-radius: 50%;
+    border-radius: 30%;
+    font-size: 30px;
 }
 
 .add-button:hover {
@@ -557,6 +569,70 @@ input:not(:checked) + .toggle-button .emoji {
     transform: translate(-50%, -50%);
     width: 80%;
 }
+
+.searchBarContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.searchBar {
+    width: 60%;
+    margin-top: 30px;
+    font-size: 16px;
+    padding: 5px;
+}
+
+.results-dropdown {
+
+}
+
+.result-item {
+
+}
+
+.addSearchButton {
+    
+}
+
+.food-name{
+    margin-top: 40px;
+    font-size: 28px;
+}
+
+.resultOutput {
+    display: inline;
+    margin: 5px;
+    font-size: 20px;
+    word-spacing: 20px;
+}
+
+.searchGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content:center;
+    align-items: center;
+    height: 100%;
+    margin-top: 60px;
+    margin-bottom: 60px;
+    row-gap: 50px;
+}
+
+.size-input {
+    width: 50%;
+    padding: 5px;
+    margin: 10px 0;
+    border: 2px solid gray;
+    background: black;
+    outline: none;
+    box-sizing: border-box;
+    color: #ffff;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 30%
+}
+
 
 .GoalsError {
     font-size: 20px;
