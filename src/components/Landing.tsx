@@ -1088,7 +1088,7 @@ const Landing: React.FC = () => {
         </div>
 
         <div className={`nutrition-section-wrapper ${!isChartMode ? 'fade-in' : 'fade-out'}`}>
-          <h2 style={{ position: 'absolute', left: '24%', top: '8%' }}>Calories</h2>
+          <h2 style={{ position: 'absolute', left: '24%', top: '9.5%' }}>Calories</h2>
           <ProgressBar
             value={currentCalories}
             max={goalCalories}
