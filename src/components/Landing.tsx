@@ -105,58 +105,94 @@ const Landing: React.FC = () => {
   }
 
   const adjustCalorieChange = () => {
-    if(GoalCals == "") //error and erase if there are no calories filled out
-    {
-      setError("Please Fill Out Calories.");
-      setGoalCarb("");
-      setGoalCarbPercent("");
-      setGoalProt("");
-      setGoalProtPercent("");
-      setGoalFats("");
-      setGoalFatPercent("");
+    if (GoalCals === "" || Number(GoalCals) < 500) {
+      setError("Please fill out the calories.");
+      return;
     }
-    else if (!(GoalCarbPercent == "") && !(GoalProtPercent == "") && !(GoalFatPercent == "")) //if all the percentages are filled fill macros according to %
-    {
-      setError("")
-      if(GoalCarbPercent + GoalProtPercent + GoalFatPercent != 100)
-        setError("Ensure All Percentages Add Up To 100%.");
-      setGoalCarb(Math.round(GoalCals * (GoalCarbPercent/100)/4));
-      setGoalProt(Math.round(GoalCals * (GoalProtPercent/100)/4));
-      setGoalFats(Math.round(GoalCals * (GoalFatPercent/100)/9));
-      //setError(String(GoalCals));
+  
+    const totalPercent = 
+      Number(GoalCarbPercent || 0) + 
+      Number(GoalProtPercent || 0) + 
+      Number(GoalFatPercent || 0);
+  
+    if (totalPercent !== 100) {
+      setError("Ensure all percentages add up to 100%.");
+      return;
     }
-    else if (GoalCarbPercent == "" && GoalFatPercent == "" && GoalProtPercent == "") //If all the % are empty then run the default config
-    {
-      setError("")
-      setGoalCarbPercent(50);
-      setGoalCarb(Math.round(GoalCals * (Number(50)/100)/4));
-      setGoalProtPercent(30);
-      setGoalProt(Math.round(GoalCals * (Number(30)/100)/4));
-      setGoalFatPercent(20);
-      setGoalFats(Math.round(10*(GoalCals * (Number(20)/100)/9)));
-    }
-    
-    else  //if % are partially filled error and do nothing
-    {
-      setError("Please Fill Out All Percentages.")
-    }
+
+    console.log("skipped error");
+  
+    // Clear error if validation passes
+    setError("");
+  
+    // Save macros based on percentages
+    const carbs = Number(GoalCals) * (Number(GoalCarbPercent) / 100) / 4;
+    const protein = Number(GoalCals) * (Number(GoalProtPercent) / 100) / 4;
+    const fats = Number(GoalCals) * (Number(GoalFatPercent) / 100) / 9;
+  
+    setGoalCarb(Number(carbs.toFixed(3))); // Save exact values
+    setGoalProt(Number(protein.toFixed(3)));
+    setGoalFats(Number(fats.toFixed(3)));
   };
 
   const adjustPercentChange = () => {
-    if(GoalCals == "")
-      setError("Please Fill Out Calories.");
-    else if (GoalCarbPercent == "" || GoalProtPercent == "" || GoalFatPercent == "")
-      setError("Please Fill Out All Percentages.");
-    else if (GoalCarbPercent + GoalProtPercent + GoalFatPercent != 100)
-      setError("Ensure All Percentages Add Up To 100%.");
-    else
-    {
-      setError("");
-      setGoalCarb(Math.round((GoalCals * (GoalCarbPercent/100))/4));
-      setGoalProt(Math.round((GoalCals * (GoalProtPercent/100))/4));
-      setGoalFats(Math.round((GoalCals * (GoalFatPercent/100))/9));
+    // Ensure all fields are filled out
+    if (
+      !GoalCals ||
+      !GoalCarbPercent ||
+      !GoalProtPercent ||
+      !GoalFatPercent
+    ) {
+      setError("Please fill out all fields.");
+      return;
     }
-  }
+
+    // Convert input values to numbers
+    const goalCals = Number(GoalCals);
+    const carbPercent = Math.round(Number(GoalCarbPercent || 0));
+    const protPercent = Math.round(Number(GoalProtPercent || 0));
+    const fatPercent = Math.round(Number(GoalFatPercent || 0));
+
+    // Ensure percentages are valid
+    const isValidPercent = (percent: number) =>
+      Number.isInteger(percent) && percent >= 5 && percent % 5 === 0;
+
+    if (
+      !isValidPercent(carbPercent) ||
+      !isValidPercent(protPercent) ||
+      !isValidPercent(fatPercent)
+    ) {
+      setError(
+        "Percentages must be integers, at least 5, and multiples of 5."
+      );
+      return;
+    }
+
+    // Calculate the total percentage
+    const totalPercent = carbPercent + protPercent + fatPercent;
+
+    // Validate that percentages add up to 100
+    if (totalPercent !== 100) {
+      setError(`Total percentage is ${totalPercent}%. Ensure it equals 100%.`);
+      return;
+    }
+
+    console.log("skipped error");
+
+    // Clear error if validation passes
+    setError("");
+
+    // Calculate macros based on percentages
+    const carbs = (goalCals * (carbPercent / 100)) / 4;
+    const protein = (goalCals * (protPercent / 100)) / 4;
+    const fats = (goalCals * (fatPercent / 100)) / 9;
+
+    // Update state with calculated macros, rounded to 3 decimal places
+    setGoalCarb(parseFloat(carbs.toFixed(3)));
+    setGoalProt(parseFloat(protein.toFixed(3)));
+    setGoalFats(parseFloat(fats.toFixed(3)));
+
+  };
 
   const validateInput = (value: string) => /^[0-9]*\.?[0-9]*$/.test(value);
 
@@ -216,16 +252,56 @@ const Landing: React.FC = () => {
     setweightLossStyle(e.target.value)
   }
 
-  const handleGoalCalChange = () => {
-    adjustCalorieChange();
+  const formatAsInteger = (value: number | string): string => {
+    return Math.round(Number(value)).toString(); // Ensure value is rounded and returned as a string
   };
 
-  const handleGoalCalChange1 = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGoalCalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    if(val == "")
+    if (val === "") {
       setGoalCals("");
-    else
-      setGoalCals(Number(e.target.value));
+      setError(""); // Clear error when input is cleared
+    } else {
+      const numericVal = Number(val);
+      if (numericVal < 500) {
+        setError("Calories cannot be less than 500."); // Update error immediately
+        return;
+      }
+  
+      const totalPercent =
+        Number(GoalCarbPercent || 0) +
+        Number(GoalProtPercent || 0) +
+        Number(GoalFatPercent || 0);
+  
+      if (totalPercent !== 100) {
+        setError(`Total percentage is ${totalPercent}%. Ensure it equals 100%.`);
+        return;
+      }
+  
+      // Clear error if validation passes
+      setError("");
+      setGoalCals(numericVal);
+  
+      // Recalculate macros based on new calorie value
+      const carbs = numericVal * (Number(GoalCarbPercent) / 100) / 4;
+      const protein = numericVal * (Number(GoalProtPercent) / 100) / 4;
+      const fats = numericVal * (Number(GoalFatPercent) / 100) / 9;
+  
+      setGoalCarb(Number(carbs.toFixed(3)));
+      setGoalProt(Number(protein.toFixed(3)));
+      setGoalFats(Number(fats.toFixed(3)));
+    }
+  };
+  
+  const handleGoalCalChange1 = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const val = e.target.value;
+
+    // Allow only digits or an empty string for backspace
+    if (val === "" || /^[0-9]*$/.test(val)) {
+      setGoalCals(val === "" ? "" : Number(val)); // Save raw input
+      setError(""); // Clear error while typing
+    }
   };
 
   const handleGoalFatPercentChange = () => {
@@ -637,43 +713,87 @@ const Landing: React.FC = () => {
     setEditMeal(meal); // Set the meal to be edited
     setEditPopupVisible(true); // Show the edit popup
   };
-  
 
   const handleEdit = async () => {
-    if (!editMeal) return;
+    if (!editMeal || !editMeal._id) {
+      setError('No meal selected for editing.');
+      return;
+    }
   
-    const userId = getCookie('id'); // Retrieve the user ID from the cookie
+    const { _id, foodName, calories, carbs, fats, protein, weight } = editMeal;
   
-    if (!userId) {
-      setError('User ID Is Missing. Please Log In Again.');
+    // Validate all fields
+    if (
+      !_id ||
+      !foodName ||
+      calories == null ||
+      carbs == null ||
+      fats == null ||
+      protein == null ||
+      weight == null
+    ) {
+      setError('All fields are required.');
       return;
     }
   
     try {
+      const userId = getCookie('id');
+      if (!userId) {
+        setError('User ID is missing. Please log in again.');
+        return;
+      }
+
+      const oldMeal = meals.find((meal) => meal._id === _id);
+
+      if (!oldMeal) {
+        setError('Meal not found in the list.');
+        return;
+      }
+  
+      // Make the PUT request to update the meal
       const response = await axios.put('http://146.190.71.194:5000/api/ingredient/updateMeal', {
-        userId,
-        mealId: editMeal._id, // Pass the meal's ID
-        foodName: editMeal.foodName,
-        calories: parseFloat(editMeal.calories),
-        carbs: parseFloat(editMeal.carbs),
-        fats: parseFloat(editMeal.fats),
-        protein: parseFloat(editMeal.protein),
-        weight: parseFloat(editMeal.weight),
+        mealId: _id,
+        foodName,
+        calories: parseFloat(calories),
+        carbs: parseFloat(carbs),
+        fats: parseFloat(fats),
+        protein: parseFloat(protein),
+        weight: parseFloat(weight),
       });
   
-      if (response.data.success) {
-        // Update the meals state with the edited meal
+      if (response.status === 200 && response.data.message === 'Meal updated successfully') {
+        const updatedMeal = response.data.data; // Assuming updated meal data is in `data`
+  
+        // Update the state with the edited meal
         setMeals((prevMeals) =>
-          prevMeals.map((meal) => (meal._id === editMeal._id ? { ...meal, ...editMeal } : meal))
+          prevMeals.map((meal) =>
+            meal._id === _id ? { ...meal, ...updatedMeal } : meal
+          )
         );
-        
-        fetchMeals();
-        setEditPopupVisible(false); // Close the edit popup
-        setEditMeal(null); // Clear the edit meal state
+
+              // Adjust totals
+        setCurrentCalories((prev) =>
+          prev - oldMeal.calories + parseFloat(calories)
+        );
+        setCurrentProtein((prev) =>
+          prev - oldMeal.protein + parseFloat(protein)
+        );
+        setCurrentCarbs((prev) =>
+          prev - oldMeal.carbs + parseFloat(carbs)
+        );
+        setCurrentFats((prev) =>
+          prev - oldMeal.fats + parseFloat(fats)
+        );
+  
+        fetchMeals(); // Refresh meals list
+        setEditPopupVisible(false);
+        setEditMeal(null);
+      } else {
+        setError(response.data.error || 'Failed to edit meal.');
       }
     } catch (error) {
       console.error('Error editing meal:', error);
-      setError('Failed To Edit Meal. Please Try Again.');
+      setError('An error occurred while editing the meal. Please try again.');
     }
   };
 
@@ -689,7 +809,7 @@ const Landing: React.FC = () => {
     const isValidNumber = (value: string) => /^[0-9]+(\.[0-9]+)?$/.test(value);
 
     if (!name || !calories || !carbs || !fats || !proteins || !weight) {
-      setError('All Fields Must Be Filled With Valid Numbers.');
+      setError('Please fill out all fields.');
       return;
     }
 
@@ -743,10 +863,6 @@ const Landing: React.FC = () => {
     }
   };
 
-  const formatWithUnit = (value: string, unit: string) => {
-    return `${value}${unit}`;
-  };
-
   return (
     <>
       <div id="stars-container">
@@ -760,9 +876,9 @@ const Landing: React.FC = () => {
         <hr />
         <div className="Nutrition_box_items">
           <p>Calories: {GoalCals}</p>
-          <p>Protein: {formatWithUnit(String(GoalProt), "g")}</p>
-          <p>Carbs: {formatWithUnit(String(GoalCarb), "g")}</p>
-          <p>Fats: {formatWithUnit(String(GoalFats), "g")}</p>
+          <p>Protein: {formatAsInteger(GoalProt)}g</p>
+          <p>Carbs: {formatAsInteger(GoalCarb)}g</p>
+          <p>Fats: {formatAsInteger(GoalFats)}g</p>
           <button className="Nutrition_box_button" onClick={showGoalsPopup}>
             Edit
           </button>
@@ -770,9 +886,10 @@ const Landing: React.FC = () => {
             <div className="GoalChangeOverlay">
               <div className="GoalChangePopup">
                 <h2>Update Your Goals</h2>
+                <div style={{ paddingBottom: '35px'}}></div>
                 {error && <div className="GoalsError" style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
-                <div className="GroupEntryGrid">
                   <div className="subtitles">Calories</div>
+                  <div style={{paddingTop: '10px'}}></div> {/* Empty placeholder for alignment */}
                   <input
                     type="number"
                     id="Cals"
@@ -782,9 +899,10 @@ const Landing: React.FC = () => {
                     onBlur={handleGoalCalChange}
                     placeholder="Calories"
                     className="GoalInputBoxes"
+                    style={{ width: '20%', marginBottom: '15px' }}
                   />
-                  <div></div> {/* Empty placeholder for alignment */}
 
+                  <div className="GroupEntryGrid" style={{ marginTop: '0px' }}>
                   <div className="subtitles">Carbohydrates</div>
                   <div className="InputWithUnit">
                     <input
@@ -796,9 +914,9 @@ const Landing: React.FC = () => {
                       onBlur={handleGoalCarbPercentChange}
                       placeholder="%"
                     />
-                    <span className="BoldUnit">%</span>
+                    <span className="BoldUnit">%</span> 
                   </div>
-                  <p style={{ fontWeight: 100 }}>{formatWithUnit(String(GoalCarb), "g")}</p>
+                  <p style={{ fontWeight: 100 }}>{formatAsInteger(GoalCarb)}g</p>
 
                   <div className="subtitles">Protein</div>
                   <div className="InputWithUnit">
@@ -813,7 +931,7 @@ const Landing: React.FC = () => {
                     />
                     <span className="BoldUnit">%</span>
                   </div>
-                  <p style={{ fontWeight: 100 }}>{formatWithUnit(String(GoalProt), "g")}</p>
+                  <p style={{ fontWeight: 100 }}>{formatAsInteger(GoalProt)}g</p>
 
                   <div className="subtitles">Fats</div>
                   <div className="InputWithUnit">
@@ -828,7 +946,7 @@ const Landing: React.FC = () => {
                     />
                     <span className="BoldUnit">%</span>
                   </div>
-                  <p style={{ fontWeight: 100 }}>{formatWithUnit(String(GoalFats), "g")}</p>
+                  <p style={{ fontWeight: 100 }}>{formatAsInteger(GoalFats)}g</p>
                 </div>
                 <div className="Buttons">
                   <button onClick={handleSaveGoal}>Save</button>
@@ -837,7 +955,7 @@ const Landing: React.FC = () => {
                       <div className="GoalChangeOverlay">
                         <div className="CustomGoalPopup">
                           <h2>Generate a Custom Goal</h2>
-                          <p>KnighTracks will never store your information.</p>
+                          <p>KnighTracks will <span style={{ color: 'red' }}>never</span> store your information.</p>
                           {error && <div className="CustomGoalError" style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
                           <div className="CustomGoalGrid">
                             <div className="CustomGoalinp">
@@ -849,7 +967,7 @@ const Landing: React.FC = () => {
                               onChange={handleheightChange}
                               placeholder="Height"
                               />
-                              <span className="BoldUnit1">inches</span>
+                              <span className="BoldUnit1">in.</span>
                             </div>
                             <div className="CustomGoalinp">
                               <input
@@ -873,32 +991,34 @@ const Landing: React.FC = () => {
                               />
                               <span className="BoldUnit1">yrs.</span>
                             </div>
+                            </div>
+                            <div className="dropdown-group">
+                            <select className="smallDropdown" value={sex} onChange={handlesexChange}>
+                              <option value="" disabled>Sex</option>
+                              <option value = "M">Male</option>
+                              <option value = "F">Female</option>
+                            </select>
                             <select id="dropdown" className="dropdown" value={activityLevel} onChange={handleactivityLevelChange}>
-                              <option value="" disabled>Choose your Activity Level</option>
+                              <option value="" disabled>Activity Level</option>
                               <option value="1">Sedentary</option>
                               <option value="2">Lightly Exercise</option>
                               <option value = "3">Moderately Active</option>
                               <option value="4">Very Active</option>
                               <option value="5">Super Active</option>
                             </select>
-                            <select className="smallDropdown" value={sex} onChange={handlesexChange}>
-                              <option value="" disabled>Choose your sex</option>
-                              <option value = "M">Male</option>
-                              <option value = "F">Female</option>
-                            </select>
                             <select className= "dropdown" value={weightLossStyle} onChange={handleWightLossStyleChange}>
-                              <option value="" disabled>Choose Weight Change Goal</option>
-                              <option value ="1">Aggresively Gain Weight (+2lbs/Week)</option>
-                              <option value="2">Gain Weight (+1lb/Week)</option>
-                              <option value="3">Maintain Weight (+0lb/Week)</option>
-                              <option value="4">Lose Weight (-1lb/Week)</option>
-                              <option value="5">Aggressively Lose Weight (-2lb/Week)</option>
+                              <option value="" disabled>Weight Goal</option>
+                              <option value ="1">Rapid Gain (+2lbs/Week)</option>
+                              <option value="2">Light Gain (+1lb/Week)</option>
+                              <option value="3">Maintain (+0lb/Week)</option>
+                              <option value="4">Slight Loss (-1lb/Week)</option>
+                              <option value="5">Rapid Loss (-2lb/Week)</option>
                             </select>
-                            
-
-
                           </div>
+                          
+                          <div style={{ paddingTop: '100px' }}>
                           <button onClick={handleCustomGoal}>Generate</button>
+                          </div>
                           {sucess && <div className="CustomSucess">{sucess}</div>}
                           <div className="x-add" onClick={closeCustomGoalPopup}>
                           &times;
@@ -968,7 +1088,7 @@ const Landing: React.FC = () => {
         </div>
 
         <div className={`nutrition-section-wrapper ${!isChartMode ? 'fade-in' : 'fade-out'}`}>
-          <h2 style={{ position: 'absolute', left: '23%', top: '8%' }}>Calories</h2>
+          <h2 style={{ position: 'absolute', left: '24%', top: '8%' }}>Calories</h2>
           <ProgressBar
             value={currentCalories}
             max={goalCalories}
@@ -977,7 +1097,7 @@ const Landing: React.FC = () => {
             showGrams={false}
           />
 
-          <h2 style={{ position: 'absolute', right: '23.5%', bottom: '23%' }}>Protein</h2>
+          <h2 style={{ position: 'absolute', right: '25%', bottom: '23%' }}>Protein</h2>
           <ProgressBar
             value={currentProtein}
             max={goalProtein}
@@ -986,7 +1106,7 @@ const Landing: React.FC = () => {
             showGrams={true}
           />
 
-          <h2 style={{ position: 'absolute', right: '25.5%', top: '8%' }}>Fats</h2>
+          <h2 style={{ position: 'absolute', right: '25.5%', top: '10%' }}>Fats</h2>
           <ProgressBar
             value={currentFats}
             max={goalFats}
@@ -995,7 +1115,7 @@ const Landing: React.FC = () => {
             showGrams={true}
           />
 
-          <h2 style={{ position: 'absolute', left: '19.5%', bottom: '23%' }}>Carbohydrates</h2>
+          <h2 style={{ position: 'absolute', left: '21%', bottom: '23%' }}>Carbohydrates</h2>
           <ProgressBar
             value={currentCarbs}
             max={goalCarbs}
@@ -1028,56 +1148,72 @@ const Landing: React.FC = () => {
 
       {isEditPopupVisible && (
         <div className="overlay">
-          <div className="popup-add" onClick={(e) => e.stopPropagation()}>
+          <div className="popup-edit" onClick={(e) => e.stopPropagation()}>
             <div className="x-add" onClick={() => { setEditPopupVisible(false); setError('');}}>
               &times;
             </div>
             <div className="add-title">Edit Meal</div>
 
+            <div style={{paddingTop: '40px'}}></div>
+
             {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
 
-            <input
-              type="text"
-              value={editMeal?.foodName || ''}
-              onChange={(e) => setEditMeal({ ...editMeal, foodName: e.target.value })}
-              placeholder="Name"
-              className="circular-input"
-            />
-            <input
-              type="text"
-              value={editMeal?.calories || ''}
-              onChange={(e) => setEditMeal({ ...editMeal, calories: e.target.value })}
-              placeholder="Calories"
-              className="circular-input"
-            />
-            <input
-              type="text"
-              value={editMeal?.carbs || ''}
-              onChange={(e) => setEditMeal({ ...editMeal, carbs: e.target.value })}
-              placeholder="Carbohydrates (g)"
-              className="circular-input"
-            />
-            <input
-              type="text"
-              value={editMeal?.fats || ''}
-              onChange={(e) => setEditMeal({ ...editMeal, fats: e.target.value })}
-              placeholder="Fats (g)"
-              className="circular-input"
-            />
-            <input
-              type="text"
-              value={editMeal?.protein || ''}
-              onChange={(e) => setEditMeal({ ...editMeal, protein: e.target.value })}
-              placeholder="Proteins (g)"
-              className="circular-input"
-            />
-            <input
-              type="text"
-              value={editMeal?.weight || ''}
-              onChange={(e) => setEditMeal({ ...editMeal, weight: e.target.value })}
-              placeholder="Weight (g)"
-              className="circular-input"
-            />
+            <div className="edit-meal-container">
+              <div className="input-row">
+                <label className="input-label">Name:</label>
+                <input
+                  type="text"
+                  value={editMeal?.foodName || ''}
+                  onChange={(e) => setEditMeal({ ...editMeal, foodName: e.target.value })}
+                  className="circular-input edit-meal-input"
+                />
+              </div>
+              <div className="input-row">
+                <label className="input-label">Calories:</label>
+                <input
+                  type="text"
+                  value={editMeal?.calories || ''}
+                  onChange={(e) => setEditMeal({ ...editMeal, calories: e.target.value })}
+                  className="circular-input edit-meal-input"
+                />
+              </div>
+              <div className="input-row">
+                <label className="input-label">Carbohydrates (g):</label>
+                <input
+                  type="text"
+                  value={editMeal?.carbs || ''}
+                  onChange={(e) => setEditMeal({ ...editMeal, carbs: e.target.value })}
+                  className="circular-input edit-meal-input"
+                />
+              </div>
+              <div className="input-row">
+                <label className="input-label">Fats (g):</label>
+                <input
+                  type="text"
+                  value={editMeal?.fats || ''}
+                  onChange={(e) => setEditMeal({ ...editMeal, fats: e.target.value })}
+                  className="circular-input edit-meal-input"
+                />
+              </div>
+              <div className="input-row">
+                <label className="input-label">Proteins (g):</label>
+                <input
+                  type="text"
+                  value={editMeal?.protein || ''}
+                  onChange={(e) => setEditMeal({ ...editMeal, protein: e.target.value })}
+                  className="circular-input edit-meal-input"
+                />
+              </div>
+              <div className="input-row">
+                <label className="input-label">Weight (g):</label>
+                <input
+                  type="text"
+                  value={editMeal?.weight || ''}
+                  onChange={(e) => setEditMeal({ ...editMeal, weight: e.target.value })}
+                  className="circular-input edit-meal-input"
+                />
+              </div>
+            </div>
 
             <div>
               <button style={{ marginTop: '25px' }} onClick={handleEdit}>
@@ -1110,6 +1246,7 @@ const Landing: React.FC = () => {
                 </button>
               </div>
 
+            <div className={activeMode === 'Search' ? 'fade-in' : 'fade-out'}>
               {activeMode === 'Search' && (
                 <>
                   {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
@@ -1119,53 +1256,67 @@ const Landing: React.FC = () => {
                 
                 </>
               )}
-
+            </div>
+            <div className={activeMode === 'Custom' ? 'fade-in' : 'fade-out'}>
               {activeMode === 'Custom' && (
                 <>
                   {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={handleNameChange}
-                    placeholder="Name"
-                    className="circular-input"
-                  />
-                  <input
-                    type="text"
-                    value={calories}
-                    onChange={handleCalorieChange}
-                    placeholder="Calories"
-                    className="circular-input"
-                  />
-                  <input
-                    type="text"
-                    value={carbs}
-                    onChange={handleCarbChange}
-                    placeholder="Carbohydrates (g)"
-                    className="circular-input"
-                  />
-                  <input
-                    type="text"
-                    value={fats}
-                    onChange={handleFatChange}
-                    placeholder="Fats (g)"
-                    className="circular-input"
-                  />
-                  <input
-                    type="text"
-                    value={proteins}
-                    onChange={handleProteinChange}
-                    placeholder="Proteins (g)"
-                    className="circular-input"
-                  />
-                  <input
-                    type="text"
-                    value={weight}
-                    onChange={handleWeightChange}
-                    placeholder="Weight (g)"
-                    className="circular-input"
-                  />
-
+                  <div className="add-meal-container">
+                    <div className="input-row">
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={handleNameChange}
+                        placeholder="Name"
+                        className="circular-input edit-meal-input"
+                      />
+                    </div>
+                    <div className="input-row">
+                      <input
+                        type="text"
+                        value={calories}
+                        onChange={handleCalorieChange}
+                        placeholder="Calories"
+                        className="circular-input edit-meal-input"
+                      />
+                    </div>
+                    <div className="input-row">
+                      <input
+                        type="text"
+                        value={carbs}
+                        onChange={handleCarbChange}
+                        placeholder="Carbohydrates (g)"
+                        className="circular-input edit-meal-input"
+                      />
+                    </div>
+                    <div className="input-row">
+                      <input
+                        type="text"
+                        value={fats}
+                        onChange={handleFatChange}
+                        placeholder="Fats (g)"
+                        className="circular-input edit-meal-input"
+                      />
+                    </div>
+                    <div className='input-row'>
+                      <input
+                        type="text"
+                        value={proteins}
+                        onChange={handleProteinChange}
+                        placeholder="Proteins (g)"
+                        className="circular-input edit-meal-input"
+                      />
+                    </div>
+                    <div className='input-row'>
+                      <input
+                        type="text"
+                        value={weight}
+                        onChange={handleWeightChange}
+                        placeholder="Weight (g)"
+                        className="circular-input edit-meal-input"
+                      />
+                    </div>
+                  </div>
                   <div>
                     <button style={{ marginTop: '25px' }} onClick={handleAdd}>
                       Add
@@ -1173,6 +1324,7 @@ const Landing: React.FC = () => {
                   </div>
                 </>
               )}
+              </div>
             </div>
           </div>
         )}

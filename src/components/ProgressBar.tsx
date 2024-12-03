@@ -20,6 +20,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ value, max, classNameBar, cla
         style={{
           left: `${percentage}%`,
           color: value >= max ? 'green' : 'white',
+          fontWeight: value >= max ? 'bold' : 100,
         }}
       >
         {value}{showGrams ? 'g' : ''} {/* Ensure this value is being passed */}
