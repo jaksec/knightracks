@@ -79,36 +79,51 @@ router.get('/ingredient-nutrition', async (req, res) => {
 });
 
 router.put('/updateMeal', async (req, res) => {
-  const { mealId, userId, foodName, calories, carbs, fats, protein, weight } = req.body;
+  const { mealId, foodName, calories, carbs, fats, protein, weight } = req.body;
 
-  // Validate input to ensure all required fields are present
-  if (!mealId || !userId || !foodName || !calories || !carbs || !fats || !protein || !weight) {
-    return res.status(400).json({ error: 'All fields are required, especially mealId and userId.' });
+  // Validate input
+  if (!mealId || !foodName || !calories || !carbs || !fats || !protein || !weight) {
+    return res.status(400).json({ error: 'All fields are required, especially mealId.' });
   }
 
-  const db = client.db('COP4331LargeProject'); // Connect to the database
-  console.log('Connected to Database');
+  // Validate mealId format
+  if (!ObjectId.isValid(mealId)) {
+    return res.status(400).json({ error: 'Invalid mealId format.' });
+  }
+
+  const db = client.db('COP4331LargeProject');
 
   try {
-    // Update the meal and return the result
+    // Debugging: Check if meal exists
+    const meal = await db.collection('Meals').findOne({ _id: new ObjectId(mealId) });
+    console.log('Meal exists:', meal);
+    if (!meal) {
+      return res.status(404).json({ error: 'Meal not found in database.' });
+    }
+
+    // Debugging: Log the fields being updated
+    const updateFields = { foodName, calories, carbs, fats, protein, weight };
+    console.log('Update Fields:', updateFields);
+
+    // Perform the update
     const updatedMeal = await db.collection('Meals').findOneAndUpdate(
-      { _id: new ObjectId(mealId), userId: new ObjectId(userId) }, // Match meal by ID and user ID
-      { $set: { foodName, calories, carbs, fats, protein, weight } }, // Update fields
-      { returnDocument: 'after' } // Return the updated document
+      { _id: new ObjectId(mealId) },
+      { $set: updateFields },
+      { returnOriginal: false } // Use for MongoDB < 4.4
     );
 
-    // Handle case where the meal is not found
-    if (!updatedMeal.value) {
+    // Debugging: Log the result of findOneAndUpdate
+    console.log('findOneAndUpdate result:', updatedMeal);
+
+    if (!updatedMeal) {
       return res.status(404).json({ error: 'Meal not found.' });
     }
 
-    // Respond with the updated meal data
     return res.status(200).json({
       message: 'Meal updated successfully',
       data: updatedMeal.value
     });
   } catch (error) {
-    // Catch and log any errors during the update process
     console.error('Error updating meal:', error);
     return res.status(500).json({ error: 'Failed to update meal.' });
   }
