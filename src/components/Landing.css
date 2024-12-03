@@ -37,7 +37,7 @@
 
 .title_mode {
     position: absolute; /* Ensure text layers don't affect layout */
-    top: 0.5%;
+    top: 0px;
     transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth fade-in and fade-out */
     opacity: 0;
     visibility: hidden; /* Hide the text during fade-out */
@@ -553,7 +553,7 @@ input:not(:checked) + .toggle-button .emoji {
 }
 
 .GoalInputBoxes {
-    width: 60%;
+    width: 45%;
     position: relative;
     padding: 10px;
     margin: 0px;

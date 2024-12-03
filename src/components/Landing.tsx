@@ -34,7 +34,7 @@ const Landing: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const [isChartMode, setIsChartMode] = useState<boolean>(loadToggleState()); // Initialize with saved state
-  const [activeMode, setActiveMode] = useState<'Search' | 'Custom'>('Custom'); // Default to "Custom" mode
+  const [activeMode, setActiveMode] = useState<'Search' | 'Custom'>('Search'); // Default to "Search" mode
 
   const [GoalCals, setGoalCals] = useState<number | "">("");
   const [GoalProt, setGoalProt] = useState<number | "">("");

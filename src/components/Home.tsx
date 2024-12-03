@@ -309,12 +309,7 @@ function Home() {
           )}
       </div>
 
-
-      {/* learn more and about us hyperlinks */}
-      <div className="more">
-        <a style={{ cursor: 'pointer' }} onClick={() => showPopup('about-us')}>About Us</a>
-
-          {isPopupVisible && pType === 'about-us' && (
+      {isPopupVisible && pType === 'about-us' && (
             <div className="AbusOverlay">
               <div className="Abuspopup" onClick={e => e.stopPropagation()}>
                 <div className="x-about" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
@@ -328,7 +323,7 @@ function Home() {
                       </div>
                     </div>
                     <div className="box">
-                      <img src="NathanChery.jpg" alt="jamesimg"></img>
+                      <img src="NathanChery.jpg" alt="nathanimg"></img>
                       <div className="devname">
                         <p>Nathan Chery</p>
                         API Developer
@@ -342,7 +337,7 @@ function Home() {
                       </div>
                     </div>
                     <div className="box">
-                      <img src="ChrisJaksec.jpg" alt="jamesimg"></img>
+                      <img src="ChrisJaksec.jpg" alt="chrisimg"></img>
                       <div className="devname">                      
                         <p>Chris Jaksec</p>
                         Front-End Developer
@@ -356,7 +351,7 @@ function Home() {
                       </div>
                     </div>
                     <div className="box">
-                      <img src="JamesLove.jpg" alt="jamesimg"></img>
+                      <img src="BrandonRamlagan.jpg" alt="brandonimg"></img>
                       <div className="devname">
                         <p>Brandon Ramlagan</p>
                         Database/Mobile Developer
@@ -367,13 +362,17 @@ function Home() {
             </div>
           )}
 
-          <a href="https://github.com/jaksec/poosd-large" target="_blank" rel="noopener noreferrer">
+
+      {/* learn more and about us hyperlinks */}
+      <div className="more">
+        <a style={{ cursor: 'pointer' }} onClick={() => showPopup('about-us')}>About Us</a>
+        <a href="https://github.com/jaksec/poosd-large" target="_blank" rel="noopener noreferrer">
             Learn More
-          </a>
+        </a>
+      </div>
           
 
         </div>
-      </div>
 
     </>
   )}

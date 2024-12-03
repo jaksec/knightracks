@@ -194,7 +194,6 @@ router.post('/addIngredient', async (req, res) => {
   }
 });
 
-
 router.delete('/deleteMeal', async (req, res) => {
   const { mealId } = req.body; // Expecting the unique _id of the meal to delete
 
