@@ -36,7 +36,7 @@ const ChngPass: React.FC = () => {
             return;
           }
         else if(!newPassword) {
-          seterror("Please input a password");
+          seterror("Please input a password.");
           return;
         }
 
@@ -100,7 +100,7 @@ const ChngPass: React.FC = () => {
                 </a>
             </div>
 
-            <div className="container">
+            <div className="container-1">
               <div className="RPbox"> 
                 <h2 className="RPtitle">Reset Password</h2> 
                 <p style={{ color: "#ffff", marginBottom: '1em' }}>Please reset your password!</p>
@@ -108,7 +108,7 @@ const ChngPass: React.FC = () => {
                   <p className={`error-message ${error ? 'show' : ''}`}>{error}</p>
                 </div>
                 <input type='password' className='password-box' placeholder="Password" onChange={handleFnewPasswordChange} />
-                <input type='password' className='password-box' placeholder="Password" onChange={handledupPasswordChange}/>
+                <input type='password' className='password-box' placeholder="Re-enter Password" onChange={handledupPasswordChange}/>
                 <button onClick={resetPassword} >Submit</button>
               </div>
             </div>

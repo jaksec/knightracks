@@ -1120,6 +1120,12 @@ const Landing: React.FC = () => {
   };
 
   const addSearchItem = async () => {
+
+    if (!resultSize || isNaN(resultSize)) {
+      setError('Please enter a weight.');
+      return;
+    }
+
     const userid = getCookie("id");
     const datar = 
     { 
@@ -1627,7 +1633,7 @@ const Landing: React.FC = () => {
               {activeMode === 'Search' && (
                 <>
                   <div style={{marginTop: '10px'}}>Search for your food, powered by Spoonacular!</div>
-                  {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+                  {error && <div style={{ color: 'red', marginTop: '15px', marginBottom: '-10px' }}>{error}</div>}
                   <div className="searchBarContainer">
                     <input
                       type="text"
