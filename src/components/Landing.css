@@ -605,6 +605,8 @@ input:not(:checked) + .toggle-button .emoji {
     padding: 15px; /* Minimal padding for clickable area */
     border-radius: 30%;
     font-size: 30px;
+    transition: 0.2s;
+    color: white;
 }
 
 .add-button:hover {
