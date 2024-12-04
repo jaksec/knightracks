@@ -516,9 +516,8 @@ input:not(:checked) + .toggle-button .emoji {
 }
 
 .add-button {
-    background: white;
+    background: none;
     border: none;
-    margin: 10px;
     transition: transform 0.2s;
     padding: 15px; /* Minimal padding for clickable area */
     border-radius: 30%;
@@ -582,6 +581,16 @@ input:not(:checked) + .toggle-button .emoji {
     margin-top: 30px;
     font-size: 16px;
     padding: 5px;
+    transition: border-color 0.3s ease; /* Smooth transition effect */
+    border: 1px solid #ccc; /* Optional border for styling */
+    border-radius: 15px; /* Rounded corners */
+    padding-left: 10px;
+    height: 35px;
+}
+
+.searchBar:focus {
+    outline: none;
+    border-color: #007bff; /* Optional focus effect */
 }
 
 .results-dropdown {

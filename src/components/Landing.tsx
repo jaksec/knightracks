@@ -1293,7 +1293,7 @@ const Landing: React.FC = () => {
                     value={searchValue}
                     onChange={handlesearchValueChange}
                     placeholder='Search...'
-                    className="searchBar"
+                    className="searchBar circular-input"
                     onBlur={handleBlur}
                     />
                     {filteredResults.length > 0 && (
@@ -1310,9 +1310,8 @@ const Landing: React.FC = () => {
                       </ul>
                     )}
                   </div>
-                  <p className="food-name">NAME</p>
+                  <p className="food-name">Name</p>
                   <input className="circular-input search-input" onChange={adjustSize} value={resultSize}/>
-                  <span className="BoldUnit">g</span>
                   <div className='searchGrid'>
                     <div>
                       <p className="resultOutput">Calories: {resultCals}</p>
