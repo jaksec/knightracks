@@ -263,7 +263,7 @@ function Home() {
                 <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
                 {/* Creates login popup*/}
                     <h2 style={{ color: "#ffff" }}>Login</h2>
-                    <p style={{ color: "#ffff" }}>This is the login!</p>
+                    <p style={{ color: "#ffff" }}>Enter your credentials.</p>
                     {error && <p className="error-message1">{error}</p>}
                     <input type="text" id="username" name="username" value={logUsername} onChange={handlelogUsernameChange} placeholder="Username" className="circular-input" />
                     <input type="password" id="password" name="password" value={logPassword} onChange={handlelogPasswordChange} placeholder="Password" className="circular-input" />
@@ -282,7 +282,7 @@ function Home() {
               <div className="popup-signup" onClick={e => e.stopPropagation()}>
                 <div className="x" onClick={closePopup}>&times;</div> {/* creates the x out button*/}
                     <h2 style={{ color: "#ffff" }}>Sign Up</h2>
-                    <p style={{ color: "#ffff" }}>This is the sign-up!</p>
+                    <p style={{ color: "#ffff" }}>Create a new account.</p>
                     {error && <p style={{ color: "#ff0000" }} className="error-message1">{error}</p>}
                     <input type="text" value={regUsername} onChange={handleregUsernameChange} placeholder="Username" className="circular-input" />
                     <input type="text" value={firstname} onChange={handleFirstnameChange} placeholder="First Name" className="circular-input" />
