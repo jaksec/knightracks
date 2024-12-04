@@ -1132,10 +1132,10 @@ const Landing: React.FC = () => {
     { 
       userId: userid, 
       foodName: resultName,
-      calories: resultCals.toFixed(0),
-      carbs: resultCarbs.toFixed(0),
-      fats: resultFat.toFixed(0),
-      protein: resultProt.toFixed(0),
+      calories: Number(resultCals.toFixed(0)),
+      carbs: Number(resultCarbs.toFixed(0)),
+      fats: Number(resultFat.toFixed(0)),
+      protein: Number(resultProt.toFixed(0)),
       weight: resultSize
     };
 
@@ -1465,7 +1465,7 @@ const Landing: React.FC = () => {
           <div className="calories-container">
           <h2 className="calories-title">Calories</h2>
           <ProgressBar
-            value={currentCalories}
+            value={Number(currentCalories)}
             max={goalCalories}
             classNameBar="progress-bar-calories"
             classNameFill="fill-bar-calories"
@@ -1476,7 +1476,7 @@ const Landing: React.FC = () => {
           <div className="protein-container">
           <h2 className="protein-title">Protein</h2>
           <ProgressBar
-            value={currentProtein}
+            value={Number(currentProtein)}
             max={goalProtein}
             classNameBar="progress-bar-protein"
             classNameFill="fill-bar-protein"
@@ -1487,7 +1487,7 @@ const Landing: React.FC = () => {
           <div className="fats-container">
           <h2 className="fats-title">Fats</h2>
           <ProgressBar
-            value={currentFats}
+            value={Number(currentFats)}
             max={goalFats}
             classNameBar="progress-bar-fats"
             classNameFill="fill-bar-fats"
@@ -1498,7 +1498,7 @@ const Landing: React.FC = () => {
           <div className="carbs-container">
           <h2 className="carbs-title">Carbohydrates</h2>
           <ProgressBar
-            value={currentCarbs}
+            value={Number(currentCarbs)}
             max={goalCarbs}
             classNameBar="progress-bar-carbs"
             classNameFill="fill-bar-carbs"
