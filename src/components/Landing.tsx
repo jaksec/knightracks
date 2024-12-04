@@ -80,20 +80,74 @@ const Landing: React.FC = () => {
   const [isEditPopupVisible, setEditPopupVisible] = useState(false);
   const [editMeal, setEditMeal] = useState<any>(null); // State to hold the meal being edited
 
+  interface SearchResults {
+    name: string;
+    picture: string;
+    id: number;
+  }
+
   const [searchValue, setsearchValue] = useState<string>('');
-  const [filteredResults, setFilteredResults] = useState<string[]>([]);
+  const [filteredResults, setFilteredResults] = useState<SearchResults[]>([]);
   const [resultName, setresultName] = useState<string>("");
   const [resultCals, setresultCals] = useState<number>(0);
   const [resultCarbs, setresultCarbs] = useState<number>(0);
   const [resultProt, setresultProt] = useState<number>(0);
   const [resultFat, setresultFat] = useState<number>(0);
   const [resultSize, setresultSize] = useState<number>(0);
+  const [debouncedSearchValue, setdebouncedSearchValue] = useState<string>('');
 
   // On component mount, ensure the correct mode is applied
   useEffect(() => {
     document.body.classList.toggle('chart-mode', isChartMode);
     document.body.classList.toggle('nutrition-mode', !isChartMode);
   }, [isChartMode]);
+
+  useEffect(() => { //this useEffect will
+    const timer = setTimeout(() => {
+      setdebouncedSearchValue(searchValue); 
+    }, 500); //500ms delay
+
+    return () => {
+      clearTimeout(timer); // Clear the timer if the input changes before the delay
+    };
+  }, [searchValue]);
+
+  useEffect(() => {  //calls for the api to return search results
+    
+    if(debouncedSearchValue) 
+    {//call API here
+      const fetchResults = async () => {
+        if(!debouncedSearchValue)
+        {
+          setFilteredResults([]);
+          return;
+        }
+
+        try 
+        {
+          const datar = 
+          { 
+            query: debouncedSearchValue  
+          };
+          const response = await fetch('http://146.190.71.194:5000/api/ingredient/search-ingredients', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json' },
+            body: JSON.stringify(datar) 
+          })
+          const data: SearchResults[] = await response.json();
+
+          setFilteredResults(data);
+          }
+         catch(error) {console.error("error calling the search")}
+      } 
+      fetchResults();
+    }  
+    else 
+    {
+      setFilteredResults([]);
+    }
+  }, [debouncedSearchValue]);
 
   // Function to get cookies
   const getCookie = (name: string): string => {
@@ -872,28 +926,62 @@ const Landing: React.FC = () => {
   };
 
   const handlesearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
     setsearchValue(e.target.value);
-
-
-
-
   }
 
-  const handleBlur = () => {
-    setTimeout(() => {
-      setFilteredResults([]);
-
-    }, 200);
-  };
-
-
-  const handleClickedItem = (result: string) => {
-
+  interface NutritionItem {
+    name: string;
+    amount: number; // Amount will be a number (float or integer)
+    unit: string;
   }
 
-  const addSearchItem = () => {
+  
+  const handleClickedItem = async ( index : number) => {
+    
+    const objectid = filteredResults[index]?.id;
 
+    const datar = 
+    { 
+      id: objectid  
+    };
+    const response = await fetch('http://146.190.71.194:5000/api/ingredient/ingredient-nutrition', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json' },
+        body: JSON.stringify(datar) 
+      })
+    const data = await response.json();
+
+    setresultName(data.name)
+    setresultFat(Number(data.nutrition.find((item:NutritionItem) => item.name === 'Fat')?.amount || 0))
+    setresultProt(Number(data.nutrition.find((item:NutritionItem) => item.name === 'Protein')?.amount || 0))
+    setresultCarbs(Number(data.nutrition.find((item:NutritionItem) => item.name === 'Carbohydrates')?.amount || 0))
+    setresultCals(Number(data.nutrition.find((item:NutritionItem) => item.name === 'Calories')?.amount || 0))
+    setresultSize(100);
+    setsearchValue("");
+  }
+
+  const addSearchItem = async () => {
+    const userid = getCookie("id")
+    const datar = 
+    { 
+      userId: userid, 
+      foodName: resultName,
+      calories: resultCals,
+      carbs: resultCarbs,
+      fats: resultFat,
+      protein: resultProt,
+      weight: resultSize
+    };
+    const response = await fetch('http://146.190.71.194:5000/api/ingredient/addIngredient', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json' },
+        body: JSON.stringify(datar) 
+      })
+    
+    const data = await response.json();
+    setError(data.error)
   }
 
   const adjustSize = () => {
@@ -1294,7 +1382,6 @@ const Landing: React.FC = () => {
                     onChange={handlesearchValueChange}
                     placeholder='Search...'
                     className="searchBar circular-input"
-                    onBlur={handleBlur}
                     />
                     {filteredResults.length > 0 && (
                       <ul className="results-dropdown">
@@ -1302,9 +1389,10 @@ const Landing: React.FC = () => {
                           <li
                           key={rIndex}
                           className="resultItem"
-                          //onClick={handleClickedItem}
+                          onClick={() => handleClickedItem(rIndex)}
                           >
-                            {result}
+                            <img src={result.picture} className = "ResultIMG"/>
+                            <span className="ResultName">{result.name}</span>
                           </li>
                         ))}
                       </ul>
