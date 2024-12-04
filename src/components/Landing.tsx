@@ -81,9 +81,13 @@ const Landing: React.FC = () => {
   const [editMeal, setEditMeal] = useState<any>(null); // State to hold the meal being edited
 
   interface SearchResults {
+    id: number;
     name: string;
     picture: string;
-    id: number;
+    calories: number;
+    carbs: number;
+    protein: number;
+    fats: number;
   }
 
   const [searchValue, setsearchValue] = useState<string>('');
@@ -95,6 +99,21 @@ const Landing: React.FC = () => {
   const [resultFat, setresultFat] = useState<number>(0);
   const [resultSize, setresultSize] = useState<number>(0);
   const [debouncedSearchValue, setdebouncedSearchValue] = useState<string>('');
+
+  const [originalResultCals, setOriginalResultCals] = useState<number>(0);
+  const [originalResultCarbs, setOriginalResultCarbs] = useState<number>(0);
+  const [originalResultProt, setOriginalResultProt] = useState<number>(0);
+  const [originalResultFat, setOriginalResultFat] = useState<number>(0);
+
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    visible: boolean;
+    mealId: string | null;
+    mealData: any | null;
+  }>({
+    visible: false,
+    mealId: null,
+    mealData: null,
+  });
 
   // On component mount, ensure the correct mode is applied
   useEffect(() => {
@@ -122,22 +141,70 @@ const Landing: React.FC = () => {
               debouncedSearchValue
             )}`
           );
-          const data: SearchResults[] = await response.json();
-
-          console.log(data);
+          const data = await response.json();
+          console.log('Raw API Response:', data);
   
-          if (data && data.length > 0) {
-            setFilteredResults(data);
-            console.log('Filtered Results:', data);
+          if (data && data.results && Array.isArray(data.results)) {
+            // Map the `results` array to match the `SearchResults` interface
+            const mappedResults: SearchResults[] = data.results.map((item: any) => ({
+              id: item.id,
+              name: item.name,
+              picture: item.image,
+              calories: 0, // Initialize with 0
+              carbs: 0,
+              protein: 0,
+              fats: 0,
+            }));
+  
+            // Fetch nutrition data for each item
+            const nutritionPromises = mappedResults.map(async (item) => {
+              try {
+                const response = await fetch(
+                  `http://146.190.71.194:5000/api/ingredient/ingredient-nutrition?id=${encodeURIComponent(
+                    item.id
+                  )}`
+                );
+                const nutritionData = await response.json();
+  
+                const resultCals = Number(
+                  nutritionData.nutrition.find((n: NutritionItem) => n.name === 'Calories')?.amount || 0
+                );
+                const resultCarbs = Number(
+                  nutritionData.nutrition.find((n: NutritionItem) => n.name === 'Carbohydrates')?.amount || 0
+                );
+                const resultProt = Number(
+                  nutritionData.nutrition.find((n: NutritionItem) => n.name === 'Protein')?.amount || 0
+                );
+                const resultFat = Number(
+                  nutritionData.nutrition.find((n: NutritionItem) => n.name === 'Fat')?.amount || 0
+                );
+  
+                return {
+                  ...item,
+                  calories: resultCals,
+                  carbs: resultCarbs,
+                  protein: resultProt,
+                  fats: resultFat,
+                };
+              } catch (error) {
+                console.error('Error fetching nutrition data for item:', item.name, error);
+                return item; // Return item without nutrition data
+              }
+            });
+  
+            const resultsWithNutrition = await Promise.all(nutritionPromises);
+            setFilteredResults(resultsWithNutrition);
+            console.log('Results with Nutrition:', resultsWithNutrition);
           } else {
-            setFilteredResults([]); // Set empty array if no results
-            console.log('No results found for:', debouncedSearchValue);
+            setFilteredResults([]);
+            console.log('No results found in the response:', data);
           }
         } catch (error) {
           console.error('Error fetching results:', error);
-          setFilteredResults([]); // Reset to empty on error
+          setFilteredResults([]);
         }
       };
+  
       fetchResults();
     } else {
       setFilteredResults([]); // Clear results if input is empty
@@ -252,30 +319,55 @@ const Landing: React.FC = () => {
 
   };
 
-  const validateInput = (value: string) => /^[0-9]*\.?[0-9]*$/.test(value);
+  const validateWeightInput = (value: string) => /^[0-9]*\.?[0-9]*$/.test(value);
+  const validateInput = (value: string) => /^[0-9]+$/.test(value);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
   const handleCalorieChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (validateInput(e.target.value)) setCalories(e.target.value);
+    const val = e.target.value;
+    if(val == "")
+      setCalories("");
+    else {
+      if (validateInput(e.target.value))
+        setCalories(e.target.value);
+    }
   };
 
   const handleCarbChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (validateInput(e.target.value)) setCarbs(e.target.value);
+    const val = e.target.value;
+    if(val == "")
+      setCarbs("");
+    else {
+      if (validateInput(e.target.value))
+        setCarbs(e.target.value);
+    }
   };
 
   const handleFatChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (validateInput(e.target.value)) setFats(e.target.value);
+    const val = e.target.value;
+    if(val == "")
+      setFats("");
+    else {
+      if (validateInput(e.target.value))
+        setFats(e.target.value);
+    }
   };
 
   const handleProteinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (validateInput(e.target.value)) setProteins(e.target.value);
+    const val = e.target.value;
+    if(val == "")
+      setProteins("");
+    else {
+      if (validateInput(e.target.value))
+        setProteins(e.target.value);
+    }
   };
 
   const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (validateInput(e.target.value)) setWeight(e.target.value);
+    if (validateWeightInput(e.target.value)) setWeight(e.target.value);
   };
 
   const handleToggle = () => {
@@ -287,15 +379,15 @@ const Landing: React.FC = () => {
   };
 
   const handleheightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setheight(e.target.value)
+    if (validateInput(e.target.value)) setheight(e.target.value)
   }
 
   const handleUserWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserweight(e.target.value)
+    if (validateInput(e.target.value)) setUserweight(e.target.value)
   }
 
   const handleage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setage(e.target.value)
+    if (validateInput(e.target.value)) setage(e.target.value)
   }
 
   const handleactivityLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -398,6 +490,24 @@ const Landing: React.FC = () => {
       setGoalCarbPercent(Number(e.target.value));
   };
 
+  const handleResultSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+  
+    // Set resultSize to empty string if input is empty
+    if (value === '') {
+      setresultSize(NaN);
+    } else {
+      // Otherwise, parse the value as a number
+      const numberValue = Number(value);
+      if (!isNaN(numberValue)) {
+        setresultSize(numberValue);
+      }
+    }
+  
+    // Call other functions if needed
+    adjustSize(e);
+  };
+
 
   const closePopup = () => {
     setPopupVisible(false);
@@ -408,6 +518,16 @@ const Landing: React.FC = () => {
     setProteins('');
     setWeight('');
     setError('');
+    setresultName('');
+    setresultCals(0);
+    setresultCarbs(0);
+    setresultProt(0);
+    setresultFat(0);
+    setresultSize(100);
+    setOriginalResultCals(0);
+    setOriginalResultCarbs(0);
+    setOriginalResultProt(0);
+    setOriginalResultFat(0);
   };
 
   const closeGoalsPopup = () => {
@@ -767,6 +887,31 @@ const Landing: React.FC = () => {
     fetchMeals();
   };
 
+  const handleConfirmDelete = (mealId: string | null) => {
+    if (mealId) {
+      handleDelete(mealId); // Call the existing delete function
+    }
+    setDeleteConfirmation({ visible: false, mealId: null, mealData: null }); // Close the popup
+  };
+
+  const handleNumericInput = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: string
+  ) => {
+    const value = e.target.value;
+  
+    // Allow empty value for clearing the input
+    if (value === '') {
+      setEditMeal((prev: any) => ({ ...prev, [field]: '' }));
+      return;
+    }
+  
+    // Allow only numbers (no negative signs)
+    if (/^\d*\.?\d*$/.test(value)) {
+      setEditMeal((prev: any) => ({ ...prev, [field]: value }));
+    }
+  };
+
   const showEditPopup = (meal: any) => {
     setEditMeal(meal); // Set the meal to be edited
     setEditPopupVisible(true); // Show the edit popup
@@ -944,27 +1089,30 @@ const Landing: React.FC = () => {
       const data = await response.json();
   
       setresultName(data.name);
-      setresultFat(
-        Number(
-          data.nutrition.find((item: NutritionItem) => item.name === 'Fat')?.amount || 0
-        )
+      const fat = Number(
+        data.nutrition.find((item: NutritionItem) => item.name === 'Fat')?.amount || 0
       );
-      setresultProt(
-        Number(
-          data.nutrition.find((item: NutritionItem) => item.name === 'Protein')?.amount || 0
-        )
+      const prot = Number(
+        data.nutrition.find((item: NutritionItem) => item.name === 'Protein')?.amount || 0
       );
-      setresultCarbs(
-        Number(
-          data.nutrition.find((item: NutritionItem) => item.name === 'Carbohydrates')?.amount || 0
-        )
+      const carbs = Number(
+        data.nutrition.find((item: NutritionItem) => item.name === 'Carbohydrates')?.amount || 0
       );
-      setresultCals(
-        Number(
-          data.nutrition.find((item: NutritionItem) => item.name === 'Calories')?.amount || 0
-        )
+      const cals = Number(
+        data.nutrition.find((item: NutritionItem) => item.name === 'Calories')?.amount || 0
       );
+      setresultFat(fat);
+      setresultProt(prot);
+      setresultCarbs(carbs);
+      setresultCals(cals);
       setresultSize(100);
+  
+      // Store original values
+      setOriginalResultFat(fat);
+      setOriginalResultProt(prot);
+      setOriginalResultCarbs(carbs);
+      setOriginalResultCals(cals);
+  
       setsearchValue('');
     } catch (error) {
       console.error('Error fetching ingredient nutrition:', error);
@@ -972,40 +1120,54 @@ const Landing: React.FC = () => {
   };
 
   const addSearchItem = async () => {
-    const userid = getCookie("id")
+    const userid = getCookie("id");
     const datar = 
     { 
       userId: userid, 
       foodName: resultName,
-      calories: resultCals,
-      carbs: resultCarbs,
-      fats: resultFat,
-      protein: resultProt,
+      calories: resultCals.toFixed(0),
+      carbs: resultCarbs.toFixed(0),
+      fats: resultFat.toFixed(0),
+      protein: resultProt.toFixed(0),
       weight: resultSize
     };
-    const response = await fetch('http://146.190.71.194:5000/api/ingredient/addIngredient', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json' },
-        body: JSON.stringify(datar) 
-      })
-    
-    const data = await response.json();
-    setError(data.error)
-  }
+
+    console.log('Data being sent:', datar);
+
+    try {
+      const response = await fetch('http://146.190.71.194:5000/api/ingredient/addIngredient', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json' },
+          body: JSON.stringify(datar) 
+      });
+      
+      const data = await response.json();
+
+      console.log(data);
+
+      if (data.message === 'Ingredient added successfully') {
+        // Update meals state with the new meal
+        setMeals((prevMeals) => [...prevMeals, data.data]);
+        console.log('Success!');
+        closePopup();
+        fetchMeals();
+        setresultName('');
+      }
+    } catch (error) {
+      console.error('Error adding item:', error);
+      setError('Failed to add item. Please try again.');
+    }
+  };
 
   const adjustSize = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newNum = Number(e.target.value);
-    setresultSize(newNum)
-    const newCal = (newNum/100) * resultCals;
-    const newCarb = (newNum/100) * resultCarbs;
-    const newProt = (newNum/100) * resultProt;
-    const newFat= (newNum/100) * resultFat;
-    setresultCals(newCal)
-    setresultCarbs(newCarb)
-    setresultProt(newProt)
-    setresultFat(newFat)
-  }
+    const ratio = newNum / 100;
+    setresultCals(Number((originalResultCals * ratio).toFixed(0)));
+    setresultCarbs(Number((originalResultCarbs * ratio).toFixed(0)));
+    setresultProt(Number((originalResultProt * ratio).toFixed(0)));
+    setresultFat(Number((originalResultFat * ratio).toFixed(0)));
+  };
 
   return (
     <>
@@ -1014,6 +1176,57 @@ const Landing: React.FC = () => {
         <div id="stars2"></div>
         <div id="stars3"></div>
       </div>
+
+      {deleteConfirmation.visible && (
+        <div className="deleteoverlay">
+          <div className="delete-confirmation-popup">
+            <p style={{ fontSize: '20px', marginBottom: '50px' }}>
+              Are you sure you want to delete this meal?
+            </p>
+            <div className="displayed-info">
+              {deleteConfirmation.mealData && (
+                <>
+                  <p>
+                    <strong>Name:</strong> {deleteConfirmation.mealData.foodName}
+                  </p>
+                  <p>
+                    <strong>Calories:</strong> {deleteConfirmation.mealData.calories}
+                  </p>
+                  <p>
+                    <strong>Carbs:</strong> {deleteConfirmation.mealData.carbs}g
+                  </p>
+                  <p>
+                    <strong>Protein:</strong> {deleteConfirmation.mealData.protein}g
+                  </p>
+                  <p>
+                    <strong>Fats:</strong> {deleteConfirmation.mealData.fats}g
+                  </p>
+                  <p>
+                    <strong>Weight:</strong> {deleteConfirmation.mealData.weight}g
+                  </p>
+                </>
+              )}
+            </div>
+            <div style={{ marginBottom: '60px' }}></div>
+            <div className="confirmation-buttons">
+              <button
+                className="yes-button"
+                onClick={() => handleConfirmDelete(deleteConfirmation.mealId)}
+              >
+                Yes
+              </button>
+              <button
+                className="no-button"
+                onClick={() =>
+                  setDeleteConfirmation({ visible: false, mealId: null, mealData: null })
+                }
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="Nutrition_box">
         <p className="Nutrition_box_title">Goals</p>
@@ -1219,7 +1432,16 @@ const Landing: React.FC = () => {
                         <button className="pen" onClick={() => showEditPopup(meal)}>
                           <img src={edit} />
                         </button>
-                        <button className="trash" onClick={() => handleDelete(meal._id)}>
+                        <button
+                          className="trash"
+                          onClick={() =>
+                            setDeleteConfirmation({
+                              visible: true,
+                              mealId: meal._id,
+                              mealData: meal,
+                            })
+                          }
+                        >
                           <img src={del} />
                         </button>
                       </div>
@@ -1232,7 +1454,9 @@ const Landing: React.FC = () => {
         </div>
 
         <div className={`nutrition-section-wrapper ${!isChartMode ? 'fade-in' : 'fade-out'}`}>
-          <h2 style={{ position: 'absolute', left: '24%', top: '9.5%' }}>Calories</h2>
+
+          <div className="calories-container">
+          <h2 className="calories-title">Calories</h2>
           <ProgressBar
             value={currentCalories}
             max={goalCalories}
@@ -1240,8 +1464,10 @@ const Landing: React.FC = () => {
             classNameFill="fill-bar-calories"
             showGrams={false}
           />
+          </div>
 
-          <h2 style={{ position: 'absolute', right: '25%', bottom: '23%' }}>Protein</h2>
+          <div className="protein-container">
+          <h2 className="protein-title">Protein</h2>
           <ProgressBar
             value={currentProtein}
             max={goalProtein}
@@ -1249,8 +1475,10 @@ const Landing: React.FC = () => {
             classNameFill="fill-bar-protein"
             showGrams={true}
           />
+          </div>
 
-          <h2 style={{ position: 'absolute', right: '25.5%', top: '10%' }}>Fats</h2>
+          <div className="fats-container">
+          <h2 className="fats-title">Fats</h2>
           <ProgressBar
             value={currentFats}
             max={goalFats}
@@ -1258,8 +1486,10 @@ const Landing: React.FC = () => {
             classNameFill="fill-bar-fats"
             showGrams={true}
           />
+          </div>
 
-          <h2 style={{ position: 'absolute', left: '21%', bottom: '23%' }}>Carbohydrates</h2>
+          <div className="carbs-container">
+          <h2 className="carbs-title">Carbohydrates</h2>
           <ProgressBar
             value={currentCarbs}
             max={goalCarbs}
@@ -1267,6 +1497,8 @@ const Landing: React.FC = () => {
             classNameFill="fill-bar-carbs"
             showGrams={true}
           />
+          </div>
+
         </div>
       </div>
 
@@ -1298,9 +1530,11 @@ const Landing: React.FC = () => {
             </div>
             <div className="add-title">Edit Meal</div>
 
-            <div style={{paddingTop: '40px'}}></div>
+            <div style={{paddingTop: '15px'}}></div>
 
-            {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+            {error && <div style={{ color: 'red', marginBottom: '20px' }}>{error}</div>}
+
+            <div style={{ marginTop: '30px'}}></div>
 
             <div className="edit-meal-container">
               <div className="input-row">
@@ -1308,7 +1542,7 @@ const Landing: React.FC = () => {
                 <input
                   type="text"
                   value={editMeal?.foodName || ''}
-                  onChange={(e) => setEditMeal({ ...editMeal, foodName: e.target.value })}
+                  onChange={(e) => {setEditMeal({ ...editMeal, foodName: e.target.value });}}
                   className="circular-input edit-meal-input"
                 />
               </div>
@@ -1317,7 +1551,7 @@ const Landing: React.FC = () => {
                 <input
                   type="text"
                   value={editMeal?.calories || ''}
-                  onChange={(e) => setEditMeal({ ...editMeal, calories: e.target.value })}
+                  onChange={(e) => handleNumericInput(e, 'calories')}
                   className="circular-input edit-meal-input"
                 />
               </div>
@@ -1326,7 +1560,7 @@ const Landing: React.FC = () => {
                 <input
                   type="text"
                   value={editMeal?.carbs || ''}
-                  onChange={(e) => setEditMeal({ ...editMeal, carbs: e.target.value })}
+                  onChange={(e) => handleNumericInput(e, 'carbs')}
                   className="circular-input edit-meal-input"
                 />
               </div>
@@ -1335,7 +1569,7 @@ const Landing: React.FC = () => {
                 <input
                   type="text"
                   value={editMeal?.fats || ''}
-                  onChange={(e) => setEditMeal({ ...editMeal, fats: e.target.value })}
+                  onChange={(e) => handleNumericInput(e, 'fats')}
                   className="circular-input edit-meal-input"
                 />
               </div>
@@ -1344,7 +1578,7 @@ const Landing: React.FC = () => {
                 <input
                   type="text"
                   value={editMeal?.protein || ''}
-                  onChange={(e) => setEditMeal({ ...editMeal, protein: e.target.value })}
+                  onChange={(e) => handleNumericInput(e, 'protein')}
                   className="circular-input edit-meal-input"
                 />
               </div>
@@ -1353,7 +1587,7 @@ const Landing: React.FC = () => {
                 <input
                   type="text"
                   value={editMeal?.weight || ''}
-                  onChange={(e) => setEditMeal({ ...editMeal, weight: e.target.value })}
+                  onChange={(e) => handleNumericInput(e, 'weight')}
                   className="circular-input edit-meal-input"
                 />
               </div>
@@ -1377,14 +1611,14 @@ const Landing: React.FC = () => {
               <div className="add-title">
                 <button
                   className={`add-button ${activeMode === 'Search' ? 'active' : ''}`}
-                  onClick={() => setActiveMode('Search')}
+                  onClick={() => {setActiveMode('Search'); setError('');}}
                 >
                   Search
                 </button>
                 |
                 <button
                   className={`add-button ${activeMode === 'Custom' ? 'active' : ''}`}
-                  onClick={() => setActiveMode('Custom')}
+                  onClick={() => {setActiveMode('Custom'); setError('');}}
                 >
                   Custom
                 </button>
@@ -1392,6 +1626,7 @@ const Landing: React.FC = () => {
 
               {activeMode === 'Search' && (
                 <>
+                  <div style={{marginTop: '10px'}}>Search for your food, powered by Spoonacular!</div>
                   {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
                   <div className="searchBarContainer">
                     <input
@@ -1402,58 +1637,52 @@ const Landing: React.FC = () => {
                       className="searchBar circular-input"
                     />
 
-                    {filteredResults.length == 0 && (
+                    {filteredResults.length > 0 && (
                       <ul className="results-dropdown">
-                        <p>no</p>
                         {filteredResults.map((result, index) => (
-                          <li key={result.id} onClick={() => handleClickedItem(index)}>
-                            <img src={result.picture} alt={result.name} />
-                            <span>{result.name}</span>
+                          <li key={result.id} onClick={() => handleClickedItem(index)}>                              
+                            <div className="nutrition-info">
+                              <span className="result-name">{result.name}</span>
+                              <span>Cal: {result.calories.toFixed(0)}</span>
+                              <span>Carbs: {result.carbs.toFixed(0)}g</span>
+                              <span>Protein: {result.protein.toFixed(0)}g</span>
+                              <span>Fats: {result.fats.toFixed(0)}g</span>
+                            </div>
                           </li>
                         ))}
                       </ul>
                     )}
                   </div>
-                  
 
+                  {/* Display selected item details */}
                   {resultName && (
-                    <>
-                      <p className="food-name">{resultName}</p>
-                      <input
-                        className="circular-input search-input"
-                        onChange={adjustSize}
-                        value={resultSize}
-                      />
-                      <div className="searchGrid">
-                        <div>
-                          <p className="resultOutput">Calories: {resultCals.toFixed(2)}</p>
-                          <span className="BoldUnit">kCal</span>
-                        </div>
-                        <div>
-                          <p className="resultOutput">Carbohydrates: {resultCarbs.toFixed(2)}</p>
-                          <span className="BoldUnit">g</span>
-                        </div>
-                        <div>
-                          <p className="resultOutput">Protein: {resultProt.toFixed(2)}</p>
-                          <span className="BoldUnit">g</span>
-                        </div>
-                        <div>
-                          <p className="resultOutput">Fats: {resultFat.toFixed(2)}</p>
-                          <span className="BoldUnit">g</span>
-                        </div>
+                    <div className="selected-item-details">
+                      <p><strong>Name:</strong> {resultName}</p>
+                      <p><strong>Calories:</strong> {resultCals.toFixed(0)}</p>
+                      <p><strong>Carbs:</strong> {resultCarbs.toFixed(0)}g</p>
+                      <p><strong>Protein:</strong> {resultProt.toFixed(0)}g</p>
+                      <p><strong>Fats:</strong> {resultFat.toFixed(0)}g</p>
+                      <div className="weight-input">
+                        <label>Weight (g): </label>
+                        <input
+                          type="number"
+                          value={resultSize}
+                          onChange={handleResultSizeChange}
+                          className="circular-input edit-meal-input"
+                        />
+                        <div style={{ marginTop: '10px' }}></div>
                       </div>
-                      <button className="addSearchButton" onClick={addSearchItem}>
-                        ADD
-                      </button>
-                    </>
+                      <button onClick={addSearchItem}>Add</button>
+                    </div>
                   )}
                 </>
               )}
             <div className={activeMode === 'Custom' ? 'fade-in' : 'fade-out'}>
               {activeMode === 'Custom' && (
                 <>
-                  {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
-                  <div className="add-meal-container">
+                  <div style={{marginTop: '5px'}}>Add in your own meal!</div>
+                  {error && <div style={{ color: 'red', marginTop: '15px' }}>{error}</div>}
+                  <div style={{ marginTop: '10px'}} className="add-meal-container">
                     <div className="input-row">
                       <input
                         type="text"
@@ -1510,7 +1739,7 @@ const Landing: React.FC = () => {
                     </div>
                   </div>
                   <div>
-                    <button style={{ marginTop: '25px' }} onClick={handleAdd}>
+                    <button style={{ marginTop: '20px' }} onClick={handleAdd}>
                       Add
                     </button>
                   </div>

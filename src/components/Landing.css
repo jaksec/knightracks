@@ -208,9 +208,33 @@
     left: 20%;
 }
 
+.calories-container {
+    position: absolute;
+    top: 20%;
+    left: 20%;
+}
+
+.calories-title {
+    position: absolute;
+    bottom: -15px;
+    left: 45px;
+}
+
 .progress-bar-carbs {
     bottom: 20%;
     left: 20%;
+}
+
+.carbs-container {
+    position: absolute;
+    bottom: 20%;
+    left: 20%;
+}
+
+.carbs-title {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
 }
 
 .progress-bar-protein {
@@ -218,9 +242,33 @@
     right: 20%;
 }
 
+.protein-container {
+    position: absolute;
+    bottom: 20%;
+    right: 20%;
+}
+
+.protein-title {
+    position: absolute;
+    bottom: 10px;
+    right: 55px;
+}
+
 .progress-bar-fats {
     top: 20%;
     right: 20%;
+}
+
+.fats-container {
+    position: absolute;
+    top: 20%;
+    right: 20%;
+}
+
+.fats-title {
+    position: absolute;
+    bottom: -15px;
+    right: 65px;
 }
   
 .fill-bar-protein,
@@ -233,19 +281,19 @@
 }
 
 .fill-bar-protein {
-    background: linear-gradient(90deg, #76c7c0, #2c7e2f);
+    background: rgb(190, 109, 10);
 }
 
 .fill-bar-calories {
-    background: linear-gradient(90deg, #76c7c0, #3f4640);
+    background: green;
 }
 
 .fill-bar-carbs {
-    background: linear-gradient(90deg, #76c7c0, #4c9baf);
+    background: rgb(60, 108, 239);
 }
 
 .fill-bar-fats {
-    background: linear-gradient(90deg, #76c7c0, #721f43);
+    background: rgb(162, 7, 7);
 }
   
 /* Line at the front of the fill bar */
@@ -309,25 +357,35 @@
 }
 
 .results-dropdown {
-    top: 100%;  /* Position the dropdown below the input */
-    left: 0%;
-  
-    width: 80%;  /* Make the dropdown the same width as the input */
-    background-color: #fff;  /* White background for the dropdown */
-    border: 1px solid #ccc;  /* Border around the dropdown */
-    border-radius: 5px;  /* Rounded corners */
-    max-height: 200px;  /* Set a max height for the dropdown */
-    overflow-y: auto;  /* Allows scrolling if the list is too long */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Light shadow for depth */
-    z-index: 1000;
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    width: 60%;
+    list-style-type: none;
+    background-color: whitesmoke;
     color: black;
+
     display: block;
-    position: absolute;  /* Ensure it's not hidden behind other elements */
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    transform: translate(-50%, -50%);
+    padding: 0px;
+    transform: translate(-50%);
     z-index: 999;
+}
+
+.results-dropdown li {
+    border-color: black;
+    border: 1px solid #ccc;
+    background-color: black;
+    color: white;
+    padding-bottom: 8px;
+    justify-content: center;
+    align-items: center;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.results-dropdown li:hover {
+    border-color: rgb(86, 64, 230);
+    transition: border-color 0.3s ease;
 }
 
 .container {
@@ -383,13 +441,11 @@
 .fade-in {
     opacity: 1;
     pointer-events: auto;
-    transition: opacity 0.2s ease-in-out;
 }
 
 .fade-out {
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s ease-in-out;
 }
 
 input:checked + .toggle-button {
@@ -540,7 +596,6 @@ input:not(:checked) + .toggle-button .emoji {
 .add-button {
     background: none;
     border: none;
-    transition: transform 0.2s;
     padding: 15px; /* Minimal padding for clickable area */
     border-radius: 30%;
     font-size: 30px;
@@ -594,7 +649,6 @@ input:not(:checked) + .toggle-button .emoji {
 .searchBarContainer {
     position: relative;
     width: 100%;
-    height: 100%;
     margin: 0 auto;
 }
 
@@ -614,12 +668,30 @@ input:not(:checked) + .toggle-button .emoji {
     outline: none;
     border-color: #007bff; /* Optional focus effect */
 }
-
-.result-item {
-
+  
+.result-details {
+    display: flex;
+    flex-direction: column;
+}
+  
+.result-name {
+    font-weight: bold;
+    max-width: 50px;
+}
+  
+.nutrition-info {
+    display: flex;
+    gap: 17.5px;
+    font-size: 0.9em;
+    color: #ffffff;
+    justify-content: center;
+    margin-top: 7.5px;
 }
 
 .addSearchButton {
+
+    width: 40%;
+    background-color: white;
     
 }
 
@@ -755,7 +827,7 @@ input:not(:checked) + .toggle-button .emoji {
     height: 70%;
     width: 35%;
     transform: translateY(100%);
-    animation: slideUpFadeIn 0.8s forwards;
+    animation: slideUpFadeIn 0.0s forwards;
     color: white;
 }
 
@@ -811,6 +883,7 @@ input:not(:checked) + .toggle-button .emoji {
     text-align: center;
     opacity: 0;
     visibility: hidden;
+    border-radius: 5px;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
@@ -896,4 +969,87 @@ input:not(:checked) + .toggle-button .emoji {
     font-size: 30px;    
     margin-bottom: 0.25em;
     margin-top: 0.5em;
+}
+
+.searchGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+  
+/* Style for each grid item */
+.searchGrid div {
+    display: flex;
+    align-items: center;
+}
+  
+/* Style for result outputs */
+.resultOutput {
+    font-size: 1.1em;
+    margin: 0;
+}
+  
+/* Style for units */
+.BoldUnit {
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-left: 5px;
+}
+  
+/* Style for the ADD button */
+.addSearchButton {
+    display: block;
+    width: 100%;
+    padding: 12px 0;
+    background-color: #563fe6; /* Adjust color as needed */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+}
+  
+.addSearchButton:hover {
+    background-color: #7157e8; /* Slightly lighter shade on hover */
+}
+
+.delete-confirmation-popup {
+    position: relative;
+    background-color: black;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    height: 60%;
+    width: 25%;
+    border: 1px inset white;
+    transform: translateY(100%);
+    animation: slideUpFadeIn 0.0s forwards;
+    z-index: 1001;
+}
+
+.deleteoverlay {
+    position: fixed; /* Overlay stays fixed to the viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000; /* Ensure it is above other elements */
+}
+
+.confirmations-buttons {
+    position: absolute;
+    top: 80%;
+}
+
+.yes-button, .no-button {
+    margin: 0 5px; /* Adds space between buttons */
+}
+
+.displayed-info {
+    font-size: 20px;
 }
