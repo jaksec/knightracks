@@ -114,40 +114,42 @@ const Landing: React.FC = () => {
 
   useEffect(() => {  //calls for the api to return search results
     
-    if(debouncedSearchValue) 
-    {//call API here
-      const fetchResults = async () => {
-        if(!debouncedSearchValue)
-        {
-          setFilteredResults([]);
-          return;
-        }
-
-        try 
-        {
-          const datar = 
-          { 
-            query: debouncedSearchValue  
-          };
-          const response = await fetch('http://146.190.71.194:5000/api/ingredient/search-ingredients', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json' },
-            body: JSON.stringify(datar) 
-          })
-          const data: SearchResults[] = await response.json();
-
-          setFilteredResults(data);
-          }
-         catch(error) {console.error("error calling the search")}
-      } 
+    if(debouncedSearchValue) {
       fetchResults();
-    }  
+    }
+    //call API here  
     else 
     {
       setFilteredResults([]);
     }
   }, [debouncedSearchValue]);
+
+
+  const fetchResults = async () => {
+    if(!debouncedSearchValue)
+    {
+      setFilteredResults([]);
+      return;
+    }
+
+    try 
+    {
+      const datar = 
+      { 
+        query: debouncedSearchValue  
+      };
+      const response = await fetch('http://146.190.71.194:5000/api/ingredient/search-ingredients', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json' },
+        body: JSON.stringify(datar) 
+      })
+      const data: SearchResults[] = await response.json();
+      console.log("We have just called the API to search")
+      setFilteredResults(data);
+      }
+     catch(error) {console.error("error calling the search " + error)}
+}
 
   // Function to get cookies
   const getCookie = (name: string): string => {
@@ -927,6 +929,7 @@ const Landing: React.FC = () => {
 
   const handlesearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setsearchValue(e.target.value);
+    console.log("This is what you searched " + searchValue)
   }
 
   interface NutritionItem {
