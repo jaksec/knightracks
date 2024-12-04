@@ -122,6 +122,8 @@ const Landing: React.FC = () => {
             )}`
           );
           const data: SearchResults[] = await response.json();
+
+          console.log("success!");
           setFilteredResults(data);
 
         } catch (error) {
