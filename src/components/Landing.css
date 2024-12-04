@@ -309,7 +309,6 @@
 }
 
 .results-dropdown {
-    position: absolute;
     top: 100%;  /* Position the dropdown below the input */
     left: 0%;
   
@@ -327,7 +326,7 @@
     background-color: white;
     border: 1px solid #ccc;
     padding: 10px;
-    tranform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
     z-index: 999;
 }
 
@@ -457,7 +456,7 @@ input:not(:checked) + .toggle-button .emoji {
     background: rgba(0, 0, 0, 0.8);
     justify-content: center;
     align-items: center;
-    z-index: 2;
+    z-index: 1;
 }
 
 .GoalChangeOverlay {

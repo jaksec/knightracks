@@ -116,6 +116,7 @@ const Landing: React.FC = () => {
     if (debouncedSearchValue) {
       const fetchResults = async () => {
         try {
+          console.log('Fetching results for:', debouncedSearchValue);
           const response = await fetch(
             `http://146.190.71.194:5000/api/ingredient/search-ingredients?q=${encodeURIComponent(
               debouncedSearchValue
@@ -123,18 +124,26 @@ const Landing: React.FC = () => {
           );
           const data: SearchResults[] = await response.json();
 
-          console.log("success!");
-          setFilteredResults(data);
-
+          console.log(data);
+  
+          if (data && data.length > 0) {
+            setFilteredResults(data);
+            console.log('Filtered Results:', data);
+          } else {
+            setFilteredResults([]); // Set empty array if no results
+            console.log('No results found for:', debouncedSearchValue);
+          }
         } catch (error) {
-          console.error('Error calling the search API:', error);
+          console.error('Error fetching results:', error);
+          setFilteredResults([]); // Reset to empty on error
         }
       };
       fetchResults();
     } else {
-      setFilteredResults([]);
+      setFilteredResults([]); // Clear results if input is empty
     }
   }, [debouncedSearchValue]);
+  
 
   // Function to get cookies
   const getCookie = (name: string): string => {
@@ -1381,56 +1390,65 @@ const Landing: React.FC = () => {
                 </button>
               </div>
 
-            <div className={activeMode === 'Search' ? 'fade-in' : 'fade-out'}>
               {activeMode === 'Search' && (
                 <>
                   {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
                   <div className="searchBarContainer">
                     <input
-                    type="text"
-                    value={searchValue}
-                    onChange={handlesearchValueChange}
-                    placeholder='Search...'
-                    className="searchBar circular-input"
+                      type="text"
+                      value={searchValue}
+                      onChange={handlesearchValueChange}
+                      placeholder="Search..."
+                      className="searchBar circular-input"
                     />
-                    {1 && (
+
+                    {filteredResults.length == 0 && (
                       <ul className="results-dropdown">
-                        <li>Heloo</li>
-                        <li>hiiii</li>
-                        <li>Popupdown</li>
+                        <p>no</p>
+                        {filteredResults.map((result, index) => (
+                          <li key={result.id} onClick={() => handleClickedItem(index)}>
+                            <img src={result.picture} alt={result.name} />
+                            <span>{result.name}</span>
+                          </li>
+                        ))}
                       </ul>
                     )}
                   </div>
-                  <p className="food-name">Name</p>
-                  <input className="circular-input search-input" onChange={adjustSize} value={resultSize}/>
-                  <div className='searchGrid'>
-                    <div>
-                      <p className="resultOutput">Calories: {resultCals}</p>
-                      <span className="BoldUnit">kCal</span>
-                    </div>
-                    <div>
-                      <p className="resultOutput">Carbohydrates: {resultCarbs}</p>
-                      <span className="BoldUnit">g</span>
-                    </div >
-                    <div>
-                      <p className="resultOutput">Protein: {resultProt}</p>
-                      <span className="BoldUnit">g</span>
-                    </div>
-                    <div>
-                      <p className="resultOutput">Fats: {resultFat}</p>
-                      <span className="BoldUnit">g</span>
-                    </div>
-                  </div>
                   
-                  
-                  <button
-                  className="addSearchButton"
-                  onClick={addSearchItem}
-                  >ADD</button>
-                
+
+                  {resultName && (
+                    <>
+                      <p className="food-name">{resultName}</p>
+                      <input
+                        className="circular-input search-input"
+                        onChange={adjustSize}
+                        value={resultSize}
+                      />
+                      <div className="searchGrid">
+                        <div>
+                          <p className="resultOutput">Calories: {resultCals.toFixed(2)}</p>
+                          <span className="BoldUnit">kCal</span>
+                        </div>
+                        <div>
+                          <p className="resultOutput">Carbohydrates: {resultCarbs.toFixed(2)}</p>
+                          <span className="BoldUnit">g</span>
+                        </div>
+                        <div>
+                          <p className="resultOutput">Protein: {resultProt.toFixed(2)}</p>
+                          <span className="BoldUnit">g</span>
+                        </div>
+                        <div>
+                          <p className="resultOutput">Fats: {resultFat.toFixed(2)}</p>
+                          <span className="BoldUnit">g</span>
+                        </div>
+                      </div>
+                      <button className="addSearchButton" onClick={addSearchItem}>
+                        ADD
+                      </button>
+                    </>
+                  )}
                 </>
               )}
-            </div>
             <div className={activeMode === 'Custom' ? 'fade-in' : 'fade-out'}>
               {activeMode === 'Custom' && (
                 <>
