@@ -372,13 +372,15 @@
 }
 
 .results-dropdown li {
-    border-color: black;
+    display: flex; /* Ensure Flexbox layout is applied */
+    flex-direction: row; /* Arrange items in a row */
+    justify-content: space-between; /* Evenly distribute items */
+    align-items: center; /* Vertically align items */
+    gap: 16px; /* Increase gap between items */
     border: 1px solid #ccc;
     background-color: black;
     color: white;
-    padding-bottom: 8px;
-    justify-content: center;
-    align-items: center;
+    padding: 8px; /* Adjust padding as needed */
     text-overflow: ellipsis;
     cursor: pointer;
 }
@@ -386,6 +388,10 @@
 .results-dropdown li:hover {
     border-color: rgb(86, 64, 230);
     transition: border-color 0.3s ease;
+}
+
+.results-dropdown li span {
+    margin-right: 32px; /* Add space between items */
 }
 
 .container {

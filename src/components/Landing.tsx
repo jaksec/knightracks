@@ -528,6 +528,7 @@ const Landing: React.FC = () => {
     setOriginalResultCarbs(0);
     setOriginalResultProt(0);
     setOriginalResultFat(0);
+    setsearchValue('');
   };
 
   const closeGoalsPopup = () => {
