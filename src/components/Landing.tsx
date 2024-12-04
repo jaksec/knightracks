@@ -112,34 +112,24 @@ const Landing: React.FC = () => {
     };
   }, [searchValue]);
 
-<<<<<<< HEAD
   useEffect(() => {
     if (debouncedSearchValue) {
       const fetchResults = async () => {
         try {
           const response = await fetch(
-            `http://146.190.71.194:5000/api/ingredient/search-ingredients?query=${encodeURIComponent(
+            `http://146.190.71.194:5000/api/ingredient/search-ingredients?q=${encodeURIComponent(
               debouncedSearchValue
             )}`
           );
           const data: SearchResults[] = await response.json();
           setFilteredResults(data);
+
         } catch (error) {
           console.error('Error calling the search API:', error);
         }
       };
       fetchResults();
     } else {
-=======
-  useEffect(() => {  //calls for the api to return search results
-    
-    if(debouncedSearchValue) {
-      fetchResults();
-    }
-    //call API here  
-    else 
-    {
->>>>>>> 30596d6b4657e1aee2c520a768eba4e8064efb30
       setFilteredResults([]);
     }
   }, [debouncedSearchValue]);
@@ -993,8 +983,17 @@ const Landing: React.FC = () => {
     setError(data.error)
   }
 
-  const adjustSize = () => {
-
+  const adjustSize = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNum = Number(e.target.value);
+    setresultSize(newNum)
+    const newCal = (newNum/100) * resultCals;
+    const newCarb = (newNum/100) * resultCarbs;
+    const newProt = (newNum/100) * resultProt;
+    const newFat= (newNum/100) * resultFat;
+    setresultCals(newCal)
+    setresultCarbs(newCarb)
+    setresultProt(newProt)
+    setresultFat(newFat)
   }
 
   return (
@@ -1392,18 +1391,11 @@ const Landing: React.FC = () => {
                     placeholder='Search...'
                     className="searchBar circular-input"
                     />
-                    {filteredResults.length > 0 && (
+                    {1 && (
                       <ul className="results-dropdown">
-                        {filteredResults.map((result, rIndex) => (
-                          <li
-                          key={rIndex}
-                          className="resultItem"
-                          onClick={() => handleClickedItem(rIndex)}
-                          >
-                            <img src={result.picture} className = "ResultIMG"/>
-                            <span className="ResultName">{result.name}</span>
-                          </li>
-                        ))}
+                        <li>Heloo</li>
+                        <li>hiiii</li>
+                        <li>Popupdown</li>
                       </ul>
                     )}
                   </div>

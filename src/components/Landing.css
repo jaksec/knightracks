@@ -308,6 +308,29 @@
     z-index: 0;
 }
 
+.results-dropdown {
+    position: absolute;
+    top: 100%;  /* Position the dropdown below the input */
+    left: 0%;
+  
+    width: 80%;  /* Make the dropdown the same width as the input */
+    background-color: #fff;  /* White background for the dropdown */
+    border: 1px solid #ccc;  /* Border around the dropdown */
+    border-radius: 5px;  /* Rounded corners */
+    max-height: 200px;  /* Set a max height for the dropdown */
+    overflow-y: auto;  /* Allows scrolling if the list is too long */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Light shadow for depth */
+    z-index: 1000;
+    color: black;
+    display: block;
+    position: absolute;  /* Ensure it's not hidden behind other elements */
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    tranform: translate(-50%, -50%);
+    z-index: 999;
+}
+
 .container {
     display: flex;
     align-items: center;
@@ -591,10 +614,6 @@ input:not(:checked) + .toggle-button .emoji {
 .searchBar:focus {
     outline: none;
     border-color: #007bff; /* Optional focus effect */
-}
-
-.results-dropdown {
-
 }
 
 .result-item {
