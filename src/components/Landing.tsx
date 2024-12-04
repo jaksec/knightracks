@@ -112,39 +112,23 @@ const Landing: React.FC = () => {
     };
   }, [searchValue]);
 
-  useEffect(() => {  //calls for the api to return search results
-    
-    if(debouncedSearchValue) 
-    {//call API here
+  useEffect(() => {
+    if (debouncedSearchValue) {
       const fetchResults = async () => {
-        if(!debouncedSearchValue)
-        {
-          setFilteredResults([]);
-          return;
-        }
-
-        try 
-        {
-          const datar = 
-          { 
-            query: debouncedSearchValue  
-          };
-          const response = await fetch('http://146.190.71.194:5000/api/ingredient/search-ingredients', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json' },
-            body: JSON.stringify(datar) 
-          })
+        try {
+          const response = await fetch(
+            `http://146.190.71.194:5000/api/ingredient/search-ingredients?query=${encodeURIComponent(
+              debouncedSearchValue
+            )}`
+          );
           const data: SearchResults[] = await response.json();
-
           setFilteredResults(data);
-          }
-         catch(error) {console.error("error calling the search")}
-      } 
+        } catch (error) {
+          console.error('Error calling the search API:', error);
+        }
+      };
       fetchResults();
-    }  
-    else 
-    {
+    } else {
       setFilteredResults([]);
     }
   }, [debouncedSearchValue]);
@@ -936,30 +920,44 @@ const Landing: React.FC = () => {
   }
 
   
-  const handleClickedItem = async ( index : number) => {
-    
+  const handleClickedItem = async (index: number) => {
     const objectid = filteredResults[index]?.id;
-
-    const datar = 
-    { 
-      id: objectid  
-    };
-    const response = await fetch('http://146.190.71.194:5000/api/ingredient/ingredient-nutrition', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json' },
-        body: JSON.stringify(datar) 
-      })
-    const data = await response.json();
-
-    setresultName(data.name)
-    setresultFat(Number(data.nutrition.find((item:NutritionItem) => item.name === 'Fat')?.amount || 0))
-    setresultProt(Number(data.nutrition.find((item:NutritionItem) => item.name === 'Protein')?.amount || 0))
-    setresultCarbs(Number(data.nutrition.find((item:NutritionItem) => item.name === 'Carbohydrates')?.amount || 0))
-    setresultCals(Number(data.nutrition.find((item:NutritionItem) => item.name === 'Calories')?.amount || 0))
-    setresultSize(100);
-    setsearchValue("");
-  }
+  
+    try {
+      const response = await fetch(
+        `http://146.190.71.194:5000/api/ingredient/ingredient-nutrition?id=${encodeURIComponent(
+          objectid
+        )}`
+      );
+      const data = await response.json();
+  
+      setresultName(data.name);
+      setresultFat(
+        Number(
+          data.nutrition.find((item: NutritionItem) => item.name === 'Fat')?.amount || 0
+        )
+      );
+      setresultProt(
+        Number(
+          data.nutrition.find((item: NutritionItem) => item.name === 'Protein')?.amount || 0
+        )
+      );
+      setresultCarbs(
+        Number(
+          data.nutrition.find((item: NutritionItem) => item.name === 'Carbohydrates')?.amount || 0
+        )
+      );
+      setresultCals(
+        Number(
+          data.nutrition.find((item: NutritionItem) => item.name === 'Calories')?.amount || 0
+        )
+      );
+      setresultSize(100);
+      setsearchValue('');
+    } catch (error) {
+      console.error('Error fetching ingredient nutrition:', error);
+    }
+  };
 
   const addSearchItem = async () => {
     const userid = getCookie("id")

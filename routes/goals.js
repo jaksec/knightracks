@@ -50,6 +50,44 @@ router.post('/addGoal', async (req, res) =>
     }
 });
 
+router.get('/getGoal', async (req, res) => {
+  // Incoming: userId
+  // Outgoing: userId, calories, proteins, carbs, fats (if goal exists)
+
+  const { userId } = req.query;
+
+  // Validate userId
+  if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  try {
+      // Connect to Database
+      const db = client.db('COP4331LargeProject');
+
+      // Find the goal for the given userId
+      const goal = await db.collection('DailyGoals').findOne({ userId: new ObjectId(userId) });
+
+      if (!goal) {
+          // If no goal is found, return a 404 response
+          return res.status(404).json({ error: 'Goal not found' });
+      }
+
+      // Return the goal data
+      res.status(200).json({
+          data: {
+              userId: goal.userId,
+              calories: goal.calories,
+              proteins: goal.proteins,
+              carbs: goal.carbs,
+              fats: goal.fats,
+          },
+      });
+  } catch (error) {
+      console.error('Error fetching goal:', error);
+      return res.status(500).json({ error: 'An error occurred while fetching the goal' });
+  }
+});
 
 router.put('/updateGoal', async (req, res) => 
 {
