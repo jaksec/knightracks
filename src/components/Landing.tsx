@@ -112,17 +112,18 @@ const Landing: React.FC = () => {
     };
   }, [searchValue]);
 
-<<<<<<< HEAD
   useEffect(() => {
     if (debouncedSearchValue) {
       const fetchResults = async () => {
         try {
           const response = await fetch(
-            `http://146.190.71.194:5000/api/ingredient/search-ingredients?query=${encodeURIComponent(
+            `http://146.190.71.194:5000/api/ingredient/search-ingredients?q=${encodeURIComponent(
               debouncedSearchValue
             )}`
           );
           const data: SearchResults[] = await response.json();
+
+          console.log("success!");
           setFilteredResults(data);
         } catch (error) {
           console.error('Error calling the search API:', error);
@@ -130,16 +131,6 @@ const Landing: React.FC = () => {
       };
       fetchResults();
     } else {
-=======
-  useEffect(() => {  //calls for the api to return search results
-    
-    if(debouncedSearchValue) {
-      fetchResults();
-    }
-    //call API here  
-    else 
-    {
->>>>>>> 30596d6b4657e1aee2c520a768eba4e8064efb30
       setFilteredResults([]);
     }
   }, [debouncedSearchValue]);
